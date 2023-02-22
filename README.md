@@ -10,7 +10,7 @@ Add your own name (do not add the names for others!) to the section below.
 
 | Profile Picture | Name | Email |
 |---|---|---|
-| ![denisa picture](denisa.png) | Denisa Arsene | e.d.arsene-1@student.tudelft.nl |
+| <img src="denisa.png" alt="denisa e smek" width="80"> | Denisa Arsene | e.d.arsene-1@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
