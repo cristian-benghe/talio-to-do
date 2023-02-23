@@ -39,3 +39,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Other ###
+.DS_Store
+docs/.DS_Store
+docs/agendas/.DS_Store
