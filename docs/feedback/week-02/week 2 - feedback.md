@@ -33,9 +33,9 @@ Feedback: There was enough time planned and spent on every topic from the agenda
 
 #### Minute taker performance
 
-Mark: Insufficient
+Mark: Good
 
-Feedback: The notes are quite short and were not specific enough. For example, I remember that you came up with quite a lot of good questions to be asked at the client q&a, but none of them was present in the notes. Please, read the minute-taker role document from the teamwork module to learn what you should pay attention to while taking minutes. The basic idea is that minutes should not contain everything that was said but focus on the points of action and agreements that were made specifying due dates and assignees.
+Feedback: There is a good amount of notes. The notes are focused on the agreements made at the meeting. Some action points are summarized in a table. Nice that the questions to the project owner were collected in a separate section. A tip for next time would be to also organize your notes the same way as the agenda. For example in the 'Notes from the meeting' it's not easy to see which points refer to which points from the agenda.
 
 #### Relation
 
