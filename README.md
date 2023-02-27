@@ -14,6 +14,8 @@ Add your own name (do not add the names for others!) to the section below.
 | <img src="David_profile_picture.jpeg" alt="David's profile picture" width="50"> | David Ghergut | D.Ghergut@student.tudelft.nl |
 | <img src="cristian.jpeg" alt="Cristi's profile pic" width="50"> | Cristian Benghe | C.Benghe@student.tudelft.nl |
 |<img src="Yair_Profile_Picture.jpeg" alt="Yair Chizi" width="50">| Yair Chizi| Y.Chizi@student.tudelft.nl |
+|<img src="teodora.jpeg" alt="teodora" width="50">| Teodora Mihaila| t.mihaila@student.tudelft.nl |
+
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
