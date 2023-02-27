@@ -13,6 +13,7 @@ Add your own name (do not add the names for others!) to the section below.
 | <img src="denisa.png" alt="denisa e smek" width="50"> | Denisa Arsene | e.d.arsene-1@student.tudelft.nl |
 | <img src="David_profile_picture.jpeg" alt="David's profile picture" width="50"> | David Ghergut | D.Ghergut@student.tudelft.nl |
 | <img src="cristian.jpeg" alt="Cristi's profile pic" width="50"> | Cristian Benghe | C.Benghe@student.tudelft.nl |
+  <img src="Halo.jpeg" alt="Halo's profile picture" width="50"> | Halid ÇIRAK | m.h.cirak@student.tudelft.nl |
 
 <!-- Instructions (remove once assignment has been completed -->
 <!-- - Add (only!) your own name to the table above (use Markdown formatting) -->
