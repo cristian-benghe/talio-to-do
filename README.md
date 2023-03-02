@@ -10,12 +10,12 @@ Add your own name (do not add the names for others!) to the section below.
 
 | Profile Picture | Name | Email |
 |---|---|---|
-| <img src="denisa.png" alt="denisa e smek" width="50"> | Denisa Arsene | e.d.arsene-1@student.tudelft.nl |
-| <img src="David_profile_picture.jpeg" alt="David's profile picture" width="50"> | David Ghergut | D.Ghergut@student.tudelft.nl |
-| <img src="cristian.jpeg" alt="Cristi's profile pic" width="50"> | Cristian Benghe | C.Benghe@student.tudelft.nl |
-| <img src="Halo.jpeg" alt="Halo's profile picture" width="50"> | Halid ÇIRAK | m.h.cirak@student.tudelft.nl |
-|<img src="Yair_Profile_Picture.jpeg" alt="Yair Chizi" width="50">| Yair Chizi| Y.Chizi@student.tudelft.nl |
-|<img src="teodora.jpg" alt="teodora" width="50">| Teodora Mihaila| t.mihaila@student.tudelft.nl |
+| <img src="Images/Denisa.jpg" alt="Denisa's profile picture" width="50"> | Denisa Arsene | e.d.arsene-1@student.tudelft.nl |
+| <img src="Images/David.jpg" alt="David's profile picture" width="50"> | David Ghergut | D.Ghergut@student.tudelft.nl |
+| <img src="Images/Cristian.jpg" alt="Cristi's profile picture" width="50"> | Cristian Benghe | C.Benghe@student.tudelft.nl |
+| <img src="Images/Halo.jpg" alt="Halo's profile picture" width="50"> | Halid ÇIRAK | m.h.cirak@student.tudelft.nl |
+|<img src="Images/Yair.jpg" alt="Yair's profile picture" width="50">| Yair Chizi| Y.Chizi@student.tudelft.nl |
+|<img src="Images/Teodora.jpg" alt="Teodora's profile picture" width="50">| Teodora Mihaila| t.mihaila@student.tudelft.nl |
 
 
 
