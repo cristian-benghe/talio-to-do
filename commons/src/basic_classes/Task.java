@@ -1,3 +1,6 @@
+package basic_classes;
+
+
 public class Task {
     private String task;
     public boolean status;
