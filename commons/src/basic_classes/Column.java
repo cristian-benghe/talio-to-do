@@ -1,8 +1,6 @@
 package basic_classes;
 
 
-import basic_classes.Card;
-
 import java.util.ArrayList;
 import java.util.List;
 
