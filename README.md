@@ -29,4 +29,15 @@ Add your own name (do not add the names for others!) to the section below.
 
 ## How to contribute to it
 
+### All developers must respect the following requirements:
+
+1) #### Use *imperative* in commit messages ❗
+2) #### Develop using *branches* 🌳 and *merge requests* for code reviews 👨🏻‍💻
+3) #### *Markdown* will be used as the main extension that will be used for *agenda📅 + minute notes📝*
+4) #### There should be at least *two people* who need to approve a merge 👫 request and they must write *exhaustive comments* 📚
+5) #### Always use *pull requests*  for *clean code maintenance* ✨
+6) #### Code should always contain *comments and thorough documentation* 📜 so that everyone has a *clear understanding* 🤓 of that piece of code
+7) #### Use a *CI/CD pipeline to automate testing 🧪 and deployment of changes 🚀*, ensuring that the codebase is always stable and deployable
+8) #### Use an *issue tracking system* to manage tasks ✅, bugs 🐞, and feature requests 🛠️, and link issues ⛓️ to related code changes
+
 ## Copyright / License (opt.)
