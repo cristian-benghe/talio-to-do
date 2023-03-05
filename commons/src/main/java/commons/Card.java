@@ -1,4 +1,4 @@
-package basic_classes;
+package commons;
 
 import javax.persistence.*;
 
@@ -10,7 +10,7 @@ public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private String title;
     private String description;
 
