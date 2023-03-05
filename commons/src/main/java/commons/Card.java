@@ -5,23 +5,23 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Card {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
     private List<Tag> tagList;
 
-    @ManyToOne
-    @JoinColumn(name = "column_id")
+//    @ManyToOne
+//    @JoinColumn(name = "column_id")
     private Column column;
 
     public Card() {
