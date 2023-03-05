@@ -1,0 +1,1 @@
+Here's the link of our Database schema: https://excalidraw.com/#room=ba20c194347c0f03502c,4WKeZT1t2saZhJKREkTh5g
