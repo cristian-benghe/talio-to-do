@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "cards")
 public class Card {
 
     @Id
@@ -14,10 +15,10 @@ public class Card {
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Tag> tagList;
 
     @ManyToOne
