@@ -25,7 +25,7 @@ public class Task {
      * @param task  Copies the values of the attributes from this instance into the newly created instance.
      */
     public Task(Task task) {
-        this.task_id = task.getTask_id();
+        this.task_id = task.getID();
         this.card = task.getCard();
         this.title = task.getTitle();
         this.status = task.isComplete();
@@ -62,7 +62,7 @@ public class Task {
      * A getter for the task_id attribute.
      * @return The identifier of the Task instance.
      */
-    public long getTask_id() {
+    public long getID() {
         return task_id;
     }
 
@@ -71,7 +71,7 @@ public class Task {
      * @param task_id The new task_id of the Task instance
      * @return The new task_id of this instance.
      */
-    public long setTask_id(long task_id) {
+    public long setID(long task_id) {
         this.task_id = task_id;
         return this.task_id;
     }
@@ -121,5 +121,47 @@ public class Task {
     }
 
 
-   
+    /**
+     * An equals() implementation for the Task class. In order for this method to function as intended,
+     * the title and card attributes of this class must not be null.
+     * @param o The other object that will be compared to this object.
+     * @return Returns true if and only if the attributes of the objects are equal.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Task task = (Task) o;
+
+        return getID() == task.getID()
+                && isComplete() == task.isComplete()
+                && getCard().equals(task.getCard())
+                && getTitle().equals(task.getTitle());
+    }
+
+
+    /**
+     * A hashCode() implementation for the task class.
+     * @return the hash code for this instance of the Task class.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getID(), getCard(), getTitle(), isComplete());
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "task_id=" + task_id +
+                ", card_id=" + card.getId() +
+                ", title='" + title + '\'' +
+                ", isComplete=" + status +
+                '}';
+    }
 }
