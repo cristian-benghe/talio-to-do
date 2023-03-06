@@ -47,9 +47,9 @@ public class Column {
         this.title = title;
     }
 
-    public List<Card> getCards() {return cards; }
+    public List<Card> getCards() { return this.cards; }
 
-    public void setCards(List<Card> cards) {this.cards = cards; }
+    public void setCards(List<Card> cards) { this.cards = cards; }
 
     public Board getBoard() {
         return board;
@@ -74,8 +74,12 @@ public class Column {
     }
     @Override
     public String toString(){
-        return "The Column" + this.title + "has the ID:" + this.id +
-                "is part of Board " + this.board + "and contains the following cards:" +this.cards;
+        String cards1 = "";
+        for( int i = 0; i<cards.size(); i++) {
+            cards1 += cards.get(i).toString();
+        }
+        return "The Column " + this.title + " has the ID: " + this.id +
+                " is part of Board " + this.board.getTitle() + " and contains the following cards: " + cards1;
     }
 
 
