@@ -1,4 +1,4 @@
-package basic_classes;
+package commons;
 
 
 public class Task {
