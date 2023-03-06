@@ -19,6 +19,25 @@ class TaskTest {
 
         t = new Task(1L,c,"Test Task",false);
     }
+
+    @Test
+    public void TaskInstanceConstructorNotNullTest(){
+        Task t1 = new Task(t);
+        assertNotNull(t1);
+    }
+
+    @Test
+    public void NonIDAttributeConstructorNotNullTest(){
+        Task t1 = new Task(c,"Test Task", false);
+        assertNotNull(t1);
+    }
+
+    @Test
+    public void IDAttributeConstructorNotNullTest(){
+        assertNotNull(t);
+    }
+
+
     @Test
     public void getIDPositiveTest(){
         assertEquals(t.getID(),1L);
@@ -54,5 +73,46 @@ class TaskTest {
     @Test
     public void changeCompleteStatePositiveTest(){
         assertTrue(t.changeCompleteState());
+    }
+
+    @Test
+    public void sameInstanceEqualityPositiveTest(){
+        assertEquals(t,t);
+    }
+
+    @Test
+    public void nullEqualityNegativeTest(){
+        assertNotEquals(t,null);
+    }
+
+    @Test
+    public void notSameClassEqualityNegativeTest(){
+        assertNotEquals(t,"This is a REAL task.");
+    }
+
+    @Test
+    public void notSameIDEqualityNegativeTest(){
+        Task t1 = new Task(t);
+        t1.setID(-100L);
+        assertNotEquals(t,t1);
+    }
+    @Test
+    public void notSameTitleEqualityNegativeTest(){
+        Task t1 = new Task(t);
+        t1.setTitle("Different Title");
+        assertNotEquals(t,t1);
+    }
+
+    @Test
+    public void notSameStatusEqualityNegativeTest(){
+        Task t1 = new Task(t);
+        t1.changeCompleteState();
+        assertNotEquals(t,t1);
+    }
+
+
+    @Test void sameAttributesEqualityPositiveTest(){
+        Task t1 = new Task(1L,c,"Test Task",false);
+        assertEquals(t,t1);
     }
 }
