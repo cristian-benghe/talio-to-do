@@ -1,7 +1,9 @@
 package commons;
 
 import javax.persistence.*;
+import java.util.Objects;
 
+@Entity
 public class Tag {
 
     @Id
@@ -23,6 +25,7 @@ public class Tag {
     public Tag(long id, String title, Card card) {
         this.tag_id = id;
         this.title = title;
+        this.card = card;
     }
 
     /**
@@ -77,5 +80,40 @@ public class Tag {
      */
     public void setCard(Card card) {
         this.card = card;
+    }
+
+    /**
+     * equals method of the class
+     *
+     * @return true/false if this and o are equal or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return getTag_id() == tag.getTag_id() && getTitle().equals(tag.getTitle()) && getCard().equals(tag.getCard());
+    }
+
+    /**
+     * hashcode method of the class Tag
+     *
+     * @return the hashcode of the Tag object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTag_id(), getTitle(), getCard());
+    }
+
+    /**
+     * toString method that prints the Tag object in a human-friendly way
+     *
+     * @return a string which represents the Tag object in a human-friendly way
+     */
+    @Override
+    public String toString() {
+        return this.title +
+                " has the ID: " + this.tag_id +
+                " and is part of: " + this.card.toString();
     }
 }
