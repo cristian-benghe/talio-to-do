@@ -43,7 +43,7 @@ Classes/Pop-ups/Customization scene
 
 * 16:20 - 16:23  
 **Summary actions points** <br /> 
-Did everyone understood how the BuddyCheck works? Decide deadlines for the divided tasks and schedule future meetings. How will be the next chair and minute-taker?
+Did everyone understood how the BuddyCheck works? Decide deadlines for the divided tasks and schedule future meetings. Who will be the next chair and minute-taker?
 
 * 16:23 - 16:24  
 **Feedback round** <br />
