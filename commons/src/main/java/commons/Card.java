@@ -98,4 +98,16 @@ public class Card {
     public int hashCode() {
         return Objects.hash(id, title, description, taskList, tagList, column);
     }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", taskList=" + taskList +
+                ", tagList=" + tagList +
+                ", column=" + column +
+                '}';
+    }
 }
