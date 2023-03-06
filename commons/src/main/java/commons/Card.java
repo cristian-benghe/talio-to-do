@@ -2,10 +2,11 @@ package commons;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
+@Table(name = "cards")
 public class Card {
 
     @Id
@@ -14,10 +15,10 @@ public class Card {
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @OneToMany(mappedBy = "card_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Tag> tagList;
 
     @ManyToOne
@@ -83,5 +84,18 @@ public class Card {
 
     public void setColumn(Column column) {
         this.column = column;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Card card = (Card) o;
+        return Objects.equals(id, card.id) && Objects.equals(title, card.title) && Objects.equals(description, card.description) && Objects.equals(taskList, card.taskList) && Objects.equals(tagList, card.tagList) && Objects.equals(column, card.column);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, taskList, tagList, column);
     }
 }
