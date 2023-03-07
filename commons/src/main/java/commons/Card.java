@@ -15,6 +15,8 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 @Table(name = "cards")
 public class Card {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
