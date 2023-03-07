@@ -4,17 +4,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+
 import java.util.List;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 
+
 @Entity
 @Table(name = "cards")
 public class Card {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
