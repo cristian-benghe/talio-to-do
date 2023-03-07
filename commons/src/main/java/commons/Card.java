@@ -1,9 +1,13 @@
 package commons;
 
-import javax.persistence.*;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 
 @Entity
 @Table(name = "cards")
@@ -94,20 +98,21 @@ public class Card {
         return Objects.equals(id, card.id) && Objects.equals(title, card.title) && Objects.equals(description, card.description) && Objects.equals(taskList, card.taskList) && Objects.equals(tagList, card.tagList) && Objects.equals(column, card.column);
     }
 
+    /**
+     * hashing function
+     * @return a hash code value for the card
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, taskList, tagList, column);
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    /**
+     * human-friendly toString method, useful for debugging
+     * @return a string representation of the card in a human-friendly format
+     */
     @Override
     public String toString() {
-        return "Card{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", taskList=" + taskList +
-                ", tagList=" + tagList +
-                ", column=" + column +
-                '}';
+        return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
     }
 }
