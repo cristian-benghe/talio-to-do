@@ -3,7 +3,9 @@ package commons;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -52,7 +54,7 @@ class CardTest {
     @Test
     void getTagList() {
         Card card = new Card("Test Card", "description", null, null, null);
-        assertNull(card.getTagList());
+        assertNull(card.getTags());
     }
 
     @Test
@@ -84,11 +86,13 @@ class CardTest {
     @Test
     void testSetTagList() {
         Card c = new Card("Test Card", "basic description", null, null, null);
-        List<Tag> list = new ArrayList<>();
-        Tag t1 = new Tag(0L, "tag1", c);
-        list.add(t1);
-        c.setTagList(list);
-        assertEquals(list, c.getTagList());
+        Set<Tag> tags = new HashSet<>();
+        Set<Card> cards = new HashSet<>();
+        cards.add(c);
+        Tag t1 = new Tag(0L, "tag1", cards);
+        tags.add(t1);
+        c.setTags(tags);
+        assertEquals(tags, c.getTags());
     }
 
     @Test
