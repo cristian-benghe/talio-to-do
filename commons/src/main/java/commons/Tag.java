@@ -15,6 +15,11 @@ public class Tag {
     @JoinColumn(name = "card_id")
     private Card card;
 
+    /**
+     * Constructs a new empty Tag
+     */
+    public Tag() {
+    }
 
     /**
      * Constructs a new Tag object with the specified id and title.
