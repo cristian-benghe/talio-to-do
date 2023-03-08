@@ -3,24 +3,29 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class BoardTest {
+
     Board board;
-    Board board2;
+    Board board1;
     @BeforeEach
     public void setUp() {
-        board = new Board("board_title", null);
-        board2=new Board("board_title", null);
-    }
-    @Test
-    public void checkConstructor() {
-        assertEquals(board.getTitle(), "board_title");
-        assertNull(board.getColumns());
+         board1 = new Board("board", null,null);
+          board=new Board("board", null, null);
     }
     @Test
     void getTitle() {
-        assertEquals(board.getTitle(), "board_title");
+        assertEquals(board.getTitle(), "board");
+    }
+
+    @Test
+    void setTitle() {
+        board.setTitle("anapoda");
+        assertEquals(board.getTitle(), "anapoda");
     }
 
     @Test
@@ -29,23 +34,30 @@ class BoardTest {
     }
 
     @Test
+    void setColumns() {
+        board.setColumns(null);
+        assertNull(board.getColumns());
+    }
+
+    @Test
+    void getTags() {
+        assertNull(board.getTags());
+    }
+
+    @Test
+    void setTags() {
+        board.setTags(null);
+        assertNull(board.getTags());
+    }
+
+    @Test
     void testEquals() {
-        assertEquals(board, board2);
+        assertTrue(board1.equals(board));
+        assertEquals(board.hashCode(), board1.hashCode());
     }
 
     @Test
     void testHashCode() {
-        assertEquals(board, board2);
-    }
-    @Test
-    void setTitle() {
-        board.setTitle("sports");
-        assertEquals(board.getTitle(), "sports");
-    }
-
-    @Test
-    void setColumns() {
-        board.setColumns(null);
-        assertNull(board.getColumns());
+        assertEquals(board.hashCode(), board1.hashCode());
     }
 }

@@ -15,48 +15,15 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
 
-    public Board(String title, List<Column> columns) {
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<Tag> tags = new ArrayList<>();
+    public Board(String title, List<Column> columns, List<Tag>tags) {
         this.title = title;
         this.columns = columns;
+        this.tags=tags;
     }
 
     public Board(){}
-
-    public String getTitle() {
-        return title;
-    }
-
-    public List<Column> getColumns() {
-        return columns;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Board)) return false;
-
-        Board board = (Board) o;
-
-        if (getTitle() != null ? !getTitle().equals(board.getTitle()) : board.getTitle() != null) return false;
-        if (getColumns() != null ? !getColumns().equals(board.getColumns()) : board.getColumns() != null) return false;
-        return getColumns() != null ? getColumns().equals(board.getColumns()) : board.getColumns() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getTitle() != null ? getTitle().hashCode() : 0;
-        result = 31 * result + (getColumns() != null ? getColumns().hashCode() : 0);
-        result = 31 * result + (getColumns() != null ? getColumns().hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Board{" +
-                "title='" + title + '\'' +
-                ", columns=" + columns +
-                ", columns=" + columns +
-            '}';}
 
     public Long getId() {
         return id;
@@ -66,11 +33,49 @@ public class Board {
         this.id = id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public List<Column> getColumns() {
+        return columns;
+    }
+
     public void setColumns(List<Column> columns) {
         this.columns = columns;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Board)) return false;
+
+        Board board = (Board) o;
+
+        if (getId() != null ? !getId().equals(board.getId()) : board.getId() != null) return false;
+        if (getTitle() != null ? !getTitle().equals(board.getTitle()) : board.getTitle() != null) return false;
+        if (getColumns() != null ? !getColumns().equals(board.getColumns()) : board.getColumns() != null) return false;
+        return getTags() != null ? getTags().equals(board.getTags()) : board.getTags() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
+        result = 31 * result + (getColumns() != null ? getColumns().hashCode() : 0);
+        result = 31 * result + (getTags() != null ? getTags().hashCode() : 0);
+        return result;
     }
 }
