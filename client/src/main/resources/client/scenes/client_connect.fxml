@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="130.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" > <!-- will be added: fx:controller="client.scenes.ClientConnect" -->
+   <children>
+      <Label layoutX="14.0" layoutY="76.0" prefHeight="39.0" prefWidth="145.0" text="Server address:" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <TextField layoutX="174.0" layoutY="76.0" prefHeight="39.0" prefWidth="274.0" promptText="Please enter the server address..." />
+      <Button layoutX="478.0" layoutY="80.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="68.0" text="Connect" />
+      <Label layoutX="14.0" layoutY="14.0" prefHeight="39.0" prefWidth="546.0" text="Please enter your server address to connect" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
