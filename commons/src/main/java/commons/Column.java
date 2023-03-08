@@ -17,7 +17,7 @@ public class Column {
     private List<Card> cards= new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn( name = "board_id")
+    @JoinColumn(name = "board_id")
     private Board board;
 
     public Column(){
