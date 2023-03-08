@@ -16,6 +16,9 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Card> cards = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     /**
      * Constructs a new Tag object with the specified id and title.
