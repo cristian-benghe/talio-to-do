@@ -4,9 +4,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 
@@ -24,8 +25,11 @@ public class Card {
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
-    private List<Tag> tagList;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "card_tag",
+            joinColumns = { @JoinColumn(name = "card_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id") })
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "column_id")
@@ -34,11 +38,11 @@ public class Card {
     public Card() {
     }
 
-    public Card(String title, String description, List<Task> taskList, List<Tag> tagList, Column column) {
+    public Card(String title, String description, List<Task> taskList, Set<Tag> tags, Column column) {
         this.title = title;
         this.description = description;
         this.taskList = taskList;
-        this.tagList = tagList;
+        this.tags = tags;
         this.column = column;
     }
 
@@ -76,12 +80,12 @@ public class Card {
         this.taskList = taskList;
     }
 
-    public List<Tag> getTagList() {
-        return tagList;
+    public Set<Tag> getTags() {
+        return tags;
     }
 
-    public void setTagList(List<Tag> tagList) {
-        this.tagList = tagList;
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     public Column getColumn() {
@@ -97,7 +101,9 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(id, card.id) && Objects.equals(title, card.title) && Objects.equals(description, card.description) && Objects.equals(taskList, card.taskList) && Objects.equals(tagList, card.tagList) && Objects.equals(column, card.column);
+        return Objects.equals(id, card.id) && Objects.equals(title, card.title) &&
+                Objects.equals(description, card.description) && Objects.equals(taskList, card.taskList) &&
+                Objects.equals(tags, card.tags) && Objects.equals(column, card.column);
     }
 
     /**
