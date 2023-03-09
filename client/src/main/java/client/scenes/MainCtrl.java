@@ -79,6 +79,6 @@ public class MainCtrl {
     public void showClientConnect() {
         primaryStage.setTitle("Connect_client");
         primaryStage.setScene(clientConnect);
-        clientConnectCtrl.connect();
+        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
 }
