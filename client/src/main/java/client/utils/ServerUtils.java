@@ -132,13 +132,13 @@ public class ServerUtils {
                 .get(new GenericType<List<Column>>() {});
     }
 
-    public List<Card> getColumnsFromBoard(Board board) {
+    public List<Column> getColumnsFromBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/columns") //
                 .queryParam("board_id", board.getId())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Card>>() {});
+                .get(new GenericType<List<Column>>() {});
     }
 
 }
