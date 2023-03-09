@@ -128,5 +128,5 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Card>>() {});
     }
-    
+
 }
