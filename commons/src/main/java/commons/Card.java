@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 
 
 @Entity
-@Table(name = "cards")
+@Table(name = "card")
 public class Card {
 
     @Id
