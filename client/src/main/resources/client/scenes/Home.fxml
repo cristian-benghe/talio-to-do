@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
@@ -25,12 +25,12 @@
       <TextField layoutX="236.0" layoutY="39.0" prefHeight="40.0" prefWidth="680.0" />
       <Line endX="94.4000015258789" endY="140.0928955078125" layoutX="-43.0" layoutY="-73.0" startX="80.99998474121094" startY="160.60000610351562" />
       <Circle fill="WHITE" layoutX="57.0" layoutY="54.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
-      <ScrollPane layoutX="236.0" layoutY="88.0" prefHeight="200.0" prefWidth="680.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
-      </ScrollPane>
-      <Button layoutX="700.0" layoutY="380.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="216.0" text="Disconnect" textFill="#331313">
+    <AnchorPane layoutX="236.0" layoutY="105.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="680.0">
+         <children>
+            <ListView fx:id="BoardsListElement" layoutX="1.0" prefHeight="200.0" prefWidth="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+      <Button fx:id="disconnectButton" layoutX="700.0" layoutY="380.0" mnemonicParsing="false" onAction="#disconnect" prefHeight="52.0" prefWidth="216.0" text="Disconnect" textFill="#331313">
          <font>
             <Font size="18.0" />
          </font>

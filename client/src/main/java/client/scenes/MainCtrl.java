@@ -73,6 +73,9 @@ public class MainCtrl {
     public void showMainOverview() {
         primaryStage.setTitle("Home");
         primaryStage.setScene(mainOverview);
+
+        //Refresh the Scene
+        mainOverviewCtrl.refreshOverview();
     }
 
     //TODO
