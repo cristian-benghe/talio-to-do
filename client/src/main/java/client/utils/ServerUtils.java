@@ -35,7 +35,19 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER = "http://localhost:8080/";
+
+    public static void setServerAddress(String serverAddress) {
+        ServerUtils.SERVER = serverAddress;
+    }
+
+    public static String getServerAddress() {
+        return SERVER;
+    }
+
+    private static String getServerUrl(String path) {
+        return SERVER + path;
+    }
 
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
