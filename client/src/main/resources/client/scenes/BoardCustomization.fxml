@@ -50,8 +50,8 @@
       </Label>
       <Pane layoutX="18.0" layoutY="353.0" prefHeight="33.0" prefWidth="564.0">
          <children>
-            <Button layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="100.0" text="Save" />
-            <Button layoutY="4.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="137.0" text="Delete the board" />
+            <Button layoutX="464.0" layoutY="2.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Save" /> <!-- onAction="#ok" -->
+            <Button layoutY="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="137.0" text="Delete the board" /> <!--onAction="#ok" / onAction="#ok" -->
          </children>
       </Pane>
    </children>
