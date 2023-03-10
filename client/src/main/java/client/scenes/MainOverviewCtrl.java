@@ -7,12 +7,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
-import javafx.scene.*;
 import commons.Board;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainOverviewCtrl {
