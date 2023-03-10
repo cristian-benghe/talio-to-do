@@ -29,6 +29,13 @@ public class Board {
         tags = new ArrayList<>();
     }
 
+    public Board(long id, String title, List<Column> columns, List<Tag>tags) {
+        this.id = id;
+        this.title = title;
+        this.columns = columns;
+        this.tags=tags;
+    }
+
     public Board(){}
 
     public Long getId() {
@@ -61,6 +68,16 @@ public class Board {
 
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+
+    /**
+     * The method creates a shortened human-friendly String representation of the object.
+     * Only the title and id are used in this shortened representation.
+     * @return a shortened human-friendly String representation.
+     */
+    public String toStringShort(){
+        return this.title + " -- " + this.id;
     }
 
     @Override

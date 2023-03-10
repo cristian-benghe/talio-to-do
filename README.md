@@ -37,7 +37,8 @@ Add your own name (do not add the names for others!) to the section below.
 4) #### There should be at least *two people* who need to approve a merge 👫 request and they must write *exhaustive comments* 📚
 5) #### Always use *pull requests*  for *clean code maintenance* ✨
 6) #### Code should always contain *comments and thorough documentation* 📜 so that everyone has a *clear understanding* 🤓 of that piece of code
-7) #### Use a *CI/CD pipeline to automate testing 🧪 and deployment of changes 🚀*, ensuring that the codebase is always stable and deployable
 8) #### Use an *issue tracking system* to manage tasks ✅, bugs 🐞, and feature requests 🛠️, and link issues ⛓️ to related code changes
+9) #### *Run 🏃 checkstyle* every time before making a MR
+10) #### Write tests 🧪 for all the features that the developer is working on 🛠️
 
 ## Copyright / License (opt.)
