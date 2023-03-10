@@ -33,17 +33,41 @@ public class ClientConnectCtrl implements Initializable {
         server_address.setText("http://localhost:8080/");
     }
 
-    //method to change scene linked to the home page
+    //
+
+    /** The method changes the scene to the home page (MainOverview). It also first attempts
+     * to connect to the server using the user-provided URL.
+     */
     public void changeScene() {
-        mainCtrl.showMainOverview();
+
+        try {
+
+            //First, connect to the server using the provided url.
+            this.connect();
+
+        }catch(Exception e){
+
+
+            //TODO: must add an error message/pop-up indicating an empty URL.
+            //TODO: It will be best to rework this section in the future to disable the possibility
+            //TODO: of server connection when the URL is empty.
+
+
+        }finally{
+
+            //Then, show the main overview
+            mainCtrl.showMainOverview();
+
+        }
+
     }
 
 
-    public void connect() {
+    public void connect() throws Exception{
         String serverAddress = server_address.getText();
 
         if (serverAddress.isBlank()) {
-            return;
+            throw new Exception();
         }
         // Set the server address in the ServerUtils class
         ServerUtils.setServerAddress(serverAddress);
