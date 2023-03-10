@@ -7,12 +7,10 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
-import javafx.scene.*;
 import commons.Board;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainOverviewCtrl {
@@ -54,7 +52,7 @@ public class MainOverviewCtrl {
     public void refreshOverview(){
 
         //Reset the availableBoards list
-        availableBoards = new ArrayList<Board>();
+        availableBoards = server.getBoards();
 
         //Update the board list in the scene
         updateBoardsList(availableBoards);
@@ -171,19 +169,22 @@ public class MainOverviewCtrl {
 
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
-
+        System.out.println("\n\n\n" + board.getId() + "\n\n\n");
         //Post the new board to the server
         //TODO Fix the POST method for board!
-        //server.addBoard(board);
-
-        //TODO Retrieve the new board from the server to determine the board's ID.
-        //board = server.???();
-        //As a temporary measure, set ID as 0
-        board.setId(0L);
-
-        //Add the new board to the availableBoards list
-        availableBoards.add(board);
-        updateBoardsList(availableBoards);
+        server.addBoard(board);
+        refreshOverview();
+//        //TODO Retrieve the new board from the server to determine the board's ID.
+//        //board = server.();
+//        //As a temporary measure, set ID as 0
+//        //board.setId(0L);
+//        System.out.println("\n\n\n" + board.getId() + "\n\n\n");
+//        //Add the new board to the availableBoards list
+//        availableBoards.add(board);
+//
+//
+//
+//        updateBoardsList(availableBoards);
     }
 
 }
