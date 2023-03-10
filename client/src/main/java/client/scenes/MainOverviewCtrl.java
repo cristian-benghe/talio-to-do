@@ -144,5 +144,46 @@ public class MainOverviewCtrl {
 
     }
 
+    /**This method is called upon when the user presses the Search button to search for a board using
+     * either a name or a key through the input in the SearchTextField.
+     */
+    public void searchBoard(){
+
+        //Retrieve the search input from the SearchTextField
+        String input = SearchTextField.getText();
+
+        //Make sure that the
+        if(input.length() > SEARCH_MAX_LENGTH){
+
+            //TODO Add an error message through a ??? pop-up (to improve usability)
+            return;
+        }
+
+        //TODO Retrieve boards through key input or name input
+        //TODO ??? Add a pop-up window to display all of the retrieved boards?
+    }
+
+    /**This method is used in order to create a new board. The method first creates a new Board instance,
+     * and posts it to the server. Then, it retrieves the board with the generated ID in order to update
+     * the list of available boards.
+     */
+    public void createBoard(){
+
+        //Create a new board with a generic title.
+        Board board = new Board("New Board", null, null);
+
+        //Post the new board to the server
+        //TODO Fix the POST method for board!
+        //server.addBoard(board);
+
+        //TODO Retrieve the new board from the server to determine the board's ID.
+        //board = server.???();
+        //As a temporary measure, set ID as 0
+        board.setId(0L);
+
+        //Add the new board to the availableBoards list
+        availableBoards.add(board);
+        updateBoardsList(availableBoards);
+    }
 
 }
