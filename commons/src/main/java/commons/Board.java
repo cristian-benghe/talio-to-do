@@ -23,6 +23,12 @@ public class Board {
         this.tags=tags;
     }
 
+    public Board(String title) {
+        this.title = title;
+        columns = new ArrayList<>();
+        tags = new ArrayList<>();
+    }
+
     public Board(){}
 
     public Long getId() {
