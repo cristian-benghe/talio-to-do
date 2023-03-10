@@ -25,7 +25,7 @@ class ColumnTest {
         cards.add(card2);
         cards.add(card3);
         List<Column> columns = new ArrayList<>();
-        board = new Board("Project", columns);
+        board = new Board("Project", columns, null);
         column= new Column("Todo", cards, board);
     }
     @Test
@@ -71,7 +71,7 @@ class ColumnTest {
     @Test
     void setBoard() {
         List<Column> newColumns = new ArrayList<>();
-        Board b = new Board("OOPP", newColumns );
+        Board b = new Board("OOPP", newColumns, null );
         column.setBoard(b);
         assertEquals(column.getBoard(), b) ;
     }

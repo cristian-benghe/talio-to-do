@@ -15,25 +15,21 @@
  */
 package client;
 
-import static com.google.inject.Guice.createInjector;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
+import client.scenes.*;
 import com.google.inject.Injector;
-
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
 
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    public static void main(String[] args) {
         launch();
     }
 
@@ -42,8 +38,12 @@ public class Main extends Application {
 
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+        var boardOverview = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "Board.fxml");
+        var mainOverview = FXML.load(MainOverviewCtrl.class, "client", "scenes", "Home.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add);
+        var clientCtrl=  FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
+        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl);
+
     }
 }
