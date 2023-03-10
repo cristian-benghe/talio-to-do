@@ -35,7 +35,7 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static String SERVER = "http://localhost:8080/";
+    private static String SERVER;
 
     public static void setServerAddress(String serverAddress) {
         ServerUtils.SERVER = serverAddress;
