@@ -2,9 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.TextField;
 public class BoardOverviewCtrl {
 
