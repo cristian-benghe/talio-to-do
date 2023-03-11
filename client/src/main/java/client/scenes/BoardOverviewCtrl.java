@@ -8,6 +8,7 @@ public class BoardOverviewCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    //id of the board
     private Long id= Long.valueOf(-1);
     @FXML
     private TextField keyID;
@@ -30,6 +31,8 @@ public class BoardOverviewCtrl {
         String val= id.substring(13);
         keyID.setText(val);
         this.id=nr;
+        //this should set a default title for boards that are not new but haven't been modified either
+        //or set the title to the title of the board object with an ID
 //        Board board=server.getBoards().get((int) (this.id-1));
 //
 //        if(board.getTitle().isBlank()){
@@ -40,10 +43,11 @@ public class BoardOverviewCtrl {
 //        }
 
     }
-
+    //when you edit text it should update the title
     public void edit_title(){
         server.updateBoardTitle(this.id, board_title.getText());
     }
+    //when you click on home button you go back to mainOverview
     public void go_back_home(){
         mainCtrl.showMainOverview();
     }

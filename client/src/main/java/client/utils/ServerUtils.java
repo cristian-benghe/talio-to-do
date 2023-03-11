@@ -142,6 +142,8 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Column>>() {});
     }
+
+    //this should update the board title when it's modified
     public Board updateBoardTitle(long boardId, String newTitle) {
         Board board = ClientBuilder.newClient(new ClientConfig())
                 .target(ServerUtils.getServerUrl("/api/boards/" + boardId))
