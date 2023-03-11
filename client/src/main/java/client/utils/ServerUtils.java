@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import commons.Board;
 import commons.Card;
 import commons.Column;
+import jakarta.ws.rs.core.MediaType;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -139,6 +141,20 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Column>>() {});
+    }
+    public Board updateBoardTitle(long boardId, String newTitle) {
+        Board board = ClientBuilder.newClient(new ClientConfig())
+                .target(ServerUtils.getServerUrl("/api/boards/" + boardId))
+                .request(MediaType.APPLICATION_JSON)
+                .get(Board.class);
+        if (board == null) {
+            throw new NoSuchElementException();
+        }
+        board.setTitle(newTitle);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(ServerUtils.getServerUrl("/api/boards/" + boardId))
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
 }

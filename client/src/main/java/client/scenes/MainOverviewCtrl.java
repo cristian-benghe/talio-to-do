@@ -2,20 +2,20 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-
-import commons.Board;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 
 public class MainOverviewCtrl {
 
     //Useful constants
+    
     public static final int SEARCH_MAX_LENGTH = 25;
 
     //Fields for the dependency injection
@@ -186,5 +186,16 @@ public class MainOverviewCtrl {
 //
 //        updateBoardsList(availableBoards);
     }
+    public void on_board_click(){
+        String selectedBoardStr = (String) BoardsListElement.getSelectionModel().getSelectedItem();
+        if (selectedBoardStr == null) {
+            return;
+        }
+
+        // Navigate to the board view for the selected board
+        mainCtrl.showBoardOverview(selectedBoardStr);
+    }
+
+
 
 }

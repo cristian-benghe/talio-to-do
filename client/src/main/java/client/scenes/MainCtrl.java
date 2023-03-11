@@ -65,9 +65,11 @@ public class MainCtrl {
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
-    public void showBoardOverview() {
+    public void showBoardOverview(String text) {
+        System.out.println(text);
         primaryStage.setTitle("Your Board");
         primaryStage.setScene(boardOverview);
+        boardOverviewCtrl.setBoard_title(text);
     }
 
     public void showMainOverview() {
