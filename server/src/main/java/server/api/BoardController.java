@@ -15,16 +15,14 @@
  */
 package server.api;
 
+import commons.Board;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import server.database.BoardRepository;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-
-import commons.Board;
-import commons.Column;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import server.database.BoardRepository;
 
 @RestController
 @RequestMapping("/api/boards")
