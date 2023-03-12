@@ -20,12 +20,7 @@ import java.util.Random;
 
 import commons.Board;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import server.database.BoardRepository;
 
@@ -75,4 +70,16 @@ public class BoardController {
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(boards.get(idx));
     }
+//    @PostMapping("/{id}")
+//    public ResponseEntity<Board> updateTitle(@PathVariable("id") long id, @RequestBody String title) {
+//        if (id < 0 || !repo.existsById(id) || isNullOrEmpty(title)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        Board board = repo.findById(id).get();
+//        board.setTitle(title);
+//        Board updatedBoard = repo.save(board);
+//
+//        return ResponseEntity.ok(updatedBoard);
+//    }
 }
