@@ -146,7 +146,7 @@ public class ServerUtils {
     //this should update the board title when it's modified
     public Board updateBoardTitle(long boardId, String newTitle) {
         Board board = ClientBuilder.newClient(new ClientConfig())
-                .target(ServerUtils.getServerUrl("/api/boards/" + boardId))
+                .target(SERVER).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .get(Board.class);
         if (board == null) {
@@ -154,9 +154,9 @@ public class ServerUtils {
         }
         board.setTitle(newTitle);
         return ClientBuilder.newClient(new ClientConfig())
-                .target(ServerUtils.getServerUrl("/api/boards/" + boardId))
+                .target(SERVER).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
 }

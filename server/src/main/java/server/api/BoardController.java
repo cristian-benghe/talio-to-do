@@ -16,9 +16,11 @@
 package server.api;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import commons.Board;
+import commons.Column;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,16 +72,17 @@ public class BoardController {
         var idx = random.nextInt((int) repo.count());
         return ResponseEntity.ok(boards.get(idx));
     }
-//    @PostMapping("/{id}")
-//    public ResponseEntity<Board> updateTitle(@PathVariable("id") long id, @RequestBody String title) {
-//        if (id < 0 || !repo.existsById(id) || isNullOrEmpty(title)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        Board board = repo.findById(id).get();
-//        board.setTitle(title);
-//        Board updatedBoard = repo.save(board);
-//
-//        return ResponseEntity.ok(updatedBoard);
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
+        Optional<Board> existing = repo.findById(id);
+        if (existing.isPresent()) {
+            Board updated = existing.get();
+            updated.setTitle(board.getTitle());
+            updated.setTags(board.getTags());
+            Board saved = repo.save(updated);
+            return ResponseEntity.ok(saved);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
