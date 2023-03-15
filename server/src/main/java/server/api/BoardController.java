@@ -83,4 +83,21 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    /**
+     * This method will delete a board with the given ID from the database if it exists.
+     * If the board is found and deleted, it will return a response with HTTP status code 204.
+     * If the board is not found, it will return a response with HTTP status code 404.
+     * @param id - the id of the board, the user wants to delete
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            return ResponseEntity.noContent().build(); // this creates a ResponseEntity with a HTTP status code of 204 (No Content)
+        } else {
+            return ResponseEntity.notFound().build(); // this creates a ResponseEntity with a HTTP status code of 404 (Not Found)
+        }
+    }
 }
