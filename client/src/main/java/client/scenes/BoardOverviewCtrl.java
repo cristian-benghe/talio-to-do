@@ -4,35 +4,38 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
-import javafx.scene.control.ListView;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class BoardOverviewCtrl {
+public class BoardOverviewCtrl implements Initializable {
     private Long ind= Long.valueOf(0);
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     //id of the board
     private Long id= Long.valueOf(-1);
-    List<ListView>list=new ArrayList<>();
     @FXML
-    private TextField keyID;
+    private AnchorPane anchorPane;
+
+    @FXML
+    private AnchorPane board;
+
     @FXML
     private TextField board_title;
-    @FXML
-    private ScrollPane scrollPane;
-    @FXML
-    private ListView<String> toDo=new ListView<>();
-    @FXML
-    private Pane pane;
 
+    @FXML
+    private HBox hbox;
 
+    @FXML
+    private Text keyID;
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
@@ -44,20 +47,18 @@ public class BoardOverviewCtrl {
     }
     //the title is not yet stored correctly in the database
     public void setBoard_title(String idd){
+        Long nr=Long.parseLong(idd.split("--")[1].trim());
+        keyID.setText("keyID: "+nr);
+        this.id=nr;
         if(!idd.contains("New Board")) {
-            board_title.setText(idd.split("-")[0]);
+            board_title.setText(idd.split("--")[0].trim());
             return;
         }
-        Long nr=Long.parseLong(idd.substring(13));
-        String val= idd.substring(13);
-        keyID.setText(val);
-        this.id=nr;
         //this should set a default title for boards that are not new but haven't been modified either
         //or set the title to the title of the board object with an ID
         Board board=server.getBoards().get(Math.toIntExact(nr-1));
-        System.out.println(board.getTitle());
-        if(board.getTitle().isBlank()){
-            board_title.setText("Board"+idd);
+        if(board.getTitle().equals("New Board")){
+            board_title.setText("Board "+nr);
         }
         else {
             board_title.setText(server.getBoards().get(Math.toIntExact(nr-1)).getTitle());
@@ -73,11 +74,25 @@ public class BoardOverviewCtrl {
         mainCtrl.showMainOverview();
     }
     public void addColumn(){
-        ListView<String> l = new ListView<>();
-        l.setOrientation(Orientation.HORIZONTAL);
-        list.add(l);
-        pane.getChildren().add(l);
-        ind++;
-        scrollPane.setContent(pane);
+        addOneColumn("New column");
+    }
+
+    public void addOneColumn(String title){
+        AnchorPane anchorPaneVBox=new AnchorPane();
+        ScrollPane scrollPane=new ScrollPane();
+        VBox vBox=new VBox();
+        scrollPane.setContent(vBox);
+        vBox.setPrefHeight(380);
+        vBox.setPrefWidth(150);
+        vBox.getChildren().add(new TextField(title));
+        anchorPaneVBox.getChildren().add(vBox);
+        hbox.getChildren().add(anchorPaneVBox);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        addOneColumn("To do");
+        addOneColumn("Doing");
+        addOneColumn("Done");
     }
 }
