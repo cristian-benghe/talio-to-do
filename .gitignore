@@ -45,3 +45,4 @@ out/
 .DS_Store
 docs/.DS_Store
 docs/agendas/.DS_Store
+talio.trace.db

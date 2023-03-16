@@ -13,21 +13,30 @@ public class Tag {
     private long tag_id;
     private String title;
 
+    // this joins the Tag and the Card tables together
     @ManyToMany(mappedBy = "tags")
     private Set<Card> cards = new HashSet<>();
 
+    // this joins the Tag and the Board tables together
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
+
+    /**
+     * Default constructor for creating an empty Tag object
+     */
+    public Tag() {
+    }
+
     /**
      * Constructs a new Tag object with the specified id and title.
-     * @param id - the unique identifier for the tag
+     * @param tag_id - the unique identifier for the tag
      * @param title - the name of the tag
      * @param cards - the set of Cards associated with the tag
      */
-    public Tag(long id, String title, Set<Card> cards) {
-        this.tag_id = id;
+    public Tag(long tag_id, String title, Set<Card> cards) {
+        this.tag_id = tag_id;
         this.title = title;
         this.cards = cards;
     }
