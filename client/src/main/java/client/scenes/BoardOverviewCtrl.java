@@ -3,14 +3,19 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -86,9 +91,41 @@ public class BoardOverviewCtrl implements Initializable {
         vBox.setPrefWidth(150);
         vBox.getChildren().add(new TextField(title));
         anchorPaneVBox.getChildren().add(vBox);
+        setColumnDragDropDeletion(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
         hbox.getChildren().add(anchorPaneVBox);
+
     }
 
+    /**
+     * This method sets the needed properties of the deletion of the columns.
+     * @param column is column to set property of deletion
+     */
+    private void setColumnDragDropDeletion(AnchorPane column) {
+
+        //set the drag of the specific column
+        column.setOnDragDetected(event -> {
+            Dragboard dragboard = column.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString("Deletion");
+            dragboard.setContent(clipboardContent);
+            event.consume();
+        });
+
+        //set the BIN text (get(2) because BIN is second indexed element in the anchorPane. This can be done byID later on)...
+        anchorPane.getChildren().get(2).setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        //deletion of the dragged item
+        anchorPane.getChildren().get(2).setOnDragDropped(event -> {
+        hbox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
+        event.setDropCompleted(true);
+        event.consume();
+        });
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addOneColumn("To do");
