@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import commons.Column;
+import commons.Card;
 import server.database.ColumnRepository;
+import server.database.CardRepository;
 
 @RestController
 @RequestMapping("/api/columns")
@@ -24,9 +26,12 @@ public class ColumnController {
 
 
     private final ColumnRepository repo;
+    private final CardRepository cardrepo;
 
-    public ColumnController(ColumnRepository repo) {
+    public ColumnController(ColumnRepository repo, CardRepository cardrepo) {
+
         this.repo = repo;
+        this.cardrepo = cardrepo;
     }
 
     @GetMapping(path = { "", "/" })
@@ -82,7 +87,12 @@ public class ColumnController {
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         Optional<Column> existing = repo.findById(id);
         if (existing.isPresent()) {
+            Column column = existing.get();
+            List<Card> cards = column.getCards();
             repo.deleteById(id);
+            for(Card card : cards){
+                cardrepo.deleteById(card.getId());
+            }
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
