@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import commons.Board;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -37,9 +36,6 @@ public class BoardOverviewCtrl implements Initializable {
 
     @FXML
     private Text keyID;
-
-    @FXML
-    private Button delete_board_button;
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
