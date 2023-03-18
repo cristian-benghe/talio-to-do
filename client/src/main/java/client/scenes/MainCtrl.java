@@ -81,11 +81,14 @@ public class MainCtrl {
     }
 
     public void showMainOverview() {
+
+
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
-
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
+
+
     }
 
     public void showClientConnect() {
