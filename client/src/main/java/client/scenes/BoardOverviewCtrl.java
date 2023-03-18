@@ -80,6 +80,11 @@ public class BoardOverviewCtrl implements Initializable {
         addOneColumn("New column");
     }
 
+    /**
+     * Add a new column. All the set methods that are used to initialize the elements properly
+     * Note: creation made without JavaFx ID's.
+     * @param title title of the column that will be created...
+     */
     public void addOneColumn(String title){
         AnchorPane anchorPaneVBox=new AnchorPane();
         ScrollPane scrollPane=new ScrollPane();
@@ -89,6 +94,7 @@ public class BoardOverviewCtrl implements Initializable {
         vBox.setPrefHeight(380);
         vBox.setPrefWidth(150);
         Button button = createButton(vBox);
+        setVBoxDragDrop(button, vBox);
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
         Label columnLabel = new Label("...");
@@ -96,7 +102,7 @@ public class BoardOverviewCtrl implements Initializable {
         button.setAlignment(Pos.BOTTOM_CENTER);
         vBox.getChildren().addAll(columnLabel, textField, button);
         anchorPaneVBox.getChildren().add(vBox);
-        setColumnDragDropDeletion(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
+        setColumnDragDrop(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
         hbox.getChildren().add(anchorPaneVBox);
 
     }
@@ -109,7 +115,7 @@ public class BoardOverviewCtrl implements Initializable {
     public AnchorPane addCard(VBox vBox)
     {
         AnchorPane anchorPane1 = createCard();
-        setCardDragDropDeletion(anchorPane1,vBox);
+        setCardDragDrop(anchorPane1,vBox);
         vBox.setMargin(anchorPane1, new Insets(2,2,2,2));
         return anchorPane1;
     }
@@ -171,7 +177,7 @@ public class BoardOverviewCtrl implements Initializable {
      * This method sets the needed properties of the deletion of the columns.
      * @param column is column to set property of deletion
      */
-    private void setColumnDragDropDeletion(AnchorPane column) {
+    private void setColumnDragDrop(AnchorPane column) {
 
         //set the drag of the specific column
         column.setOnDragDetected(event -> {
@@ -181,6 +187,49 @@ public class BoardOverviewCtrl implements Initializable {
             dragboard.setContent(clipboardContent);
             event.consume();
             columnBin();
+        });
+    }
+
+    /**
+     * A function to replace/switch the card between the columns
+     * @param button button parameters mostly passed because of deletion/recreation to always align at the bottom. I did a lot of research it was the most appropriate
+     * @param myVBox vBox that will be effected
+     */
+    private void setVBoxDragDrop(Button button, VBox myVBox)
+    {
+
+        myVBox.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        myVBox.setOnDragDropped(event -> {
+            myVBox.getChildren().remove(button);
+            setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
+            myVBox.getChildren().add((AnchorPane) event.getGestureSource()); //gesture source to pass dragged item
+            myVBox.getChildren().add(button);
+            event.setDropCompleted(true);
+            event.consume();
+        });
+    }
+
+    /**
+     * set drag and drop functionality into card
+     * @param card a card to add functionality
+     * @param vBox a parent element of the card which is vBox
+     */
+    private void setCardDragDrop(AnchorPane card, VBox vBox) {
+
+        //set the drag of the specific column
+        card.setOnDragDetected(event -> {
+            Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString("DeletionCard");
+            dragboard.setContent(clipboardContent);
+            event.consume();
+            cardBin(vBox);
         });
     }
 
@@ -205,23 +254,6 @@ public class BoardOverviewCtrl implements Initializable {
         });
     }
 
-    /**
-     * set drag and drop functionality into card
-     * @param card a card to add functionality
-     * @param vBox a parent element of the card which is vBox
-     */
-    private void setCardDragDropDeletion(AnchorPane card, VBox vBox) {
-
-        //set the drag of the specific column
-        card.setOnDragDetected(event -> {
-            Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
-            ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString("DeletionCard");
-            dragboard.setContent(clipboardContent);
-            event.consume();
-            cardBin(vBox);
-        });
-    }
     /**
      * set the BIN according to card deletion to avoid gesture/drag and drop conflicts
      */
