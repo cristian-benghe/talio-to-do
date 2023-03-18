@@ -2,6 +2,7 @@ package client.scenes;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -49,6 +50,13 @@ public class MainCtrl {
         this.clientConnectCtrl = clientConnect.getKey();
         this.clientConnect = new Scene(clientConnect.getValue());
 
+        //Set the primary stage to be not resizable
+        primaryStage.setResizable(false);
+
+        //Set the stage icon
+        //TODO Replace the temporary icon
+        primaryStage.getIcons().add(new Image("RandomIcon.png"));
+
         showClientConnect();
         primaryStage.show();
     }
@@ -67,13 +75,13 @@ public class MainCtrl {
 
     public void showBoardOverview(String text) {
         System.out.println(text);
-        primaryStage.setTitle("Your Board");
+        primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         boardOverviewCtrl.setBoard_title(text);
     }
 
     public void showMainOverview() {
-        primaryStage.setTitle("Home");
+        primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
 
         //Refresh the Scene
@@ -81,7 +89,7 @@ public class MainCtrl {
     }
 
     public void showClientConnect() {
-        primaryStage.setTitle("Connect_client");
+        primaryStage.setTitle("Talio - Connect to a Server");
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
