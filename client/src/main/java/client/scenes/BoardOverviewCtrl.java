@@ -91,9 +91,10 @@ public class BoardOverviewCtrl implements Initializable {
         Button button = createButton(vBox);
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
+        Label columnLabel = new Label("...");
         vBox.setMargin(textField,new Insets(2));
         button.setAlignment(Pos.BOTTOM_CENTER);
-        vBox.getChildren().addAll(textField, button);
+        vBox.getChildren().addAll(columnLabel, textField, button);
         anchorPaneVBox.getChildren().add(vBox);
         setColumnDragDropDeletion(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
         hbox.getChildren().add(anchorPaneVBox);
@@ -108,6 +109,7 @@ public class BoardOverviewCtrl implements Initializable {
     public AnchorPane addCard(VBox vBox)
     {
         AnchorPane anchorPane1 = createCard();
+        setCardDragDropDeletion(anchorPane1,vBox);
         vBox.setMargin(anchorPane1, new Insets(2,2,2,2));
         return anchorPane1;
     }
@@ -122,11 +124,15 @@ public class BoardOverviewCtrl implements Initializable {
         HBox hbox1 = new HBox();
         hbox1.setAlignment(Pos.CENTER);
         hbox1.setPrefSize(150,80);
-        Label label = new Label("Card");
-        label.setAlignment(Pos.BASELINE_CENTER);
-        hbox1.getChildren().add(label);
+        TextField textField = new TextField("Card");
+        textField.setStyle("-fx-background-color: #C0C0C0");
+        textField.setAlignment(Pos.BASELINE_CENTER);
+        hbox1.getChildren().add(textField);
         anchorPane1.getChildren().add(hbox1);
-        label.setFont(new Font("System",18));
+        textField.setFont(new Font("System",18));
+        textField.setOnMouseClicked(event -> {
+
+        });
         anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
         anchorPane1.setPrefSize(150,80);
         return anchorPane1;
@@ -160,12 +166,7 @@ public class BoardOverviewCtrl implements Initializable {
         });
     }
 
-    public void setCardAction(AnchorPane anchorPane1)
-    {
-        anchorPane1.setOnMouseClicked(event -> {
 
-        });
-    }
     /**
      * This method sets the needed properties of the deletion of the columns.
      * @param column is column to set property of deletion
@@ -176,11 +177,18 @@ public class BoardOverviewCtrl implements Initializable {
         column.setOnDragDetected(event -> {
             Dragboard dragboard = column.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString("Deletion");
+            clipboardContent.putString("DeletionColumn");
             dragboard.setContent(clipboardContent);
             event.consume();
+            columnBin();
         });
+    }
 
+    /**
+     * set the BIN according to column deletion to avoid gesture/drag and drop conflicts
+     */
+    private void columnBin()
+    {
         //set the BIN text (get(2) because BIN is second indexed element in the anchorPane. This can be done byID later on)...
         anchorPane.getChildren().get(2).setOnDragOver(event -> {
             if (event.getDragboard().hasString()) {
@@ -191,9 +199,46 @@ public class BoardOverviewCtrl implements Initializable {
 
         //deletion of the dragged item
         anchorPane.getChildren().get(2).setOnDragDropped(event -> {
-        hbox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
-        event.setDropCompleted(true);
-        event.consume();
+            hbox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
+            event.setDropCompleted(true);
+            event.consume();
+        });
+    }
+
+    /**
+     * set drag and drop functionality into card
+     * @param card a card to add functionality
+     * @param vBox a parent element of the card which is vBox
+     */
+    private void setCardDragDropDeletion(AnchorPane card, VBox vBox) {
+
+        //set the drag of the specific column
+        card.setOnDragDetected(event -> {
+            Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent clipboardContent = new ClipboardContent();
+            clipboardContent.putString("DeletionCard");
+            dragboard.setContent(clipboardContent);
+            event.consume();
+            cardBin(vBox);
+        });
+    }
+    /**
+     * set the BIN according to card deletion to avoid gesture/drag and drop conflicts
+     */
+    private void  cardBin(VBox vBox)
+    {
+        anchorPane.getChildren().get(2).setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        //deletion of the dragged item
+        anchorPane.getChildren().get(2).setOnDragDropped(event -> {
+            vBox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
+            event.setDropCompleted(true);
+            event.consume();
         });
     }
     @Override
