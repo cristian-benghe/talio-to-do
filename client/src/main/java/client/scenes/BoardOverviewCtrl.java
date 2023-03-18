@@ -3,20 +3,18 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -86,16 +84,88 @@ public class BoardOverviewCtrl implements Initializable {
         AnchorPane anchorPaneVBox=new AnchorPane();
         ScrollPane scrollPane=new ScrollPane();
         VBox vBox=new VBox();
+        vBox.setAlignment(Pos.TOP_CENTER);
         scrollPane.setContent(vBox);
         vBox.setPrefHeight(380);
         vBox.setPrefWidth(150);
-        vBox.getChildren().add(new TextField(title));
+        Button button = createButton(vBox);
+        TextField textField = new TextField(title);
+        textField.setAlignment(Pos.CENTER);
+        vBox.setMargin(textField,new Insets(2));
+        button.setAlignment(Pos.BOTTOM_CENTER);
+        vBox.getChildren().addAll(textField, button);
         anchorPaneVBox.getChildren().add(vBox);
         setColumnDragDropDeletion(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
         hbox.getChildren().add(anchorPaneVBox);
 
     }
 
+    /**
+     * A method to add a new card
+     * @param vBox vBox that the card will be added
+     * @return an anchorPane as a card
+     */
+    public AnchorPane addCard(VBox vBox)
+    {
+        AnchorPane anchorPane1 = createCard();
+        vBox.setMargin(anchorPane1, new Insets(2,2,2,2));
+        return anchorPane1;
+    }
+
+    /**
+     * A method to create a new card
+     * @return return an anchorPane as a card!
+     */
+    public AnchorPane createCard()
+    {
+        AnchorPane anchorPane1 = new AnchorPane();
+        HBox hbox1 = new HBox();
+        hbox1.setAlignment(Pos.CENTER);
+        hbox1.setPrefSize(150,80);
+        Label label = new Label("Card");
+        label.setAlignment(Pos.BASELINE_CENTER);
+        hbox1.getChildren().add(label);
+        anchorPane1.getChildren().add(hbox1);
+        label.setFont(new Font("System",18));
+        anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
+        anchorPane1.setPrefSize(150,80);
+        return anchorPane1;
+    }
+
+    /**
+     * A method to create a button
+     * @param vBox the vBox that the element is created in
+     * @return new created button
+     */
+    public Button createButton(VBox vBox)
+    {
+        Button button = new Button("AddCard");
+        setButtonAction(button, vBox);
+        vBox.setMargin(button,new Insets(5,0,0,0));
+        return  button;
+    }
+
+    /**
+     * A method to set an action of the button
+     * @param button a button to be arranged
+     * @param vBox Vbox that contains the button
+     */
+    public void setButtonAction(Button button, VBox vBox)
+    {
+        button.setOnAction(event -> {
+            AnchorPane anchorPane1 = addCard(vBox);
+            vBox.getChildren().remove(button);
+            vBox.getChildren().add(anchorPane1);
+            vBox.getChildren().add(button);
+        });
+    }
+
+    public void setCardAction(AnchorPane anchorPane1)
+    {
+        anchorPane1.setOnMouseClicked(event -> {
+
+        });
+    }
     /**
      * This method sets the needed properties of the deletion of the columns.
      * @param column is column to set property of deletion
