@@ -50,5 +50,7 @@
             <Font size="20.0" />
          </font>
       </Text>
+      <!--Below you can see the Delete Board button-->
+      <Button layoutX="52.0" layoutY="543.0" mnemonicParsing="false" onAction="#deleteBoard" prefHeight="35.0" prefWidth="158.0" text="Delete Board" />
    </children>
 </AnchorPane>

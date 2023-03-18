@@ -36,6 +36,7 @@ public class BoardOverviewCtrl implements Initializable {
 
     @FXML
     private Text keyID;
+
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
@@ -94,5 +95,13 @@ public class BoardOverviewCtrl implements Initializable {
         addOneColumn("To do");
         addOneColumn("Doing");
         addOneColumn("Done");
+    }
+
+    /**
+     * This method deletes the board with the current id and then changes the scene to the Main Overview
+     */
+    public void deleteBoard(){
+        server.deleteBoard(id);
+        mainCtrl.showMainOverview();
     }
 }
