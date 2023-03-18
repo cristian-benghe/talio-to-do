@@ -29,18 +29,32 @@ public class CardController {
     private final CardRepository repo;
     private final ColumnRepository columnrepo;
 
+    /**
+     * Constructs a new ColumnController with the specified repositories.
+     * @param repo the repository for Card objects
+     * @param columnrepo the repository for Column objects
+     */
+
     public CardController(CardRepository repo, ColumnRepository columnrepo) {
 
         this.repo = repo;
         this.columnrepo = columnrepo;
     }
 
+    /**
+     * Returns a list of all Card objects in the database.
+     * @return the list of Card objects
+     */
     @GetMapping(path = { "", "/" })
     public List<Card> getAll() {
         return repo.findAll();
     }
 
-    //GET endpoint that retrieves a specific Card object by its id from the database using the CardRepository.
+    /**
+     * Returns the Card object with the specified id.
+     * @param id the id of the Card object to retrieve
+     * @return a response containing the Card object, or a bad request response if the id is invalid
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Card> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -49,7 +63,11 @@ public class CardController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
-    // saves the Card object using the repository and returns a response with the saved Card object in the body.
+    /**
+     * Adds a new Card object to the database.
+     * @param card the Card object to add
+     * @return a response containing the saved Card object, or a bad request response if the title is null or empty
+     */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Card> add(@RequestBody Card card) {
 
@@ -61,11 +79,21 @@ public class CardController {
         Card saved = repo.save(card);
         return ResponseEntity.ok(saved);
     }
+    /**
+     * This method verifies if the given string is null or not
+     * @param s - a string
+     * @return true/false if the string is empty or not
+     */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
     }
 
-    //update an existing Card object with the given id
+    /**
+     * Updates an existing Card object with the specified id.
+     * @param id the id of the Card object to update
+     * @param card the updated Card object
+     * @return a response containing the updated card object, or a not found response if the id is invalid
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
         Optional<Card> existing = repo.findById(id);
@@ -82,8 +110,14 @@ public class CardController {
             return ResponseEntity.notFound().build();
         }
     }
-     //update the column of a card
-    @PutMapping("/{id}")
+    /**
+     * Update the column for a specific card.
+     * @param id the ID of the card to update
+     * @param columnId the ID of the new column for the card
+     * @return a ResponseEntity containing the updated card object,
+     * or a not found response if the card or column ID is invalid
+     */
+    @PutMapping("/{id}/column")
     public ResponseEntity<Card> updateColumn(@PathVariable("id") long id, @RequestParam("columnId") long columnId) {
         Optional<Card> existingCard = repo.findById(id);
         Optional<Column> existingColumn = columnrepo.findById(columnId);
@@ -101,8 +135,13 @@ public class CardController {
 
 
 
-    //delete a Card object from the database.
 
+    /**
+     * Deletes the Card object with the specified id.
+     *
+     * @param id the id of the Card object to delete
+     * @return a response indicating success or failure
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
         Optional<Card> existing = repo.findById(id);
