@@ -94,6 +94,12 @@ public class MainCtrl {
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
 
+    /**
+     * Displays a popup window to confirm the deletion of a board with the given title and ID.
+     *
+     * @param title - the title of the board to be deleted.
+     * @param id - the ID of the board to be deleted.
+     */
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
         primaryStage.setScene(popupStage);
