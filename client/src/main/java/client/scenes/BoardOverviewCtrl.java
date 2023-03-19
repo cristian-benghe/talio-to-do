@@ -296,22 +296,9 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
-     * This method deletes the board with the current id and then changes the scene to the Main Overview
+     * This method deletes the board with the current id and then changes the scene to the DeleteBoardPopUp
      */
     public void deleteBoard(){
         mainCtrl.showDeleteBoardPopUp(board_title.getText(), id);
     }
-
-//    public void showDeletePopUp() {
-//        try {
-//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeletePopUp.fxml"));
-//            AnchorPane deletePopUpPane = loader.load();
-//            Scene scene = new Scene(deletePopUpPane);
-//            Stage deletePopUpStage = new Stage();
-//            deletePopUpStage.setScene(scene);
-//            deletePopUpStage.showAndWait();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
