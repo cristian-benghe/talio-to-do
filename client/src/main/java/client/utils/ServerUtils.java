@@ -159,4 +159,24 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * This method sends an HTTP DELETE request using the Jersey client library
+     * @param boardId - the id of the board that has to be deleted
+     */
+    public void deleteBoard(long boardId) {
+        ClientBuilder.newClient(new ClientConfig()) // creates a new client
+                .target(SERVER) // sets the target server for the request
+                .path("api/boards/" + boardId) // specifies the API endpoint to delete the board
+                .request() // creates a new request object
+                .delete(); // sends the HTTP DELETE request and returns the response, but the code does not handle the response explicitly
+    }
+    public Board getBoardById(long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER)
+                .path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Board.class);
+    }
+
 }

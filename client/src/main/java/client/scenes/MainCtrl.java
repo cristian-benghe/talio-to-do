@@ -6,8 +6,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.io.IOException;
-
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -28,11 +26,15 @@ public class MainCtrl {
     private ClientConnectCtrl clientConnectCtrl;
     private Scene clientConnect;
 
+    private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
+    private Scene popupStage;
+
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           Pair<ClientConnectCtrl, Parent> clientConnect) throws IOException {
+                           Pair<ClientConnectCtrl, Parent> clientConnect,
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -56,6 +58,7 @@ public class MainCtrl {
         //Set the stage icon
         //TODO Replace the temporary icon
         primaryStage.getIcons().add(new Image("RandomIcon.png"));
+
 
         showClientConnect();
         primaryStage.show();
@@ -93,8 +96,18 @@ public class MainCtrl {
 
     public void showClientConnect() {
         primaryStage.setTitle("Talio - Connect to a Server");
+
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
+
+    public void showDeleteBoardPopUp(String title, Long id){
+        primaryStage.setTitle("Delete_Pop_Up");
+        primaryStage.setScene(popupStage);
+        deleteBoardPopUpCtrl.setText(title);
+        deleteBoardPopUpCtrl.setID(id);
+    }
+
+
 }

@@ -13,19 +13,26 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ResourceBundle;
 
 public class ClientConnectCtrl implements Initializable {
+
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private RotateTransition shakeAnim; //Rotation animation for the error message.
     private boolean isAnimPlaying; //A flag for whenever the error message animation is playing.
-    @FXML
-    private TextField server_address;  //to get the text from the text field with ID server_address
 
     @FXML
-    private Button go_to_home;
+    private TextField server_address;  //to get the text from the text field with ID server_address
+//
+//    @FXML
+//    private Button go_to_home;
+    @FXML
+    private Button button_connect;
 
     @FXML
     private Label error_msg; //the error message label for the server address input
@@ -39,6 +46,7 @@ public class ClientConnectCtrl implements Initializable {
     //sets the default value for the address on port 8080
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
 
         //Refresh the current scene
         refresh();
@@ -59,6 +67,7 @@ public class ClientConnectCtrl implements Initializable {
         });
 
 
+
     }
 
     /**
@@ -66,10 +75,34 @@ public class ClientConnectCtrl implements Initializable {
      * If the user inputs a non-blank address, then the method also changes the scene of the
      * primary stage to the MainOverview scene.
      */
-    public void connect(){
-        //Set the new address
-        String serverAddress = server_address.getText();
 
+
+    public boolean isValidUrl(String address){
+        try {
+            URL url = new URL(address);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+    public boolean validConnection(String address){
+        try{
+            server.setServerAddress(address);
+            server.getBoards();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public void changeScene() throws Exception{
+
+        String serverAddress = server_address.getText();
         if (serverAddress.isBlank()) {
 
 
@@ -84,6 +117,7 @@ public class ClientConnectCtrl implements Initializable {
 
             return;
         }
+
         // Set the server address in the ServerUtils class
         ServerUtils.setServerAddress(serverAddress);
         //Switch the scene to the main overview
@@ -97,6 +131,7 @@ public class ClientConnectCtrl implements Initializable {
 
         //Resets the default input of the serverAddress
         server_address.setText("http://localhost:8080/");
+
 
     }
 

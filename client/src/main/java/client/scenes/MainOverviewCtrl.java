@@ -6,13 +6,16 @@ import commons.Board;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainOverviewCtrl {
+public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
     
@@ -101,7 +104,7 @@ public class MainOverviewCtrl {
     /**The method is used by the disconnectButton to return to the ClientConnect scene, allowing the user
      * to connect to another server.
      */
-    public void disconnect(){
+    public void disconnect() throws Exception {
         mainCtrl.showClientConnect();
     }
 
@@ -201,5 +204,8 @@ public class MainOverviewCtrl {
     }
 
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
+    }
 }
