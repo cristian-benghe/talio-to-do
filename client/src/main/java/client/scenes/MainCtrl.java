@@ -27,11 +27,15 @@ public class MainCtrl {
     private ClientConnectCtrl clientConnectCtrl;
     private Scene clientConnect;
 
+    private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
+    private Scene popupStage;
+
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           Pair<ClientConnectCtrl, Parent> clientConnect) throws IOException {
+                           Pair<ClientConnectCtrl, Parent> clientConnect,
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws IOException {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -48,6 +52,9 @@ public class MainCtrl {
 
         this.clientConnectCtrl = clientConnect.getKey();
         this.clientConnect = new Scene(clientConnect.getValue());
+
+        this.deleteBoardPopUpCtrl = popupStage.getKey();
+        this.popupStage = new Scene(popupStage.getValue());
 
         showClientConnect();
         primaryStage.show();
@@ -86,4 +93,18 @@ public class MainCtrl {
         primaryStage.setScene(clientConnect);
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
+
+    /**
+     * Displays a popup window to confirm the deletion of a board with the given title and ID.
+     *
+     * @param title - the title of the board to be deleted.
+     * @param id - the ID of the board to be deleted.
+     */
+    public void showDeleteBoardPopUp(String title, Long id){
+        primaryStage.setTitle("Delete_Pop_Up");
+        primaryStage.setScene(popupStage);
+        deleteBoardPopUpCtrl.setText(title);
+        deleteBoardPopUpCtrl.setID(id);
+    }
+
 }

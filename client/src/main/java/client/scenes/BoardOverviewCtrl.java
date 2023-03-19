@@ -15,14 +15,24 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
-    private Long ind= Long.valueOf(0);
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
+    /**
+     * gets the value of the id
+     *
+     * @return the value of the id
+     */
+    public Long getId() {
+        return id;
+    }
+
     //id of the board
     private Long id= Long.valueOf(-1);
     @FXML
@@ -282,10 +292,9 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
-     * This method deletes the board with the current id and then changes the scene to the Main Overview
+     * This method deletes the board with the current id and then changes the scene to the DeleteBoardPopUp
      */
     public void deleteBoard(){
-        server.deleteBoard(id);
-        mainCtrl.showMainOverview();
+        mainCtrl.showDeleteBoardPopUp(board_title.getText(), id);
     }
 }
