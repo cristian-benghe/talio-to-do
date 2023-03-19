@@ -28,16 +28,12 @@ public class MainCtrl {
     private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
-    private IncorrectAddressPopUp incorrectAddressCtrl;
-    private Scene incorrectAddress;
-
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
-                                    Pair<IncorrectAddressPopUp, Parent> incorrectAddress) throws Exception {
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -57,10 +53,6 @@ public class MainCtrl {
 
         this.deleteBoardPopUpCtrl = popupStage.getKey();
         this.popupStage = new Scene(popupStage.getValue());
-
-        this.incorrectAddressCtrl=incorrectAddress.getKey();
-        this.incorrectAddress=new Scene(incorrectAddress.getValue());
-
         showClientConnect();
         primaryStage.show();
     }
@@ -105,9 +97,6 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
-    public void showIncorrectAddressPopUp(){
-        primaryStage.setTitle("Incorrect address");
-        primaryStage.setScene(incorrectAddress);
-    }
+
 
 }

@@ -41,8 +41,7 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var clientCtrl = FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
         var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
-        var incorrectAdd = FXML.load(IncorrectAddressPopUp.class, "client", "scenes", "Pop_Up_IncorrectAddress.fxml");
 
-        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage, incorrectAdd);
+        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage);
     }
 }

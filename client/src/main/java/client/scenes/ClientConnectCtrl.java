@@ -7,12 +7,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ResourceBundle;
 
 public class ClientConnectCtrl implements Initializable {
-    private static ServerUtils server;
-    private static MainCtrl mainCtrl;
+    private  final ServerUtils server;
+    private  final MainCtrl mainCtrl;
 
 
     @FXML
@@ -64,52 +67,40 @@ public class ClientConnectCtrl implements Initializable {
 //
 //    }
 
-    public static boolean isValidAddress(String address) {
-        String[] parts = address.split(":");
-        if (parts.length != 3) {
-            return false; // Invalid URL
-        }
-        String host = parts[1];
-        int port;
+    public boolean isValidUrl(String address){
         try {
-            port = Integer.parseInt(parts[2]);
-        } catch (NumberFormatException e) {
-            return false; // Invalid port number
-        }
-//        try {
-//            InetAddress inetAddress = InetAddress.getByName(host);
-//            if (!inetAddress.isReachable(5000)) {
-//                return false; // Connection timed out
-//            }
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-        try{
-            server.setServerAddress(address);
-            mainCtrl.showMainOverview();
-            return true;
-        } catch (Exception e) {
+            URL url = new URL(address);
+            URLConnection conn = url.openConnection();
+            conn.connect();
+        } catch (MalformedURLException e) {
+            return false;
+        } catch (IOException e) {
             return false;
         }
-
+        return true;
     }
-
-
+    public boolean validConnection(String address){
+        try{
+            server.setServerAddress(address);
+            server.getBoards();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
     public void changeScene() throws Exception{
         String serverAddress = server_address.getText();
-
         if (serverAddress.isBlank()) {
             throw new Exception();
         }
-        //System.out.println(isValidAddress("http://localhost:8080"));
-        if(isValidAddress(serverAddress)){
+        if(validConnection(serverAddress) && isValidUrl(serverAddress)){
             server.setServerAddress(serverAddress);
                    mainCtrl.showMainOverview();
-
         }
         else {
-            mainCtrl.showIncorrectAddressPopUp();
+            mainCtrl.showMainOverview();
         }
        
 
