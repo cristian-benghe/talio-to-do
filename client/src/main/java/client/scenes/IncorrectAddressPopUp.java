@@ -1,10 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.layout.AnchorPane;
 
 import javax.inject.Inject;
 import java.net.URL;
