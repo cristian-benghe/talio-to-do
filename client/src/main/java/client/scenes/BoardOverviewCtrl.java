@@ -16,6 +16,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
@@ -200,19 +201,23 @@ public class BoardOverviewCtrl implements Initializable {
     {
 
         myVBox.setOnDragOver(event -> {
-            if (event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard")){ //To solve the issue of drag and drop of the column into column
+                        if (event.getDragboard().hasString()) {
+                            event.acceptTransferModes(TransferMode.MOVE);
+                        }
+                        event.consume();
+                    }
         });
 
         myVBox.setOnDragDropped(event -> {
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard")){ //To solve the issue of drag and drop of the column into column
             myVBox.getChildren().remove(button);
             setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
             myVBox.getChildren().add((AnchorPane) event.getGestureSource()); //gesture source to pass dragged item
             myVBox.getChildren().add(button);
             event.setDropCompleted(true);
             event.consume();
+            }
         });
     }
 
@@ -222,7 +227,6 @@ public class BoardOverviewCtrl implements Initializable {
      * @param vBox a parent element of the card which is vBox
      */
     private void setCardDragDrop(AnchorPane card, VBox vBox) {
-
         //set the drag of the specific column
         card.setOnDragDetected(event -> {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
