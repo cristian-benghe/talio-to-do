@@ -35,6 +35,8 @@ public class MainOverviewCtrl {
     private Label SearchConstraintText;
     @FXML
     private Label BoardsText;
+    @FXML
+    private Label EmptyBoardListMsg;
 
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -78,8 +80,10 @@ public class MainOverviewCtrl {
 
         //Check that there are boards in the list
         if(availableBoards == null || availableBoards.isEmpty()){
+            EmptyBoardListMsg.setVisible(true);
             return;
         }
+        EmptyBoardListMsg.setVisible(false);
 
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();

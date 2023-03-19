@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
@@ -28,6 +29,11 @@
     <AnchorPane layoutX="236.0" layoutY="105.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="680.0">
          <children>
             <ListView fx:id="BoardsListElement" layoutX="1.0" onMouseClicked="#on_board_click" prefHeight="200.0" prefWidth="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label fx:id="EmptyBoardListMsg" alignment="CENTER" layoutX="-2.0" prefHeight="205.0" prefWidth="681.0" text="Currently, there are no available boards!" textAlignment="CENTER" textFill="#989898" wrapText="true">
+               <font>
+                  <Font size="40.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <Button fx:id="disconnectButton" layoutX="700.0" layoutY="380.0" mnemonicParsing="false" onAction="#disconnect" prefHeight="52.0" prefWidth="216.0" text="Disconnect" textFill="#331313">
@@ -50,5 +56,16 @@
             <Font size="10.0" />
          </font>
       </Label>
+      <DialogPane layoutX="318.0" layoutY="231.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="193.0" prefWidth="295.0">
+          <header>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+          </header>
+          <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+          </content>
+          <expandableContent>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0" />
+          </expandableContent>
+      </DialogPane>
    </children>
 </AnchorPane>
