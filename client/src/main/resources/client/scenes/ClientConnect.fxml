@@ -21,7 +21,7 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="error_msg" alignment="CENTER" layoutX="343.0" layoutY="119.0" prefHeight="17.0" prefWidth="112.0" text="Please enter an address!" textAlignment="CENTER" textFill="#ff0e0e" textOverrun="CLIP">
+      <Label fx:id="error_msg" alignment="CENTER" layoutX="253.0" layoutY="119.0" prefHeight="17.0" prefWidth="202.0" text="Please enter an address!" textAlignment="CENTER" textFill="#ff0e0e" textOverrun="CLIP">
          <font>
             <Font size="10.0" />
          </font>

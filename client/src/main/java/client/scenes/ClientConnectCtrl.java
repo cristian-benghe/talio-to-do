@@ -75,19 +75,61 @@ public class ClientConnectCtrl implements Initializable {
      * If the user inputs a non-blank address, then the method also changes the scene of the
      * primary stage to the MainOverview scene.
      */
+    public void connect(){
 
+        String serverAddress = server_address.getText();
+
+        //Check that the address is not blank
+        if (serverAddress.isBlank()) {
+
+            error_msg.setText("Please enter a non-blank address above.");
+            errorShakeAnim();
+            return;
+
+        }
+
+        //Check that the address is in a valid format
+        if(!isValidUrl(serverAddress)){
+
+            error_msg.setText("Please enter an address in a valid format.");
+            errorShakeAnim();
+            return;
+
+        }
+
+        //Check that a connection with the server can be established
+        if(!validConnection(serverAddress)){
+            error_msg.setText("Connection cannot be established. Try again!");
+            errorShakeAnim();
+            return;
+        }
+
+        // Set the server address in the ServerUtils class
+        ServerUtils.setServerAddress(serverAddress);
+        //Switch the scene to the main overview
+        mainCtrl.showMainOverview();
+
+    }
+    public void errorShakeAnim(){
+
+        //Show the error message
+        error_msg.setVisible(true);
+
+        //Play a short rotation animation if the animation is not already playing.
+        if(!isAnimPlaying){
+            isAnimPlaying = true;
+            shakeAnim.play();
+        }
+
+    }
 
     public boolean isValidUrl(String address){
         try {
             URL url = new URL(address);
-            URLConnection conn = url.openConnection();
-            conn.connect();
+            return true;
         } catch (MalformedURLException e) {
             return false;
-        } catch (IOException e) {
-            return false;
         }
-        return true;
     }
     public boolean validConnection(String address){
         try{
@@ -100,29 +142,7 @@ public class ClientConnectCtrl implements Initializable {
             return false;
         }
     }
-    public void changeScene() throws Exception{
 
-        String serverAddress = server_address.getText();
-        if (serverAddress.isBlank()) {
-
-
-            //Show the error message
-            error_msg.setVisible(true);
-
-            //Play a short rotation animation if the animation is not already playing.
-            if(!isAnimPlaying){
-                isAnimPlaying = true;
-                shakeAnim.play();
-            }
-
-            return;
-        }
-
-        // Set the server address in the ServerUtils class
-        ServerUtils.setServerAddress(serverAddress);
-        //Switch the scene to the main overview
-        mainCtrl.showMainOverview();
-    }
 
     public void refresh(){
 
