@@ -99,7 +99,7 @@ public class MainOverviewCtrl implements Initializable {
     /**The method is used by the disconnectButton to return to the ClientConnect scene, allowing the user
      * to connect to another server.
      */
-    public void disconnect(){
+    public void disconnect() throws Exception {
         mainCtrl.showClientConnect();
     }
 
@@ -202,6 +202,6 @@ public class MainOverviewCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        
+
     }
 }

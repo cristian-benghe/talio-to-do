@@ -31,5 +31,6 @@ public class MyModule implements Module {
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(MainOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(DeleteBoardPopUpCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(IncorrectAddressPopUp.class).in(Scopes.SINGLETON);
     }
 }

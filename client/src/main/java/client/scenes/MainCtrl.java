@@ -5,8 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.io.IOException;
-
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -30,12 +28,16 @@ public class MainCtrl {
     private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
+    private IncorrectAddressPopUp incorrectAddressCtrl;
+    private Scene incorrectAddress;
+
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws IOException {
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
+                                    Pair<IncorrectAddressPopUp, Parent> incorrectAddress) throws Exception {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -55,6 +57,9 @@ public class MainCtrl {
 
         this.deleteBoardPopUpCtrl = popupStage.getKey();
         this.popupStage = new Scene(popupStage.getValue());
+
+        this.incorrectAddressCtrl=incorrectAddress.getKey();
+        this.incorrectAddress=new Scene(incorrectAddress.getValue());
 
         showClientConnect();
         primaryStage.show();
@@ -88,7 +93,7 @@ public class MainCtrl {
     }
 
     //TODO
-    public void showClientConnect() {
+    public void showClientConnect() throws Exception {
         primaryStage.setTitle("Connect_client");
         primaryStage.setScene(clientConnect);
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
@@ -99,6 +104,10 @@ public class MainCtrl {
         primaryStage.setScene(popupStage);
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
+    }
+    public void showIncorrectAddressPopUp(){
+        primaryStage.setTitle("Incorrect address");
+        primaryStage.setScene(incorrectAddress);
     }
 
 }
