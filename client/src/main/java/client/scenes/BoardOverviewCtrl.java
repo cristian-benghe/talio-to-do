@@ -200,8 +200,8 @@ public class BoardOverviewCtrl implements Initializable {
     private void setVBoxDragDrop(Button button, VBox myVBox)
     {
 
-        myVBox.setOnDragOver(event -> {
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard")){ //To solve the issue of drag and drop of the column into column
+        myVBox.setOnDragOver(event -> {                                          //&& Bug fix of disappearing of the addCard button because of duplication error
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
                         if (event.getDragboard().hasString()) {
                             event.acceptTransferModes(TransferMode.MOVE);
                         }
@@ -209,8 +209,8 @@ public class BoardOverviewCtrl implements Initializable {
                     }
         });
 
-        myVBox.setOnDragDropped(event -> {
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard")){ //To solve the issue of drag and drop of the column into column
+        myVBox.setOnDragDropped(event -> {                                       //&& Bug fix of disappearing of the addCard button because of duplication error
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
             myVBox.getChildren().remove(button);
             setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
             myVBox.getChildren().add((AnchorPane) event.getGestureSource()); //gesture source to pass dragged item
