@@ -74,12 +74,12 @@ public class BoardOverviewCtrl implements Initializable {
         }
         //this should set a default title for boards that are not new but haven't been modified either
         //or set the title to the title of the board object with an ID
-        Board board=server.getBoards().get(Math.toIntExact(nr-1));
+        Board board=server.getBoardById(nr);
         if(board.getTitle().equals("New Board")){
             board_title.setText("Board "+nr);
         }
         else {
-            board_title.setText(server.getBoards().get(Math.toIntExact(nr-1)).getTitle());
+            board_title.setText(server.getBoardById(nr).getTitle());
         }
 
     }
