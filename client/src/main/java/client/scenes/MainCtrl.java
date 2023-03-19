@@ -80,6 +80,7 @@ public class MainCtrl {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
+        primaryStage.centerOnScreen();
         boardOverviewCtrl.setBoard_title(text);
     }
 
@@ -88,6 +89,7 @@ public class MainCtrl {
 
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
+        primaryStage.centerOnScreen();
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
 
@@ -99,12 +101,14 @@ public class MainCtrl {
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
 
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
         primaryStage.setScene(popupStage);
+        primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
