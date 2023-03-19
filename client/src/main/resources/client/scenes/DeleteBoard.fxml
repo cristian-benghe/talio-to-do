@@ -5,9 +5,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="146.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AddQuoteCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="146.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.DeleteBoardPopUpCtrl">
    <children>
-      <Button layoutX="263.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="100.0" text="Delete" />
+      <Button layoutX="263.0" layoutY="105.0" mnemonicParsing="false" onAction="#Delete" prefHeight="25.0" prefWidth="100.0" text="Delete" />
       <Label layoutX="14.0" layoutY="14.0" prefHeight="33.0" prefWidth="368.0" text="Are you sure about deleting the board?" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
@@ -18,6 +18,6 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Button layoutX="98.0" layoutY="105.0" mnemonicParsing="false" onAction="#ok" prefHeight="25.0" prefWidth="100.0" text="Keep" />
+      <Button layoutX="98.0" layoutY="105.0" mnemonicParsing="false" onAction="#keep" prefHeight="25.0" prefWidth="100.0" text="Keep" />
    </children>
 </AnchorPane>

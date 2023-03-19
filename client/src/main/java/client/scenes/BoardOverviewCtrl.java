@@ -4,9 +4,11 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -15,14 +17,26 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
-    private Long ind= Long.valueOf(0);
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
+    /**
+     * gets the value of the id
+     *
+     * @return the value of the id
+     */
+    public Long getId() {
+        return id;
+    }
+
     //id of the board
     private Long id= Long.valueOf(-1);
     @FXML
@@ -285,7 +299,19 @@ public class BoardOverviewCtrl implements Initializable {
      * This method deletes the board with the current id and then changes the scene to the Main Overview
      */
     public void deleteBoard(){
-        server.deleteBoard(id);
-        mainCtrl.showMainOverview();
+        mainCtrl.showDeleteBoardPopUp(board_title.getText(), id);
     }
+
+//    public void showDeletePopUp() {
+//        try {
+//            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/DeletePopUp.fxml"));
+//            AnchorPane deletePopUpPane = loader.load();
+//            Scene scene = new Scene(deletePopUpPane);
+//            Stage deletePopUpStage = new Stage();
+//            deletePopUpStage.setScene(scene);
+//            deletePopUpStage.showAndWait();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

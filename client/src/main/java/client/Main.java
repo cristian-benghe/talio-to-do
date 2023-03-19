@@ -42,8 +42,8 @@ public class Main extends Application {
         var mainOverview = FXML.load(MainOverviewCtrl.class, "client", "scenes", "Home.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        var clientCtrl=  FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
-        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl);
-
+        var clientCtrl = FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
+        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
+        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage);
     }
 }
