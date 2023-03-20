@@ -170,5 +170,13 @@ public class ServerUtils {
                 .request() // creates a new request object
                 .delete(); // sends the HTTP DELETE request and returns the response, but the code does not handle the response explicitly
     }
+    public Board getBoardById(long boardId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER)
+                .path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Board.class);
+    }
 
 }

@@ -31,7 +31,7 @@
             <Font size="13.0" />
          </font>
       </Button>
-      <TextField fx:id="board_title" layoutX="110.0" layoutY="41.0" onAction="#edit_title" prefHeight="51.0" prefWidth="270.0" text="Title of the Board">
+      <TextField fx:id="board_title" layoutX="110.0" layoutY="41.0" onAction="#edit_title" onKeyTyped="#edit_title" prefHeight="51.0" prefWidth="270.0" text="Title of the Board">
          <font>
             <Font size="23.0" />
          </font>
@@ -40,7 +40,7 @@
          <children>
             <ScrollPane hbarPolicy="ALWAYS" layoutX="-4.0" layoutY="-4.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="394.0" prefWidth="774.0" vbarPolicy="NEVER">
                <content>
-                  <HBox fx:id="hbox" prefHeight="382.0" prefWidth="772.0" />
+                  <HBox fx:id="hbox" onKeyTyped="#edit_title" prefHeight="382.0" prefWidth="772.0" />
                </content>
             </ScrollPane>
          </children>

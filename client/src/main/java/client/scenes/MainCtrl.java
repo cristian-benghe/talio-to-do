@@ -5,8 +5,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.io.IOException;
-
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -35,7 +33,7 @@ public class MainCtrl {
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws IOException {
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -55,7 +53,6 @@ public class MainCtrl {
 
         this.deleteBoardPopUpCtrl = popupStage.getKey();
         this.popupStage = new Scene(popupStage.getValue());
-
         showClientConnect();
         primaryStage.show();
     }
@@ -88,7 +85,7 @@ public class MainCtrl {
     }
 
     //TODO
-    public void showClientConnect() {
+    public void showClientConnect() throws Exception {
         primaryStage.setTitle("Connect_client");
         primaryStage.setScene(clientConnect);
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
@@ -106,5 +103,6 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
+
 
 }

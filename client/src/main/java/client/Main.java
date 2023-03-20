@@ -20,8 +20,6 @@ import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 import static com.google.inject.Guice.createInjector;
 
 public class Main extends Application {
@@ -34,16 +32,16 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws Exception {
 
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var boardOverview = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "Board.fxml");
         var mainOverview = FXML.load(MainOverviewCtrl.class, "client", "scenes", "Home.fxml");
-
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var clientCtrl = FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
         var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
+
         mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage);
     }
 }
