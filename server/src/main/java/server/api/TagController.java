@@ -32,7 +32,7 @@ public class TagController {
     /**
      * Get request for obtaining the tag with the specified id
      * @param id - the id of the tag
-     * @return - the searched tag if it exists or the request code
+     * @return - the searched tag if it exists or OK (status 200)
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getById(@PathVariable("id") long id) {
