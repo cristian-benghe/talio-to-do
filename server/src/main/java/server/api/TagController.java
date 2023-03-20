@@ -10,14 +10,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
-    private final TagRepository tag_repo;
+    private final TagRepository tagRepo;
 
     /**
      * Constructs a new TagRepository object.
-     * @param tag_repo - the tag repository
+     * @param tagRepo - the tag repository
      */
-    public TagController(TagRepository tag_repo) {
-        this.tag_repo = tag_repo;
+    public TagController(TagRepository tagRepo) {
+        this.tagRepo = tagRepo;
     }
 
     /**
@@ -26,7 +26,7 @@ public class TagController {
      */
     @GetMapping(path = { "", "/" })
     public List<Tag> getAll() {
-        return tag_repo.findAll();
+        return tagRepo.findAll();
     }
 
     /**
@@ -36,14 +36,15 @@ public class TagController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getById(@PathVariable("id") long id) {
-        if (id < 0 || !tag_repo.existsById(id)) {
+        if (id < 0 || !tagRepo.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(tag_repo.findById(id).get());
+        return ResponseEntity.ok(tagRepo.findById(id).get());
     }
 
     /**
-     * Spring Boot RESTful API controller method that handles a POST request to add a new Tag resource
+     * Spring Boot RESTful API controller method that handles a POST request
+     * to add a new Tag resource
      * @param tag - the new tag that needs to be added to the server
      * @return - an HTTP response with the Tag object as the body
      */
@@ -55,7 +56,7 @@ public class TagController {
             return ResponseEntity.badRequest().build();
         }
 
-        Tag saved = tag_repo.save(tag);
+        Tag saved = tagRepo.save(tag);
         return ResponseEntity.ok(saved);
     }
 
