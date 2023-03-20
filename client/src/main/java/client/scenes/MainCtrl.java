@@ -30,18 +30,22 @@ public class MainCtrl {
     private Scene popupStage;
 
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
+    /**
+     * This method initializes this controller instances
+     * @param primaryStage an injection of the primary stage
+     * @param mainOverview an injection of the MainOverview scene and controller
+     * @param boardOverview an injection of the BoardOverview scene and controller
+     * @param clientConnect an injection of the ClientConnect scene and controller
+     * @throws Exception an exception that may be thrown
+     */
+    public void initialize(Stage primaryStage,
+                           Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
+                           Pair<ClientConnectCtrl, Parent> clientConnect
+    ) throws Exception {
+
         this.primaryStage = primaryStage;
 
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
-
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
@@ -64,18 +68,28 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    /**
+     * This method changes the scene to the quotes Overview scene.
+     */
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
     }
 
+    /**
+     * This method changes the scene to the Add quote scene.
+     */
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
+    /**
+     * This method changes the scene to the BoardsView scene.
+     * @param text the title of the Board
+     */
     public void showBoardOverview(String text) {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
@@ -84,6 +98,9 @@ public class MainCtrl {
         boardOverviewCtrl.setBoard_title(text);
     }
 
+    /**
+     * This method changes the scene to the MainOverview scene.
+     */
     public void showMainOverview() {
 
 
@@ -96,17 +113,21 @@ public class MainCtrl {
 
     }
 
+    /**
+     * This method changes the scene to the ClientConnectScene.
+     */
     public void showClientConnect() {
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+
     }
 
     /**
-     * Displays a popup window to confirm the deletion of a board with the given title and ID.
+     * Displays a popup window to confirm the deletion
+     * of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
      * @param id - the ID of the board to be deleted.
