@@ -210,4 +210,8 @@ public class MainOverviewCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }
