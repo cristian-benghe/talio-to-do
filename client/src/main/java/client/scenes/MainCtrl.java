@@ -29,12 +29,15 @@ public class MainCtrl {
     private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
+    private CardViewCtrl cardViewCtrl;
+    private Scene cardView;
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
+                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -52,6 +55,8 @@ public class MainCtrl {
         this.clientConnectCtrl = clientConnect.getKey();
         this.clientConnect = new Scene(clientConnect.getValue());
 
+        this.cardViewCtrl = cardView.getKey();
+        this.cardView = new Scene(cardView.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -104,6 +109,20 @@ public class MainCtrl {
         primaryStage.centerOnScreen();
         //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
+
+    /**
+     * A method to switch the scene from boardOverView to the CarView
+     */
+    public void showCardView() {
+        primaryStage.setTitle("Talio - CardView");
+
+        primaryStage.setScene(cardView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+    }
+
+
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
