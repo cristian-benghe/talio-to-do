@@ -64,12 +64,7 @@ public class BoardController {
         return s == null || s.isEmpty();
     }
 
-    @GetMapping("rnd")
-    public ResponseEntity<Board> getRandom() {
-        var boards = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(boards.get(idx));
-    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
         Optional<Board> existing = repo.findById(id);
