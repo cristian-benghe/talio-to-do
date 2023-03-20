@@ -9,13 +9,6 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
@@ -30,18 +23,11 @@ public class MainCtrl {
     private Scene popupStage;
 
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
+    public void initialize(Stage primaryStage, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
         this.primaryStage = primaryStage;
-
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
-
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
 
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
@@ -62,18 +48,6 @@ public class MainCtrl {
 
         showClientConnect();
         primaryStage.show();
-    }
-
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
-
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     public void showBoardOverview(String text) {
