@@ -57,7 +57,6 @@ public class MainOverviewCtrl implements Initializable {
     public void refreshOverview(){
 
         //Reset the availableBoards list
-
         availableBoards = server.getBoards();
 
         //Update the board list in the scene
@@ -78,12 +77,15 @@ public class MainOverviewCtrl implements Initializable {
      */
     public void updateBoardsList(){
 
+        //De-focus the ListView
+
         //Update the BoardsConstraintText Label
         updateBoardsText();
 
         //Check that there are boards in the list
         if(availableBoards == null || availableBoards.isEmpty()){
             EmptyBoardListMsg.setVisible(true);
+            BoardsListElement.setItems(null);
             return;
         }
         EmptyBoardListMsg.setVisible(false);
