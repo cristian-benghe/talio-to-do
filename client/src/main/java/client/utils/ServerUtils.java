@@ -37,18 +37,26 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static String SERVER;
+    private static String server;
 
+    /**
+     * set method used in the first scene of the application
+     * @param serverAddress the string containing the URL
+     */
     public static void setServerAddress(String serverAddress) {
-        ServerUtils.SERVER = serverAddress;
+        ServerUtils.server = serverAddress;
     }
 
+    /**
+     * getter for the
+     * @return
+     */
     public static String getServerAddress() {
-        return SERVER;
+        return server;
     }
 
     private static String getServerUrl(String path) {
-        return SERVER + path;
+        return server + path;
     }
 
     public void getQuotesTheHardWay() throws IOException {
@@ -63,7 +71,7 @@ public class ServerUtils {
 
     public List<Quote> getQuotes() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
+                .target(server).path("api/quotes") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Quote>>() {});
@@ -71,7 +79,7 @@ public class ServerUtils {
 
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/quotes") //
+                .target(server).path("api/quotes") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
@@ -79,7 +87,7 @@ public class ServerUtils {
 
     public Board addBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards") //
+                .target(server).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(board, APPLICATION_JSON), Board.class);
@@ -87,15 +95,26 @@ public class ServerUtils {
 
     public List<Board> getBoards() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/boards") //
+                .target(server).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Board>>() {});
     }
 
+
+    /**
+     * Adds a new card to the to-do list.
+     * This method sends a POST request to the server to add a new card
+     * to the to-do list. The card parameter should contain all necessary
+     * information about the new card, including the task description,
+     * due date, and priority level. If the card is successfully added,
+     * the method returns an HTTP response with a status code of 200 (OK).
+     * @param card The card to add to the list.
+     * @return The HTTP response indicating whether the card was successfully added.
+     */
     public Card addCard(Card card) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/cards") //
+                .target(server).path("api/cards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(card, APPLICATION_JSON), Card.class);
@@ -103,7 +122,7 @@ public class ServerUtils {
 
     public List<Card> getCards() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/cards") //
+                .target(server).path("api/cards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Card>>() {});
@@ -111,7 +130,7 @@ public class ServerUtils {
 
     public List<Card> getCardsFromColumn(Column column) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/cards") //
+                .target(server).path("api/cards") //
                 .queryParam("column_id", column.getId())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
@@ -120,7 +139,7 @@ public class ServerUtils {
 
     public Column addColumn(Column column) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/columns") //
+                .target(server).path("api/columns") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(column, APPLICATION_JSON), Column.class);
@@ -128,7 +147,7 @@ public class ServerUtils {
 
     public List<Column> getColumns() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/columns") //
+                .target(server).path("api/columns") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Column>>() {});
@@ -136,7 +155,7 @@ public class ServerUtils {
 
     public List<Column> getColumnsFromBoard(Board board) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/columns") //
+                .target(server).path("api/columns") //
                 .queryParam("board_id", board.getId())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
@@ -146,7 +165,7 @@ public class ServerUtils {
     //this should update the board title when it's modified
     public Board updateBoardTitle(long boardId, String newTitle) {
         Board board = ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/" + boardId)
+                .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .get(Board.class);
         if (board == null) {
@@ -154,7 +173,7 @@ public class ServerUtils {
         }
         board.setTitle(newTitle);
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/boards/" + boardId)
+                .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
@@ -165,14 +184,15 @@ public class ServerUtils {
      */
     public void deleteBoard(long boardId) {
         ClientBuilder.newClient(new ClientConfig()) // creates a new client
-                .target(SERVER) // sets the target server for the request
+                .target(server) // sets the target server for the request
                 .path("api/boards/" + boardId) // specifies the API endpoint to delete the board
                 .request() // creates a new request object
-                .delete(); // sends the HTTP DELETE request and returns the response, but the code does not handle the response explicitly
+                .delete(); // sends the HTTP DELETE request and returns the response,
+                            // but the code does not handle the response explicitly
     }
     public Board getBoardById(long boardId) {
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER)
+                .target(server)
                 .path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

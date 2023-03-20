@@ -66,7 +66,8 @@ public class CardController {
     /**
      * Adds a new Card object to the database.
      * @param card the Card object to add
-     * @return a response containing the saved Card object, or a bad request response if the title is null or empty
+     * @return a response containing the saved Card object,
+     * or a bad request response if the title is null or empty
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Card> add(@RequestBody Card card) {
@@ -92,7 +93,8 @@ public class CardController {
      * Updates an existing Card object with the specified id.
      * @param id the id of the Card object to update
      * @param card the updated Card object
-     * @return a response containing the updated card object, or a not found response if the id is invalid
+     * @return a response containing the updated card object,
+     * or a not found response if the id is invalid
      */
     @PutMapping("/{id}")
     public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
@@ -118,7 +120,8 @@ public class CardController {
      * or a not found response if the card or column ID is invalid
      */
     @PutMapping("/{id}/column")
-    public ResponseEntity<Card> updateColumn(@PathVariable("id") long id, @RequestParam("columnId") long columnId) {
+    public ResponseEntity<Card> updateColumn(@PathVariable("id") long id,
+                                             @RequestParam("columnId") long columnId) {
         Optional<Card> existingCard = repo.findById(id);
         Optional<Column> existingColumn = columnrepo.findById(columnId);
 
