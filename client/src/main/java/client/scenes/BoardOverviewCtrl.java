@@ -9,10 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -23,10 +20,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
@@ -42,7 +42,8 @@ public class BoardOverviewCtrl implements Initializable {
     public Long getId() {
         return id;
     }
-
+    //Dialog box for the delete board button
+    private Dialog deleteBoardDialog;
     //id of the board
     private Long id= Long.valueOf(-1);
     @FXML
@@ -331,6 +332,24 @@ public class BoardOverviewCtrl implements Initializable {
 
         BinImage.setImage(new Image("BinImage.png"));
 
+
+       //Set up the dialog box for the delete board button
+        deleteBoardDialog = new Dialog<String>();
+        deleteBoardDialog.initModality(Modality.APPLICATION_MODAL);
+        deleteBoardDialog.setTitle("Are you sure you want to delete the board");
+
+        deleteBoardDialog.setHeaderText("Are you sure you want to to delete the board?");
+        deleteBoardDialog.setContentText("This action is irreversible.");
+
+        Stage dialogStage = (Stage) deleteBoardDialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(new Image("BinImage.png"));
+
+        ButtonType confirmBT = new ButtonType("Delete", ButtonBar.ButtonData.APPLY);
+        ButtonType cancelBT = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        deleteBoardDialog.getDialogPane().getButtonTypes().addAll(cancelBT,confirmBT);
+
+
     }
 
 
@@ -348,6 +367,19 @@ public class BoardOverviewCtrl implements Initializable {
      * This method deletes the board with the current id and then changes the scene to the DeleteBoardPopUp
      */
     public void deleteBoard(){
-        mainCtrl.showDeleteBoardPopUp(board_title.getText(), id);
+
+        //Show the board
+        Optional<ButtonType> result = deleteBoardDialog.showAndWait();
+
+        //Check whether the user confirmed the delete operation
+        if(result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+
+            server.deleteBoard(id);
+            mainCtrl.showMainOverview();
+
+        }
+
+
+
     }
 }
