@@ -26,6 +26,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
@@ -226,20 +227,24 @@ public class BoardOverviewCtrl implements Initializable {
     private void setVBoxDragDrop(Button button, VBox myVBox)
     {
 
-        myVBox.setOnDragOver(event -> {
-            if (event.getDragboard().hasString()) {
-                event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
+        myVBox.setOnDragOver(event -> {                                          //&& Bug fix of disappearing of the addCard button because of duplication error
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
+                        if (event.getDragboard().hasString()) {
+                            event.acceptTransferModes(TransferMode.MOVE);
+                        }
+                        event.consume();
+                    }
         });
 
-        myVBox.setOnDragDropped(event -> {
+        myVBox.setOnDragDropped(event -> {                                       //&& Bug fix of disappearing of the addCard button because of duplication error
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
             myVBox.getChildren().remove(button);
             setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
             myVBox.getChildren().add((AnchorPane) event.getGestureSource()); //gesture source to pass dragged item
             myVBox.getChildren().add(button);
             event.setDropCompleted(true);
             event.consume();
+            }
         });
     }
 
@@ -249,7 +254,6 @@ public class BoardOverviewCtrl implements Initializable {
      * @param vBox a parent element of the card which is vBox
      */
     private void setCardDragDrop(AnchorPane card, VBox vBox) {
-
         //set the drag of the specific column
         card.setOnDragDetected(event -> {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
