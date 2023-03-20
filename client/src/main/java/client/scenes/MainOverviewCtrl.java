@@ -38,6 +38,8 @@ public class MainOverviewCtrl implements Initializable {
     private Label SearchConstraintText;
     @FXML
     private Label BoardsText;
+    @FXML
+    private Label EmptyBoardListMsg;
 
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -55,38 +57,41 @@ public class MainOverviewCtrl implements Initializable {
     public void refreshOverview(){
 
         //Reset the availableBoards list
+
         availableBoards = server.getBoards();
 
         //Update the board list in the scene
-        updateBoardsList(availableBoards);
+        updateBoardsList();
 
         //Clear the SearchTextField
         SearchTextField.setText("");
 
-        //Resets the SearchConstraintText Label
+        //Update the labels
         updateSearchConstraintText();
+        updateBoardsText();
     }
 
 
     /**
      * This method is used to update the list of available boards in the MainOverview scene by completely
      * replacing all the current items with a new list of items.
-     * @param boards the new list of boards that will be displayed
      */
-    public void updateBoardsList(List<Board> boards){
+    public void updateBoardsList(){
 
         //Update the BoardsConstraintText Label
-        updateBoardsText(boards);
+        updateBoardsText();
 
         //Check that there are boards in the list
-        if(boards == null || boards.isEmpty()){
+        if(availableBoards == null || availableBoards.isEmpty()){
+            EmptyBoardListMsg.setVisible(true);
             return;
         }
+        EmptyBoardListMsg.setVisible(false);
 
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
 
-        for(Board B : boards) {
+        for(Board B : availableBoards) {
             //The shortened String representation solely includes the title and the id of the Board.
             content.add(B.toStringShort());
         }
@@ -129,19 +134,18 @@ public class MainOverviewCtrl implements Initializable {
 
     /**Updates the BoardsText label through the current list of available boards. The label notifies the
      * user of the total number of available boards.
-     * @param boards the current list of available boards.
      */
-    public void updateBoardsText(List<Board> boards){
+    public void updateBoardsText(){
 
         //Check that there are boards in the list
-        if(boards == null || boards.isEmpty()){
+        if(availableBoards == null || availableBoards.isEmpty()){
             //Display that there are no available boards
-            BoardsText.setText("No Available Boards.");
+            BoardsText.setText("No Available Boards");
             return;
         }
 
         //Display the number of available boards
-        BoardsText.setText(boards.size() + " Available Boards.");
+        BoardsText.setText(availableBoards.size() + " Available Boards");
 
     }
 

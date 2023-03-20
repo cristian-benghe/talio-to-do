@@ -28,6 +28,11 @@
     <AnchorPane layoutX="236.0" layoutY="105.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="680.0">
          <children>
             <ListView fx:id="BoardsListElement" layoutX="1.0" onMouseClicked="#on_board_click" prefHeight="200.0" prefWidth="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label fx:id="EmptyBoardListMsg" alignment="CENTER" layoutX="-2.0" prefHeight="205.0" prefWidth="681.0" text="Currently, there are no available boards!" textAlignment="CENTER" textFill="#989898" wrapText="true">
+               <font>
+                  <Font size="40.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <Button fx:id="disconnectButton" layoutX="700.0" layoutY="380.0" mnemonicParsing="false" onAction="#disconnect" prefHeight="52.0" prefWidth="216.0" text="Disconnect" textFill="#331313">

@@ -3,6 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -11,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -19,6 +23,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,6 +58,14 @@ public class BoardOverviewCtrl implements Initializable {
 
     @FXML
     private Text keyID;
+    @FXML
+    private ImageView BinImage;
+
+
+    //Scale Transition for BinImage contraction and expansion
+    private ScaleTransition BinContraction;
+    private ScaleTransition BinExpansion;
+
 
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -293,8 +306,40 @@ public class BoardOverviewCtrl implements Initializable {
         addOneColumn("To do");
         addOneColumn("Doing");
         addOneColumn("Done");
+
+        //Set the expansion and contraction animations
+        BinExpansion = new ScaleTransition();
+        BinExpansion.setDuration(Duration.millis(800));
+        BinExpansion.setNode(BinImage);
+        BinExpansion.setInterpolator(Interpolator.EASE_IN);
+
+        BinExpansion.setToX(2);
+        BinExpansion.setToY(2);
+
+
+        BinContraction = new ScaleTransition();
+        BinContraction.setDuration(Duration.millis(800));
+        BinContraction.setNode(BinImage);
+        BinContraction.setInterpolator(Interpolator.EASE_IN);
+
+        BinContraction.setToX(1);
+        BinContraction.setToY(1);
+
+        BinImage.setImage(new Image("BinImage.png"));
+
     }
 
+
+    public void expandBin(){
+        BinContraction.stop();
+        BinExpansion.stop();
+        BinExpansion.play();
+    }
+    public void contractBin(){
+        BinContraction.stop();
+        BinExpansion.stop();
+        BinContraction.play();
+    }
     /**
      * This method deletes the board with the current id and then changes the scene to the DeleteBoardPopUp
      */
