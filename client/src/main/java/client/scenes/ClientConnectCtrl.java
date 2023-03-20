@@ -104,6 +104,7 @@ public class ClientConnectCtrl implements Initializable {
 
         // Set the server address in the ServerUtils class
         ServerUtils.setServerAddress(serverAddress);
+        mainCtrl.create_connection(serverAddress);
         //Switch the scene to the main overview
         mainCtrl.showMainOverview();
 
@@ -153,4 +154,7 @@ public class ClientConnectCtrl implements Initializable {
 
     }
 
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }

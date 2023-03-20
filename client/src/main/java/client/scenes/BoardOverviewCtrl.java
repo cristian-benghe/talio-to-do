@@ -457,4 +457,8 @@ public class BoardOverviewCtrl implements Initializable {
 
         }
     }
+
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }
