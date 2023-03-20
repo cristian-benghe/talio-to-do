@@ -137,6 +137,11 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
+    public void create_connection(String address){
+        clientConnectCtrl.setConnection(address);
+        mainOverviewCtrl.setConnection(address);
+        boardOverviewCtrl.setConnection(address);
+    }
 
 
 }
