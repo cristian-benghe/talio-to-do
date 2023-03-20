@@ -81,7 +81,7 @@ public class MainCtrl {
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoard_title(text);
+        boardOverviewCtrl.setBoardTitle(text);
     }
 
     public void showMainOverview() {

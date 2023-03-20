@@ -53,7 +53,7 @@ public class BoardOverviewCtrl implements Initializable {
     private AnchorPane board;
 
     @FXML
-    private TextField board_title;
+    private TextField boardTitle;
 
     @FXML
     private HBox hbox;
@@ -61,51 +61,74 @@ public class BoardOverviewCtrl implements Initializable {
     @FXML
     private Text keyID;
     @FXML
-    private ImageView BinImage;
+    private ImageView binImage;
 
 
     //Scale Transition for BinImage contraction and expansion
-    private ScaleTransition BinContraction;
-    private ScaleTransition BinExpansion;
+    private ScaleTransition binContraction;
+    private ScaleTransition binExpansion;
 
-
+    /**
+     * Handles the initialization and interaction with the elements of the BoardOverview.fxml
+     * @param server - the server of the application
+     * @param mainCtrl - the main controller
+     */
     @Inject
     public BoardOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * This changes the scene to the Board Overview
+     */
     public void showOverview() {
         mainCtrl.showBoardOverview("");
     }
-    //the title is not yet stored correctly in the database
-    public void setBoard_title(String idd){
+
+    /**
+     * Sets the title and ID of the board.
+     * @param idd - the id of the new board
+     */
+    public void setBoardTitle(String idd){
         Long nr=Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: "+nr);
-        this.id=nr;
+        this.id = nr;
         if(!idd.contains("New Board")) {
-            board_title.setText(idd.split("--")[0].trim());
+            boardTitle.setText(idd.split("--")[0].trim());
             return;
         }
-        //this should set a default title for boards that are not new but haven't been modified either
+        //this should set a default title for boards that are not new
+        // but haven't been modified either
         //or set the title to the title of the board object with an ID
         Board board=server.getBoardById(nr);
         if(board.getTitle().equals("New Board")){
-            board_title.setText("Board "+nr);
+            boardTitle.setText("Board "+nr);
         }
         else {
-            board_title.setText(server.getBoardById(nr).getTitle());
+            boardTitle.setText(server.getBoardById(nr).getTitle());
         }
 
     }
-    //when you edit text it should update the title
-    public void edit_title(){
-        server.updateBoardTitle(this.id, board_title.getText());
+
+    /**
+     * This method should update the title when you edit it
+     */
+    public void editTitle(){
+        server.updateBoardTitle(this.id, boardTitle.getText());
     }
-    //when you click on home button you go back to mainOverview
-    public void go_back_home(){
+
+    /**
+     * This changes the scene to the Main Overview
+     */
+
+    public void goBackHome(){
         mainCtrl.showMainOverview();
     }
+
+    /**
+     * This method adds a new default column
+     */
     public void addColumn(){
         addOneColumn("New column");
     }
@@ -132,7 +155,9 @@ public class BoardOverviewCtrl implements Initializable {
         button.setAlignment(Pos.BOTTOM_CENTER);
         vBox.getChildren().addAll(columnLabel, textField, button);
         anchorPaneVBox.getChildren().add(vBox);
-        setColumnDragDrop(anchorPaneVBox);  //to set the functionality of the drag and drop of the new column. Only for deletion not to replace!
+        //to set the functionality of the drag and drop of the new column.
+        // Only for deletion not to replace!
+        setColumnDragDrop(anchorPaneVBox);
         hbox.getChildren().add(anchorPaneVBox);
 
     }
@@ -222,29 +247,37 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A function to replace/switch the card between the columns
-     * @param button button parameters mostly passed because of deletion/recreation to always align at the bottom. I did a lot of research it was the most appropriate
+     * @param button button parameters mostly passed because of deletion/recreation
+     *               to always align at the bottom.
+     *               I did a lot of research it was the most appropriate
      * @param myVBox vBox that will be effected
      */
     private void setVBoxDragDrop(Button button, VBox myVBox)
     {
-
-        myVBox.setOnDragOver(event -> {                                          //&& Bug fix of disappearing of the addCard button because of duplication error
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
-                        if (event.getDragboard().hasString()) {
-                            event.acceptTransferModes(TransferMode.MOVE);
-                        }
-                        event.consume();
-                    }
+        // Bug fix of disappearing of the addCard button because of duplication error
+        myVBox.setOnDragOver(event -> {
+            //To solve the issue of drag and drop of the column into column
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){
+                if (event.getDragboard().hasString()) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                }
+                event.consume();
+            }
         });
 
-        myVBox.setOnDragDropped(event -> {                                       //&& Bug fix of disappearing of the addCard button because of duplication error
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") && !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){ //To solve the issue of drag and drop of the column into column
-            myVBox.getChildren().remove(button);
-            setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
-            myVBox.getChildren().add((AnchorPane) event.getGestureSource()); //gesture source to pass dragged item
-            myVBox.getChildren().add(button);
-            event.setDropCompleted(true);
-            event.consume();
+        // Bug fix of disappearing of the addCard button because of duplication error
+        myVBox.setOnDragDropped(event -> {
+            //To solve the issue of drag and drop of the column into column
+            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                    !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){
+                myVBox.getChildren().remove(button);
+                setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
+                //gesture source to pass dragged item
+                myVBox.getChildren().add((AnchorPane) event.getGestureSource());
+                myVBox.getChildren().add(button);
+                event.setDropCompleted(true);
+                event.consume();
             }
         });
     }
@@ -271,7 +304,8 @@ public class BoardOverviewCtrl implements Initializable {
      */
     private void columnBin()
     {
-        //set the BIN text (get(2) because BIN is second indexed element in the anchorPane. This can be done byID later on)...
+        //set the BIN text (get(2) because BIN is second indexed element in the anchorPane.
+        // TODO This can be done byID later on)...
         anchorPane.getChildren().get(2).setOnDragOver(event -> {
             if (event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
@@ -281,7 +315,8 @@ public class BoardOverviewCtrl implements Initializable {
 
         //deletion of the dragged item
         anchorPane.getChildren().get(2).setOnDragDropped(event -> {
-            hbox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
+            //gesture source to pass dragged item
+            hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
         });
@@ -301,11 +336,23 @@ public class BoardOverviewCtrl implements Initializable {
 
         //deletion of the dragged item
         anchorPane.getChildren().get(2).setOnDragDropped(event -> {
-            vBox.getChildren().remove(event.getGestureSource()); //gesture source to pass dragged item
+            // gesture source to pass dragged item
+            vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
         });
     }
+
+    /**
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         addOneColumn("To do");
@@ -313,24 +360,24 @@ public class BoardOverviewCtrl implements Initializable {
         addOneColumn("Done");
 
         //Set the expansion and contraction animations
-        BinExpansion = new ScaleTransition();
-        BinExpansion.setDuration(Duration.millis(800));
-        BinExpansion.setNode(BinImage);
-        BinExpansion.setInterpolator(Interpolator.EASE_IN);
+        binExpansion = new ScaleTransition();
+        binExpansion.setDuration(Duration.millis(800));
+        binExpansion.setNode(binImage);
+        binExpansion.setInterpolator(Interpolator.EASE_IN);
 
-        BinExpansion.setToX(2);
-        BinExpansion.setToY(2);
+        binExpansion.setToX(2);
+        binExpansion.setToY(2);
 
 
-        BinContraction = new ScaleTransition();
-        BinContraction.setDuration(Duration.millis(800));
-        BinContraction.setNode(BinImage);
-        BinContraction.setInterpolator(Interpolator.EASE_IN);
+        binContraction = new ScaleTransition();
+        binContraction.setDuration(Duration.millis(800));
+        binContraction.setNode(binImage);
+        binContraction.setInterpolator(Interpolator.EASE_IN);
 
-        BinContraction.setToX(1);
-        BinContraction.setToY(1);
+        binContraction.setToX(1);
+        binContraction.setToY(1);
 
-        BinImage.setImage(new Image("BinImage.png"));
+        binImage.setImage(new Image("BinImage.png"));
 
 
        //Set up the dialog box for the delete board button
@@ -352,19 +399,28 @@ public class BoardOverviewCtrl implements Initializable {
 
     }
 
-
+    /**
+     * This method is part of the "drag and drop" animation of deleting cards and columns.
+     * It increases the size of the bin.
+     */
     public void expandBin(){
-        BinContraction.stop();
-        BinExpansion.stop();
-        BinExpansion.play();
+        binContraction.stop();
+        binExpansion.stop();
+        binExpansion.play();
     }
+
+    /**
+     * This method is part of the "drag and drop" animation of deleting cards and columns.
+     * It decreases the size of the bin.
+     */
     public void contractBin(){
-        BinContraction.stop();
-        BinExpansion.stop();
-        BinContraction.play();
+        binContraction.stop();
+        binExpansion.stop();
+        binContraction.play();
     }
     /**
-     * This method deletes the board with the current id and then changes the scene to the DeleteBoardPopUp
+     * This method deletes the board with the current id and then changes
+     * the scene to the DeleteBoardPopUp
      */
     public void deleteBoard(){
 
@@ -378,8 +434,5 @@ public class BoardOverviewCtrl implements Initializable {
             mainCtrl.showMainOverview();
 
         }
-
-
-
     }
 }
