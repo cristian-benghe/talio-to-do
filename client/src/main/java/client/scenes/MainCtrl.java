@@ -122,6 +122,20 @@ public class MainCtrl {
 
 
     /**
+     * A method to switch the scene from boardOverView to the CarView
+     */
+    public void showCardView() {
+        primaryStage.setTitle("Talio - CardView");
+
+        primaryStage.setScene(cardView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+    }
+
+
+
+    /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
@@ -133,6 +147,11 @@ public class MainCtrl {
         primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
+    }
+    public void create_connection(String address){
+        clientConnectCtrl.setConnection(address);
+        mainOverviewCtrl.setConnection(address);
+        boardOverviewCtrl.setConnection(address);
     }
 
     /**
