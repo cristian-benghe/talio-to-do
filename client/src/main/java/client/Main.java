@@ -27,21 +27,35 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    /**
+     * launches the application
+     * @param args =
+     */
+
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     *
+     * @param primaryStage the primary stage for this
+     * application, onto which
+     * the application scene can be set.
+     * Applications may create other stages,
+     *  if needed, but they will not be
+     * primary stages.
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var boardOverview = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "Board.fxml");
         var mainOverview = FXML.load(MainOverviewCtrl.class, "client", "scenes", "Home.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        var clientCtrl = FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
-        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
+        var clientCtrl = FXML.load(ClientConnectCtrl.class,
+                "client", "scenes", "ClientConnect.fxml");
+        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class,
+                "client", "scenes", "DeleteBoard.fxml");
 
-        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage);
+        mainCtrl.initialize(primaryStage, mainOverview, boardOverview, clientCtrl, popUpStage);
     }
 }
