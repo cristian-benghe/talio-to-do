@@ -24,7 +24,8 @@ public class DeleteBoardPopUpCtrl implements Initializable {
     private Button deleteButton;
 
     /**
-     * Constructs a new DeleteBoardPopUpCtrl instance with the given MainCtrl and ServerUtils objects.
+     * Constructs a new DeleteBoardPopUpCtrl instance with
+     * the given MainCtrl and ServerUtils objects.
      *
      * @param mainCtrl - the mainCtrl object
      * @param server - the serverUtils object
@@ -36,10 +37,11 @@ public class DeleteBoardPopUpCtrl implements Initializable {
     }
 
     /**
-     * Deletes the board associated with the current instance's ID field and redirects the user to the main overview.
+     * Deletes the board associated with the current instance's ID field
+     * and redirects the user to the main overview.
      */
     @FXML
-    private void Delete() {
+    private void delete() {
         server.deleteBoard(id);
         mainCtrl.showMainOverview();
     }

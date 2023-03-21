@@ -10,7 +10,7 @@ public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long tag_id;
+    private long tagID;
     private String title;
 
     // this joins the Tag and the Card tables together
@@ -31,23 +31,23 @@ public class Tag {
 
     /**
      * Constructs a new Tag object with the specified id and title.
-     * @param tag_id - the unique identifier for the tag
+     * @param tagID - the unique identifier for the tag
      * @param title - the name of the tag
      * @param cards - the set of Cards associated with the tag
      */
-    public Tag(long tag_id, String title, Set<Card> cards) {
-        this.tag_id = tag_id;
+    public Tag(long tagID, String title, Set<Card> cards) {
+        this.tagID = tagID;
         this.title = title;
         this.cards = cards;
     }
 
     /**
-     * gets the value of the tag_id
+     * gets the value of the tagID
      *
-     * @return the value of the tag_id
+     * @return the value of the tagID
      */
-    public long getTag_id() {
-        return tag_id;
+    public long getTagID() {
+        return tagID;
     }
 
     /**
@@ -69,12 +69,12 @@ public class Tag {
     }
 
     /**
-     * Sets the value of tag_id
+     * Sets the value of tagID
      *
-     * @param tag_id - the value of the tag_id
+     * @param tagID - the value of the tagID
      */
-    public void setTag_id(long tag_id) {
-        this.tag_id = tag_id;
+    public void setTagID(long tagID) {
+        this.tagID = tagID;
     }
 
     /**
@@ -105,7 +105,8 @@ public class Tag {
         if (this == o) return true;
         if (!(o instanceof Tag)) return false;
         Tag tag = (Tag) o;
-        return getTag_id() == tag.getTag_id() && getTitle().equals(tag.getTitle()) && getCards().equals(tag.getCards());
+        return getTagID() == tag.getTagID() && getTitle().equals(tag.getTitle()) &&
+                getCards().equals(tag.getCards());
     }
 
     /**
@@ -115,7 +116,7 @@ public class Tag {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getTag_id(), getTitle(), getCards());
+        return Objects.hash(getTagID(), getTitle(), getCards());
     }
 
     /**
@@ -126,7 +127,7 @@ public class Tag {
     @Override
     public String toString() {
         return this.title +
-                " has the ID: " + this.tag_id +
+                " has the ID: " + this.tagID +
                 " and is part of: " + this.cards.toString();
     }
 }

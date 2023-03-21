@@ -35,18 +35,28 @@ public class MainOverviewCtrl implements Initializable {
     @FXML
     private TextField searchTextField;
     @FXML
-    private Label SearchConstraintText;
+    private Label searchConstraintText;
     @FXML
-    private Label BoardsText;
+    private Label boardsText;
     @FXML
-    private Label EmptyBoardListMsg;
+    private Label emptyBoardListMsg;
 
+    /**
+     * Constructs a new instance of the MainOverviewCtrl class with the
+     * specified ServerUtils and MainCtrl objects injected as dependencies.
+     * @param server the ServerUtils object to use for interacting with the server
+     * @param mainCtrl the MainCtrl object to use for coordinating the application's
+     * main control flow
+     */
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * Displays MainOverview Scene on the screen
+     */
     public void showOverview() {
         mainCtrl.showMainOverview();
     }
@@ -86,11 +96,11 @@ public class MainOverviewCtrl implements Initializable {
 
         //Check that there are boards in the list
         if (availableBoards == null || availableBoards.isEmpty()) {
-            EmptyBoardListMsg.setVisible(true);
+            emptyBoardListMsg.setVisible(true);
             boardsListElement.setItems(null);
             return;
         }
-        EmptyBoardListMsg.setVisible(false);
+        emptyBoardListMsg.setVisible(false);
 
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
@@ -115,7 +125,7 @@ public class MainOverviewCtrl implements Initializable {
     }
 
     /**
-     * Updates the label SearchConstraintText in
+     * Updates the label searchConstraintText in
      * accordance to the current length of the input
      * in the search TextField. The label itself is
      * used to display whether the search input has reached
@@ -127,22 +137,22 @@ public class MainOverviewCtrl implements Initializable {
 
         //Update the SearchConstraintText label
         if (length < SEARCH_MAX_LENGTH) {
-            SearchConstraintText.setText((SEARCH_MAX_LENGTH - length) + " Characters Remaining.");
-            SearchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
+            searchConstraintText.setText((SEARCH_MAX_LENGTH - length) + " Characters Remaining.");
+            searchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
         } else if (length == SEARCH_MAX_LENGTH) {
-            SearchConstraintText.setText("Reached Maximum Length.");
-            SearchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
+            searchConstraintText.setText("Reached Maximum Length.");
+            searchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
         } else {
-            SearchConstraintText.setText("Exceeded Maximum Length By "
+            searchConstraintText.setText("Exceeded Maximum Length By "
                     + (length - SEARCH_MAX_LENGTH) + ".");
-            SearchConstraintText.setStyle("-fx-text-fill: red;");
+            searchConstraintText.setStyle("-fx-text-fill: red;");
 
         }
 
     }
 
     /**
-     * Updates the BoardsText label through
+     * Updates the boardsText label through
      * the current list of available boards. The label notifies the
      * user of the total number of available boards.
      */
@@ -151,12 +161,12 @@ public class MainOverviewCtrl implements Initializable {
         //Check that there are boards in the list
         if (availableBoards == null || availableBoards.isEmpty()) {
             //Display that there are no available boards
-            BoardsText.setText("No Available Boards");
+            boardsText.setText("No Available Boards");
             return;
         }
 
         //Display the number of available boards
-        BoardsText.setText(availableBoards.size() + " Available Boards");
+        boardsText.setText(availableBoards.size() + " Available Boards");
 
     }
 
@@ -210,7 +220,11 @@ public class MainOverviewCtrl implements Initializable {
 //        updateBoardsList(availableBoards);
     }
 
-    public void on_board_click() {
+    /**
+     * Function used to join a board and change scene to the
+     * selected board's overview
+     */
+    public void onBoardClick() {
         String selectedBoardStr = (String) boardsListElement.getSelectionModel().getSelectedItem();
         if (selectedBoardStr == null) {
             return;
@@ -220,12 +234,25 @@ public class MainOverviewCtrl implements Initializable {
         mainCtrl.showBoardOverview(selectedBoardStr);
     }
 
-
+    /**
+     * Function implemented to use/load certain functions when the MainOverview scene is shown
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
 
+    /**
+     * set up the connection to a certain URL
+     * @param address the URL provided through a String
+     */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
