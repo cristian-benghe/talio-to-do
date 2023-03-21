@@ -138,11 +138,6 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
-    public void create_connection(String address){
-        clientConnectCtrl.setConnection(address);
-        mainOverviewCtrl.setConnection(address);
-        boardOverviewCtrl.setConnection(address);
-    }
 
     /**
      * A new method to connect to a given address.
