@@ -25,13 +25,23 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    /**
+     * This method initializes this controller instances
+     * @param primaryStage an injection of the primary stage
+     * @param mainOverview an injection of the MainOverview scene and controller
+     * @param boardOverview an injection of the BoardOverview scene and controller
+     * @param clientConnect an injection of the ClientConnect scene and controller
+     * @param popupStage an injection of the PopupStage scene and controller
+     * @param cardView an injection of the CardView scene and controller
+     * @throws Exception an exception that may be thrown
+     */
+
     public void initialize(Stage primaryStage, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView) throws Exception {
         this.primaryStage = primaryStage;
-
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -55,6 +65,7 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+
     public void showBoardOverview(String text) {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
@@ -63,6 +74,9 @@ public class MainCtrl {
         boardOverviewCtrl.setBoardTitle(text);
     }
 
+    /**
+     * This method changes the scene to the MainOverview scene.
+     */
     public void showMainOverview() {
 
 
@@ -75,13 +89,16 @@ public class MainCtrl {
 
     }
 
+    /**
+     * This method changes the scene to the ClientConnectScene.
+     */
     public void showClientConnect() {
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+
     }
 
     /**
