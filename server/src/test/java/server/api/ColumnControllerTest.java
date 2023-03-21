@@ -1,13 +1,8 @@
 package server.api;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import commons.Board;
+import commons.Card;
+import commons.Column;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,19 +10,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
-import commons.Board;
-import commons.Card;
-import commons.Column;
 import server.database.CardRepository;
 import server.database.ColumnRepository;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ColumnControllerTest {
@@ -75,6 +67,7 @@ public class ColumnControllerTest {
         long id = 1L;
         Column column = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
         when(repo.findById(id)).thenReturn(Optional.of(column));
+        when(repo.existsById(id)).thenReturn(true);
 
         // When
         ResponseEntity<Column> response = controller.getById(id);
@@ -137,4 +130,45 @@ public class ColumnControllerTest {
         assertEquals("Updated Column", existing.getTitle());
     }
 
+    @Test
+    void testUpdateNotExistingByID() {
+        // Given
+        long id = -1L;
+        Column updated = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        when(repo.findById(id)).thenReturn(Optional.empty());
+
+        // When
+        ResponseEntity<Column> response = controller.update(id, updated);
+
+        // Then
+        assertEquals(ResponseEntity.notFound().build(), response);
+    }
+
+    @Test
+    void testDeleteNotExistingByID() {
+        // Given
+        long id = -1L;
+        when(repo.findById(id)).thenReturn(Optional.empty());
+
+        // When
+        ResponseEntity response = controller.delete(id);
+
+        // Then
+        assertEquals(ResponseEntity.notFound().build(), response);
+    }
+
+    @Test
+    void testDelete() {
+        // Given
+        long id = 1L;
+        Column existing = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        existing.setCards(List.of(new Card("card",null,null,null,existing)));
+        when(repo.findById(id)).thenReturn(Optional.of(existing));
+
+        // When
+        ResponseEntity response = controller.delete(id);
+
+        // Then
+        assertEquals(ResponseEntity.ok().build(), response);
+    }
 }
