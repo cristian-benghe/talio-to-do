@@ -128,7 +128,7 @@ class CardControllerTest {
      * It verifies that the response has HTTP status code 200 OK and that the updated card's column matches the expected column.
      */
     @Test
-    public void updateColumnwhenCardAndColumnExist() {
+    public void updateColumnWhenCardAndColumnExist() {
         long id = 1L;
         long columnId = 2L;
         Card card = new Card();
