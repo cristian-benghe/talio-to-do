@@ -22,11 +22,14 @@ public class MainCtrl {
     private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
+    private CardViewCtrl cardViewCtrl;
+    private Scene cardView;
 
     public void initialize(Stage primaryStage, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage) throws Exception {
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
+                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
         this.primaryStage = primaryStage;
 
         this.boardOverviewCtrl = boardOverview.getKey();
@@ -38,6 +41,8 @@ public class MainCtrl {
         this.clientConnectCtrl = clientConnect.getKey();
         this.clientConnect = new Scene(clientConnect.getValue());
 
+        this.cardViewCtrl = cardView.getKey();
+        this.cardView = new Scene(cardView.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -55,7 +60,7 @@ public class MainCtrl {
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoard_title(text);
+        boardOverviewCtrl.setBoardTitle(text);
     }
 
     public void showMainOverview() {
@@ -80,6 +85,20 @@ public class MainCtrl {
     }
 
     /**
+     * A method to switch the scene from boardOverView to the CarView
+     */
+    public void showCardView() {
+        primaryStage.setTitle("Talio - CardView");
+
+        primaryStage.setScene(cardView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+    }
+
+
+
+    /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
@@ -91,6 +110,11 @@ public class MainCtrl {
         primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
+    }
+    public void create_connection(String address){
+        clientConnectCtrl.setConnection(address);
+        mainOverviewCtrl.setConnection(address);
+        boardOverviewCtrl.setConnection(address);
     }
 
 
