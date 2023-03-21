@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
     /**
-     * @return a new instance eof a number generator
+     * @return a new instance of a number generator
      */
     @Bean
     public Random getRandom() {
