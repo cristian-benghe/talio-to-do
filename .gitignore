@@ -45,3 +45,5 @@ out/
 .DS_Store
 docs/.DS_Store
 docs/agendas/.DS_Store
+talio.trace.db
+core.20230321.141702.8108.0001.dmp

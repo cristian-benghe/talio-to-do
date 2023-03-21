@@ -6,16 +6,19 @@ import commons.Board;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class MainOverviewCtrl {
+public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
-    
+
     public static final int SEARCH_MAX_LENGTH = 25;
 
     //Fields for the dependency injection
@@ -28,130 +31,157 @@ public class MainOverviewCtrl {
 
     //Scene elements
     @FXML
-    private ListView BoardsListElement;
+    private ListView boardsListElement;
     @FXML
-    private TextField SearchTextField;
+    private TextField searchTextField;
     @FXML
-    private Label SearchConstraintText;
+    private Label searchConstraintText;
     @FXML
-    private Label BoardsText;
+    private Label boardsText;
+    @FXML
+    private Label emptyBoardListMsg;
 
+    /**
+     * Constructs a new instance of the MainOverviewCtrl class with the
+     * specified ServerUtils and MainCtrl objects injected as dependencies.
+     * @param server the ServerUtils object to use for interacting with the server
+     * @param mainCtrl the MainCtrl object to use for coordinating the application's
+     * main control flow
+     */
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * Displays MainOverview Scene on the screen
+     */
     public void showOverview() {
         mainCtrl.showMainOverview();
     }
 
 
-    /**The method is used to refresh all the elements of the MainOverview.
+    /**
+     * The method is used to refresh all the elements of the MainOverview.
      */
-    public void refreshOverview(){
+    public void refreshOverview() {
 
         //Reset the availableBoards list
         availableBoards = server.getBoards();
 
         //Update the board list in the scene
-        updateBoardsList(availableBoards);
+        updateBoardsList();
 
-        //Clear the SearchTextField
-        SearchTextField.setText("");
+        //Clear the searchTextField
+        searchTextField.setText("");
 
-        //Resets the SearchConstraintText Label
+        //Update the labels
         updateSearchConstraintText();
+        updateBoardsText();
     }
 
 
     /**
-     * This method is used to update the list of available boards in the MainOverview scene by completely
+     * This method is used to update the list of available
+     * boards in the MainOverview scene by completely
      * replacing all the current items with a new list of items.
-     * @param boards the new list of boards that will be displayed
      */
-    public void updateBoardsList(List<Board> boards){
+    public void updateBoardsList() {
+
+        //De-focus the ListView
 
         //Update the BoardsConstraintText Label
-        updateBoardsText(boards);
+        updateBoardsText();
 
         //Check that there are boards in the list
-        if(boards == null || boards.isEmpty()){
+        if (availableBoards == null || availableBoards.isEmpty()) {
+            emptyBoardListMsg.setVisible(true);
+            boardsListElement.setItems(null);
             return;
         }
+        emptyBoardListMsg.setVisible(false);
 
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
 
-        for(Board B : boards) {
+        for (Board board : availableBoards) {
             //The shortened String representation solely includes the title and the id of the Board.
-            content.add(B.toStringShort());
+            content.add(board.toStringShort());
         }
 
         //Set the items of the list element as the ObservableList.
-        BoardsListElement.setItems(content);
+        boardsListElement.setItems(content);
     }
 
 
-    /**The method is used by the disconnectButton to return to the ClientConnect scene, allowing the user
+    /**
+     * The method is used by the disconnectButton
+     * to return to the ClientConnect scene, allowing the user
      * to connect to another server.
      */
-    public void disconnect(){
+    public void disconnect() throws Exception {
         mainCtrl.showClientConnect();
     }
 
-    /**Updates the label SearchConstraintText in accordance to the current length of the input
-     * in the search TextField. The label itself is used to display whether the search input has reached
+    /**
+     * Updates the label searchConstraintText in
+     * accordance to the current length of the input
+     * in the search TextField. The label itself is
+     * used to display whether the search input has reached
      * or exceeded the maximum length constraint.
      */
-    public void updateSearchConstraintText(){
+    public void updateSearchConstraintText() {
         //Find the length of the current
-        int length = SearchTextField.getText().length();
+        int length = searchTextField.getText().length();
 
         //Update the SearchConstraintText label
-        if(length < SEARCH_MAX_LENGTH){
-            SearchConstraintText.setText((SEARCH_MAX_LENGTH-length) + " Characters Remaining.");
-            SearchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
-        }
-        else if(length == SEARCH_MAX_LENGTH){
-            SearchConstraintText.setText("Reached Maximum Length.");
-            SearchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
-        }else{
-            SearchConstraintText.setText("Exceeded Maximum Length By " +(length-SEARCH_MAX_LENGTH)+".");
-            SearchConstraintText.setStyle("-fx-text-fill: red;");
+        if (length < SEARCH_MAX_LENGTH) {
+            searchConstraintText.setText((SEARCH_MAX_LENGTH - length) + " Characters Remaining.");
+            searchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
+        } else if (length == SEARCH_MAX_LENGTH) {
+            searchConstraintText.setText("Reached Maximum Length.");
+            searchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
+        } else {
+            searchConstraintText.setText("Exceeded Maximum Length By "
+                    + (length - SEARCH_MAX_LENGTH) + ".");
+            searchConstraintText.setStyle("-fx-text-fill: red;");
 
         }
 
     }
 
-    /**Updates the BoardsText label through the current list of available boards. The label notifies the
+    /**
+     * Updates the boardsText label through
+     * the current list of available boards. The label notifies the
      * user of the total number of available boards.
-     * @param boards the current list of available boards.
      */
-    public void updateBoardsText(List<Board> boards){
+    public void updateBoardsText() {
 
         //Check that there are boards in the list
-        if(boards == null || boards.isEmpty()){
+        if (availableBoards == null || availableBoards.isEmpty()) {
             //Display that there are no available boards
-            BoardsText.setText("No Available Boards.");
+            boardsText.setText("No Available Boards");
             return;
         }
 
         //Display the number of available boards
-        BoardsText.setText(boards.size() + " Available Boards.");
+        boardsText.setText(availableBoards.size() + " Available Boards");
 
     }
 
-    /**This method is called upon when the user presses the Search button to search for a board using
-     * either a name or a key through the input in the SearchTextField.
+    /**
+     * This method is called upon when the user
+     * presses the Search button to search for a board using
+     * either a name or a key through the input in the searchTextField.
      */
-    public void searchBoard(){
+    public void searchBoard() {
 
-        //Retrieve the search input from the SearchTextField
-        String input = SearchTextField.getText();
+        //Retrieve the search input from the searchTextField
+        String input = searchTextField.getText();
 
         //Make sure that the
-        if(input.length() > SEARCH_MAX_LENGTH){
+        if (input.length() > SEARCH_MAX_LENGTH) {
 
             //TODO Add an error message through a ??? pop-up (to improve usability)
             return;
@@ -161,11 +191,14 @@ public class MainOverviewCtrl {
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
     }
 
-    /**This method is used in order to create a new board. The method first creates a new Board instance,
-     * and posts it to the server. Then, it retrieves the board with the generated ID in order to update
+    /**
+     * This method is used in order to create a new board.
+     * The method first creates a new Board instance,
+     * and posts it to the server. Then, it retrieves
+     * the board with the generated ID in order to update
      * the list of available boards.
      */
-    public void createBoard(){
+    public void createBoard() {
 
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
@@ -186,8 +219,13 @@ public class MainOverviewCtrl {
 //
 //        updateBoardsList(availableBoards);
     }
-    public void on_board_click(){
-        String selectedBoardStr = (String) BoardsListElement.getSelectionModel().getSelectedItem();
+
+    /**
+     * Function used to join a board and change scene to the
+     * selected board's overview
+     */
+    public void onBoardClick() {
+        String selectedBoardStr = (String) boardsListElement.getSelectionModel().getSelectedItem();
         if (selectedBoardStr == null) {
             return;
         }
@@ -196,6 +234,26 @@ public class MainOverviewCtrl {
         mainCtrl.showBoardOverview(selectedBoardStr);
     }
 
+    /**
+     * Function implemented to use/load certain functions when the MainOverview scene is shown
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
+    }
 
+    /**
+     * set up the connection to a certain URL
+     * @param address the URL provided through a String
+     */
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }

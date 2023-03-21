@@ -31,16 +31,31 @@ public class BoardController {
     private final Random random;
     private final BoardRepository repo;
 
+    /**
+     * Constructs a new BoardRepository object.
+     * @param random - instance of class Random
+     * @param repo - the board Repository
+     */
     public BoardController(Random random, BoardRepository repo) {
         this.random = random;
         this.repo = repo;
     }
 
+    /**
+     * GET request for obtaining all the boards from the database
+     * @return - all the boards from the database
+     */
     @GetMapping(path = { "", "/" })
     public List<Board> getAll() {
         return repo.findAll();
     }
 
+    /**
+     * GET request for obtaining the board with the specified id
+     * @param id - the id of the board
+     * @return - the searched board (status 200) if it exists in the database
+     * or BAD REQUEST (error 400) if it does not exist
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Board> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -49,6 +64,12 @@ public class BoardController {
         return ResponseEntity.ok(repo.findById(id).get());
     }
 
+    /**
+     * POST request for adding a board
+     * @param board - the board to be added
+     * @return - status 200 if the board has been successfully added in the database or
+     * BAD REQUEST (error 400) if the board title is null or empty
+     */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Board> add(@RequestBody Board board) {
 
@@ -60,16 +81,22 @@ public class BoardController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * Checks if the provided string is null or empty
+     * @param s - the string to be checked
+     * @return - true if the string is null or empty or false if not
+     */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
     }
 
-    @GetMapping("rnd")
-    public ResponseEntity<Board> getRandom() {
-        var boards = repo.findAll();
-        var idx = random.nextInt((int) repo.count());
-        return ResponseEntity.ok(boards.get(idx));
-    }
+    /**
+     * PUT request for updating a board with that specific id
+     * @param id - the id of the board to be updated
+     * @param board - the new board which will replace the already existing board
+     * @return - status 200 if the board has been successfully
+     * updated in the database or NOT FOUND (error 404) if the board is not found in the database
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
         Optional<Board> existing = repo.findById(id);
@@ -80,6 +107,26 @@ public class BoardController {
             Board saved = repo.save(updated);
             return ResponseEntity.ok(saved);
         } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * This method will delete a board with the given ID from the database if it exists.
+     * @param id - the id of the board, the user wants to delete
+     * @return if the board is found and deleted,
+     * it will return a response with HTTP status code 204 or
+     * if the board is not found, it will return a response with HTTP status code 404.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+        if (repo.existsById(id)) {
+            repo.deleteById(id);
+            // this creates a ResponseEntity with a HTTP status code of 204 (No Content)
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            // this creates a ResponseEntity with a HTTP status code of 404 (Not Found)
             return ResponseEntity.notFound().build();
         }
     }

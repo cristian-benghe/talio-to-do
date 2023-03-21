@@ -10,7 +10,7 @@ public class Task {
     //Encapsulated Task Attributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long task_id;
+    private long taskId;
 
     @ManyToOne
     @JoinColumn(name = "card_id")
@@ -22,10 +22,11 @@ public class Task {
 
     /**
      * A constructor for the Task class that initializes a newly created instance.
-     * @param task  Copies the values of the attributes from this instance into the newly created instance.
+     * @param task  Copies the values of the attributes from
+     *              this instance into the newly created instance.
      */
     public Task(Task task) {
-        this.task_id = task.getID();
+        this.taskId = task.getID();
         this.card = task.getCard();
         this.title = task.getTitle();
         this.status = task.isComplete();
@@ -45,13 +46,13 @@ public class Task {
 
     /**
      * A constructor for the task class that initializes a newly created instance
-     * @param task_id The identifier of the task.
+     * @param taskId The identifier of the task.
      * @param card  The card that the task corresponds to.
      * @param title The title of the task.
      * @param status    The completion status of the task.
      */
-    public Task(long task_id, Card card, String title, boolean status){
-        this.task_id = task_id;
+    public Task(long taskId, Card card, String title, boolean status){
+        this.taskId = taskId;
         this.card = card;
         this.title = title;
         this.status = status;
@@ -63,17 +64,17 @@ public class Task {
      * @return The identifier of the Task instance.
      */
     public long getID() {
-        return task_id;
+        return taskId;
     }
 
     /**
      * A setter for the task_id attribute.
-     * @param task_id The new task_id of the Task instance
+     * @param taskId The new task_id of the Task instance
      * @return The new task_id of this instance.
      */
-    public long setID(long task_id) {
-        this.task_id = task_id;
-        return this.task_id;
+    public long setID(long taskId) {
+        this.taskId = taskId;
+        return this.taskId;
     }
 
     /**
@@ -122,7 +123,8 @@ public class Task {
 
 
     /**
-     * An equals() implementation for the Task class. In order for this method to function as intended,
+     * An equals() implementation for the Task class.
+     * In order for this method to function as intended,
      * the title and card attributes of this class must not be null.
      * @param o The other object that will be compared to this object.
      * @return Returns true if and only if the attributes of the objects are equal.
@@ -155,10 +157,16 @@ public class Task {
         return Objects.hash(getID(), getCard(), getTitle(), isComplete());
     }
 
+
+    /**
+     * A toString implementation in the Task class. This method returns a human-friendly
+     * String representation of this Task instance.
+     * @return a human-friendly representation of this Task instance.
+     */
     @Override
     public String toString() {
         return "Task{" +
-                "task_id=" + task_id +
+                "task_id=" + taskId +
                 ", card_id=" + card.getId() +
                 ", title='" + title + '\'' +
                 ", isComplete=" + status +

@@ -23,7 +23,7 @@ class TagTest {
     }
     @Test
     void getTag_id() {
-        assertEquals(100, tag.getTag_id());
+        assertEquals(100, tag.getTagID());
     }
 
     @Test
@@ -38,8 +38,8 @@ class TagTest {
 
     @Test
     void setTag_id() {
-        tag.setTag_id(5L);
-        assertEquals(tag.getTag_id(), 5L);
+        tag.setTagID(5L);
+        assertEquals(tag.getTagID(), 5L);
     }
 
     @Test
