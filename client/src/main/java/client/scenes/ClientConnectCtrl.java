@@ -23,8 +23,9 @@ public class ClientConnectCtrl implements Initializable {
     private RotateTransition shakeAnim; //Rotation animation for the error message.
     private boolean isAnimPlaying; //A flag for whenever the error message animation is playing.
 
+    //to get the text from the text field with ID serverAddressField
     @FXML
-    private TextField serverAddressField;  //to get the text from the text field with ID serverAddressField
+    private TextField serverAddressField;
 //
 //    @FXML
 //    private Button go_to_home;
@@ -117,7 +118,7 @@ public class ClientConnectCtrl implements Initializable {
 
         // Set the server address in the ServerUtils class
         ServerUtils.setServerAddress(serverAddress);
-        mainCtrl.create_connection(serverAddress);
+        mainCtrl.createConnection(serverAddress);
         //Switch the scene to the main overview
         mainCtrl.showMainOverview();
 

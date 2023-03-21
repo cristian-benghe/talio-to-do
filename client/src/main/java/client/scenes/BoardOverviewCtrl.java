@@ -458,6 +458,10 @@ public class BoardOverviewCtrl implements Initializable {
         }
     }
 
+    /**
+     * A method that sets the connection to a server
+     * @param address the address of the server\
+     */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }

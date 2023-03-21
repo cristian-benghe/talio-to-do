@@ -36,11 +36,14 @@ public class MainCtrl {
      * @throws Exception an exception that may be thrown
      */
 
-    public void initialize(Stage primaryStage, Pair<MainOverviewCtrl, Parent> mainOverview,
+    public void initialize(Stage primaryStage,
+                           Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView) throws Exception {
+
+
         this.primaryStage = primaryStage;
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
@@ -66,6 +69,10 @@ public class MainCtrl {
     }
 
 
+    /**
+     * The method changes the scene to the BoardOverview
+     * @param text the name of the selected board
+     */
     public void showBoardOverview(String text) {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
@@ -110,7 +117,6 @@ public class MainCtrl {
         primaryStage.setScene(cardView);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
 
 
@@ -128,7 +134,12 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
-    public void create_connection(String address){
+
+    /**
+     * A new method to connect to a given address.
+     * @param address the address of the server
+     */
+    public void createConnection(String address){
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
