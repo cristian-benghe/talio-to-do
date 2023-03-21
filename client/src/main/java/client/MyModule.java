@@ -21,7 +21,12 @@ import com.google.inject.Module;
 import com.google.inject.Scopes;
 
 public class MyModule implements Module {
-
+    /**
+     * Configures the bindings
+     * Binds several controller classes
+     * @param binder the Guice Binder instance to use for binding
+     *
+     */
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
