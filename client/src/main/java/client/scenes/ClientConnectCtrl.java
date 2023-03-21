@@ -8,7 +8,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.Duration;
@@ -25,23 +24,37 @@ public class ClientConnectCtrl implements Initializable {
     private boolean isAnimPlaying; //A flag for whenever the error message animation is playing.
 
     @FXML
-    private TextField server_address;  //to get the text from the text field with ID server_address
+    private TextField serverAddressField;  //to get the text from the text field with ID serverAddressField
 //
 //    @FXML
 //    private Button go_to_home;
-    @FXML
-    private Button button_connect;
 
     @FXML
-    private Label error_msg; //the error message label for the server address input
+    private Label errorMsg; //the error message label for the server address input
 
+    /**
+     * Constructs a new instance of the ClientConnectCtrl class with the specified
+     * ServerUtils and MainCtrl objects injected as dependencies.
+     * @param server the ServerUtils object to use for interacting with the server
+     * @param mainCtrl the MainCtrl object to use for coordinating the application's
+     * main control flow
+     */
     @Inject
     public ClientConnectCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
-    //sets the default value for the address on port 8080
+    /**
+     * sets the default value for the address on port 8080
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -52,10 +65,10 @@ public class ClientConnectCtrl implements Initializable {
         //Set up the error message animation
 
         shakeAnim = new RotateTransition();
-        shakeAnim.setNode(error_msg);
+        shakeAnim.setNode(errorMsg);
         shakeAnim.setInterpolator(Interpolator.LINEAR);
         shakeAnim.setDuration(Duration.millis(75));
-        shakeAnim.setAxis(error_msg.getRotationAxis());
+        shakeAnim.setAxis(errorMsg.getRotationAxis());
         shakeAnim.setByAngle(20);
         shakeAnim.setAutoReverse(true);
         shakeAnim.setCycleCount(6);
@@ -75,12 +88,12 @@ public class ClientConnectCtrl implements Initializable {
      */
     public void connect(){
 
-        String serverAddress = server_address.getText();
+        String serverAddress = serverAddressField.getText();
 
         //Check that the address is not blank
         if (serverAddress.isBlank()) {
 
-            error_msg.setText("Please enter a non-blank address above.");
+            errorMsg.setText("Please enter a non-blank address above.");
             errorShakeAnim();
             return;
 
@@ -89,7 +102,7 @@ public class ClientConnectCtrl implements Initializable {
         //Check that the address is in a valid format
         if(!isValidUrl(serverAddress)){
 
-            error_msg.setText("Please enter an address in a valid format.");
+            errorMsg.setText("Please enter an address in a valid format.");
             errorShakeAnim();
             return;
 
@@ -97,7 +110,7 @@ public class ClientConnectCtrl implements Initializable {
 
         //Check that a connection with the server can be established
         if(!validConnection(serverAddress)){
-            error_msg.setText("Connection cannot be established. Try again!");
+            errorMsg.setText("Connection cannot be established. Try again!");
             errorShakeAnim();
             return;
         }
@@ -109,10 +122,14 @@ public class ClientConnectCtrl implements Initializable {
         mainCtrl.showMainOverview();
 
     }
+
+    /**
+     * Display a shake animation if the input text is wrong
+     */
     public void errorShakeAnim(){
 
         //Show the error message
-        error_msg.setVisible(true);
+        errorMsg.setVisible(true);
 
         //Play a short rotation animation if the animation is not already playing.
         if(!isAnimPlaying){
@@ -122,6 +139,11 @@ public class ClientConnectCtrl implements Initializable {
 
     }
 
+    /**
+     * check if a certain URL is valid
+     * @param address the URL to be checked in String format
+     * @return true if valid, false else
+     */
     public boolean isValidUrl(String address){
         try {
             URL url = new URL(address);
@@ -130,6 +152,13 @@ public class ClientConnectCtrl implements Initializable {
             return false;
         }
     }
+
+    /**
+     * checks if a connection to a certain URL is valid
+     * @param address the URL in String format
+     * @return true if the connection is done with succes,
+     * false else.
+     */
     public boolean validConnection(String address){
         try{
             server.setServerAddress(address);
@@ -142,18 +171,25 @@ public class ClientConnectCtrl implements Initializable {
         }
     }
 
-
+    /**
+     * Resets the visibility of the error message and
+     * the default input of the serverAddress
+     */
     public void refresh(){
 
         //Resets the visibility of the error message
-        error_msg.setVisible(false);
+        errorMsg.setVisible(false);
 
         //Resets the default input of the serverAddress
-        server_address.setText("http://localhost:8080/");
+        serverAddressField.setText("http://localhost:8080/");
 
 
     }
 
+    /**
+     * creates the connection and sets the URL
+     * @param address the URL that provides where the connection needs to be established
+     */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
