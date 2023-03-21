@@ -50,7 +50,8 @@ public class ColumnController {
     /**
      * Returns the Column object with the specified id.
      * @param id the id of the Column object to retrieve
-     * @return a response containing the Column object, or a bad request response if the id is invalid
+     * @return a response containing the Column object,or a bad request response
+     * if the id is invalid
      */
     @GetMapping("/{id}")
     public ResponseEntity<Column> getById(@PathVariable("id") long id) {
@@ -63,7 +64,8 @@ public class ColumnController {
     /**
      * Adds a new Column object to the database.
      * @param column the Column object to add to the database
-     * @return a response containing the saved Column object, or a bad request response if the title is null or empty
+     * @return a response containing the saved Column object,or a bad request response
+     * if the title is null or empty
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Column> add(@RequestBody Column column) {
@@ -84,7 +86,8 @@ public class ColumnController {
      * Updates an existing Column object with the specified id.
      * @param id the id of the Column object to update
      * @param column the updated Column object
-     * @return a response containing the updated Column object, or a not found response if the id is invalid
+     * @return a response containing the updated Column object,or a not found response
+     * if the id is invalid
      */
 
     @PutMapping("/{id}")

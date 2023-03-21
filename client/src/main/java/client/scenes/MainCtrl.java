@@ -9,13 +9,6 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
@@ -32,20 +25,26 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<MainOverviewCtrl, Parent> mainOverview,
+    /**
+     * This method initializes this controller instances
+     * @param primaryStage an injection of the primary stage
+     * @param mainOverview an injection of the MainOverview scene and controller
+     * @param boardOverview an injection of the BoardOverview scene and controller
+     * @param clientConnect an injection of the ClientConnect scene and controller
+     * @param popupStage an injection of the PopupStage scene and controller
+     * @param cardView an injection of the CardView scene and controller
+     * @throws Exception an exception that may be thrown
+     */
+
+    public void initialize(Stage primaryStage,
+                           Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView) throws Exception {
+
+
         this.primaryStage = primaryStage;
-
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
-
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
-
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -69,26 +68,22 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
 
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
-
+    /**
+     * The method changes the scene to the BoardOverview
+     * @param text the name of the selected board
+     */
     public void showBoardOverview(String text) {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoard_title(text);
+        boardOverviewCtrl.setBoardTitle(text);
     }
 
+    /**
+     * This method changes the scene to the MainOverview scene.
+     */
     public void showMainOverview() {
 
 
@@ -101,13 +96,16 @@ public class MainCtrl {
 
     }
 
+    /**
+     * This method changes the scene to the ClientConnectScene.
+     */
     public void showClientConnect() {
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+
     }
 
     /**
@@ -119,8 +117,11 @@ public class MainCtrl {
         primaryStage.setScene(cardView);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
     }
+
+
+
+
 
 
 
@@ -137,7 +138,12 @@ public class MainCtrl {
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
-    public void create_connection(String address){
+
+    /**
+     * A new method to connect to a given address.
+     * @param address the address of the server
+     */
+    public void createConnection(String address){
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
