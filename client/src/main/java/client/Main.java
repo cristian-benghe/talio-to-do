@@ -56,6 +56,6 @@ public class Main extends Application {
         var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
         var cardView = FXML.load(CardViewCtrl.class, "client", "scenes", "CardView.fxml");
 
-        mainCtrl.initialize(primaryStage, overview, add, mainOverview, boardOverview, clientCtrl, popUpStage, cardView);
+        mainCtrl.initialize(primaryStage, mainOverview, boardOverview, clientCtrl, popUpStage, cardView);
     }
 }
