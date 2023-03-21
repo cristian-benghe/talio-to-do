@@ -17,18 +17,38 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
+
+    /**
+     * Constructs a new Board object with the specified title, columns, and tags.
+     *
+     * @param title the title of the new Board object
+     * @param columns the columns of the new Board object
+     * @param tags the tags of the new Board object
+     */
     public Board(String title, List<Column> columns, List<Tag>tags) {
         this.title = title;
         this.columns = columns;
         this.tags=tags;
     }
 
+    /**
+     * Constructs a new Board object with the specified title
+     * @param title the title of the new Board object
+     */
     public Board(String title) {
         this.title = title;
         columns = new ArrayList<>();
         tags = new ArrayList<>();
     }
 
+    /**
+     * Constructs a new Board object with the specified ID, title, columns, and tags.
+     *
+     * @param id the ID of the new Board object
+     * @param title the title of the new Board object
+     * @param columns the columns of the new Board object
+     * @param tags the tags of the new Board object
+     */
     public Board(long id, String title, List<Column> columns, List<Tag>tags) {
         this.id = id;
         this.title = title;
@@ -36,36 +56,71 @@ public class Board {
         this.tags=tags;
     }
 
+    /**
+     * Empty constructor for the Board
+     */
     public Board(){}
 
+    /**
+     * Get method for Id attribute
+     * @return the ID of this Board object
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets the ID of this Board object.
+     * @param id the new ID to set
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+     * Get method for the title attribute
+     * @return the title of this Board object
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Set method for the title
+     * @param title the new title to set
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Get method to get the list of columns of the board
+     * @return List of columns
+     */
     public List<Column> getColumns() {
         return columns;
     }
 
+    /**
+     * Set method to set the list of columns of the board
+     * @param columns columns the new list of columns to set
+     */
     public void setColumns(List<Column> columns) {
         this.columns = columns;
     }
 
+    /**
+     * Get method to get the list of tags of the board
+     * @return List of tags
+     */
     public List<Tag> getTags() {
         return tags;
     }
 
+    /**
+     * Set method to set the list of columns of the board
+     * @param tags tags the new list of tags to set
+     */
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
@@ -79,7 +134,11 @@ public class Board {
     public String toStringShort(){
         return this.title + " -- " + this.id;
     }
-
+    /**
+     * Equals method of the board object
+     * @param o what to compare with
+     * @return true or false according to equality.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -87,12 +146,20 @@ public class Board {
 
         Board board = (Board) o;
 
-        if (getId() != null ? !getId().equals(board.getId()) : board.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(board.getTitle()) : board.getTitle() != null) return false;
-        if (getColumns() != null ? !getColumns().equals(board.getColumns()) : board.getColumns() != null) return false;
-        return getTags() != null ? getTags().equals(board.getTags()) : board.getTags() == null;
+        if (getId() != null ? !getId().equals(board.getId()) :
+                board.getId() != null) return false;
+        if (getTitle() != null ? !getTitle().equals(board.getTitle()) :
+                board.getTitle() != null) return false;
+        if (getColumns() != null ? !getColumns().equals(board.getColumns()) :
+                board.getColumns() != null) return false;
+        return getTags() != null ? getTags().equals(board.getTags()) :
+                board.getTags() == null;
     }
 
+    /**
+     * Hash method for the board
+     * @return a hash code value for this object
+     */
     @Override
     public int hashCode() {
         int result = getId() != null ? getId().hashCode() : 0;

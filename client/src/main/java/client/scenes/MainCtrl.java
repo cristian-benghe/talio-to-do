@@ -9,13 +9,6 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private Stage primaryStage;
-
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
     private BoardOverviewCtrl boardOverviewCtrl;
     private Scene boardOverview;
 
@@ -29,6 +22,8 @@ public class MainCtrl {
     private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
+    private CardViewCtrl cardViewCtrl;
+    private Scene cardView;
 
     /**
      * This method initializes this controller instances
@@ -36,17 +31,17 @@ public class MainCtrl {
      * @param mainOverview an injection of the MainOverview scene and controller
      * @param boardOverview an injection of the BoardOverview scene and controller
      * @param clientConnect an injection of the ClientConnect scene and controller
+     * @param popupStage an injection of the PopupStage scene and controller
+     * @param cardView an injection of the CardView scene and controller
      * @throws Exception an exception that may be thrown
      */
-    public void initialize(Stage primaryStage,
-                           Pair<MainOverviewCtrl, Parent> mainOverview,
+
+    public void initialize(Stage primaryStage, Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
-                           Pair<ClientConnectCtrl, Parent> clientConnect
-    ) throws Exception {
-
+                           Pair<ClientConnectCtrl, Parent> clientConnect,
+                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
+                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
         this.primaryStage = primaryStage;
-
-
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -56,6 +51,8 @@ public class MainCtrl {
         this.clientConnectCtrl = clientConnect.getKey();
         this.clientConnect = new Scene(clientConnect.getValue());
 
+        this.cardViewCtrl = cardView.getKey();
+        this.cardView = new Scene(cardView.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -68,34 +65,13 @@ public class MainCtrl {
         primaryStage.show();
     }
 
-    /**
-     * This method changes the scene to the quotes Overview scene.
-     */
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
-    }
 
-    /**
-     * This method changes the scene to the Add quote scene.
-     */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
-
-    /**
-     * This method changes the scene to the BoardsView scene.
-     * @param text the title of the Board
-     */
     public void showBoardOverview(String text) {
         System.out.println(text);
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoard_title(text);
+        boardOverviewCtrl.setBoardTitle(text);
     }
 
     /**
@@ -126,8 +102,21 @@ public class MainCtrl {
     }
 
     /**
-     * Displays a popup window to confirm the deletion
-     * of a board with the given title and ID.
+     * A method to switch the scene from boardOverView to the CarView
+     */
+    public void showCardView() {
+        primaryStage.setTitle("Talio - CardView");
+
+        primaryStage.setScene(cardView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
+    }
+
+
+
+    /**
+     * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
      * @param id - the ID of the board to be deleted.
@@ -138,6 +127,11 @@ public class MainCtrl {
         primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
+    }
+    public void create_connection(String address){
+        clientConnectCtrl.setConnection(address);
+        mainOverviewCtrl.setConnection(address);
+        boardOverviewCtrl.setConnection(address);
     }
 
 
