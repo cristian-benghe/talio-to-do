@@ -121,17 +121,7 @@ public class MainCtrl {
 
 
 
-    /**
-     * A method to switch the scene from boardOverView to the CarView
-     */
-    public void showCardView() {
-        primaryStage.setTitle("Talio - CardView");
 
-        primaryStage.setScene(cardView);
-        clientConnectCtrl.refresh();
-        primaryStage.centerOnScreen();
-        //clientConnectCtrl.connect();              //This line seems irrelevant. Why attempt to connect without any user-approved url?
-    }
 
 
 
