@@ -305,7 +305,7 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * set drag and drop functionality into card
      *
-     * @param card a card to add functionality
+     * @param card a carTd to add functionality
      * @param vBox a parent element of the card which is vBox
      */
     private void setCardDragDrop(AnchorPane card, VBox vBox) {
