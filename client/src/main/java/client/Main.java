@@ -52,10 +52,13 @@ public class Main extends Application {
         var boardOverview = FXML.load(BoardOverviewCtrl.class, "client", "scenes", "Board.fxml");
         var mainOverview = FXML.load(MainOverviewCtrl.class, "client", "scenes", "Home.fxml");
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        var clientCtrl = FXML.load(ClientConnectCtrl.class, "client", "scenes", "ClientConnect.fxml");
-        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class, "client", "scenes", "DeleteBoard.fxml");
+        var clientCtrl = FXML.load(ClientConnectCtrl.class,
+                "client", "scenes", "ClientConnect.fxml");
+        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class,
+                "client", "scenes", "DeleteBoard.fxml");
         var cardView = FXML.load(CardViewCtrl.class, "client", "scenes", "CardView.fxml");
 
-        mainCtrl.initialize(primaryStage, mainOverview, boardOverview, clientCtrl, popUpStage, cardView);
+        mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
+                clientCtrl, popUpStage, cardView);
     }
 }
