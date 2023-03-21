@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
-    
+
     public static final int SEARCH_MAX_LENGTH = 25;
 
     //Fields for the dependency injection
