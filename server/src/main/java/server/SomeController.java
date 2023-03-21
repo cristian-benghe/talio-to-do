@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class SomeController {
     /**
      * Handles GET requests to the URL of the application
-     * @return a String containing "Hello word"!
+     * @return a String containing "Hello world"!
      */
     @GetMapping("/")
     @ResponseBody
