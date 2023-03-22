@@ -203,10 +203,19 @@ public class MainOverviewCtrl implements Initializable {
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
         System.out.println("\n\n\n" + board.getId() + "\n\n\n");
+
+        server.send("/app/boards", board);
+
         //Post the new board to the server
         //TODO Fix the POST method for board!
-        server.addBoard(board);
-        refreshOverview();
+
+
+        //server.addBoard(board);
+        refreshOverview(); //to be deleted after websockets implementation
+
+
+
+
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
 //        //As a temporary measure, set ID as 0
@@ -246,7 +255,9 @@ public class MainOverviewCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        server.registerForMessages("topic/boards", Board.class, board -> {
+            availableBoards.add(board);
+        });
     }
 
     /**

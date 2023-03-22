@@ -17,8 +17,11 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import commons.Board;
 import commons.Card;
@@ -29,10 +32,17 @@ import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static String server;
+    private static String server = "localhost:8080";
 
     /**
      * set method used in the first scene of the application
@@ -221,6 +231,55 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .get(Board.class);
+    }
+
+    private StompSession session = connect("ws://" + server + "/websocket");
+
+    private StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e){
+            throw new RuntimeException(e);
+        }
+        throw new IllegalStateException();
+    }
+
+
+    /**
+     * Registers a consumer for messages of the specified type from the specified destination.
+     * @param dest the destination to subscribe to
+     * @param type the class of the message payload
+     * @param consumer the consumer to handle the received messages
+     * @param <T> the method is can be used for any class template <T>
+     */
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    /**
+     * Sends an object to the specified destination.
+     * @param dest the destination to send the object to
+     * @param o the object to send
+     * @throws IllegalStateException if the WebSocket session is not connected
+     */
+    public void send(String dest, Object o) {
+        session.send(dest, o);
     }
 
 }
