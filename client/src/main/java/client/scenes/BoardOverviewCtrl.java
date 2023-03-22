@@ -94,16 +94,19 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setBoardTitle(String idd){
         Long nr=Long.parseLong(idd.split("--")[1].trim());
-        keyID.setText("keyID: "+nr);
+        System.out.println(nr);
+        keyID= new Text("keyID: "+nr);
         this.id = nr;
         if(!idd.contains("New Board")) {
-            boardTitle.setText(idd.split("--")[0].trim());
+            boardTitle=new TextField(idd.split("--")[0].trim());
             return;
         }
         //this should set a default title for boards that are not new
         // but haven't been modified either
         //or set the title to the title of the board object with an ID
         Board board=server.getBoardById(nr);
+        if(board==null)
+            return;
         if(board.getTitle().equals("New Board")){
             boardTitle.setText("Board "+nr);
         }
