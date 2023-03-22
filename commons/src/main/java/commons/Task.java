@@ -58,6 +58,10 @@ public class Task {
         this.status = status;
     }
 
+    public Task() {
+
+    }
+
 
     /**
      * A getter for the task_id attribute.

@@ -26,7 +26,7 @@ class ColumnTest {
         cards.add(card3);
         List<Column> columns = new ArrayList<>();
         board = new Board("Project", columns, null);
-        column= new Column("Todo", cards, board);
+        column= new Column("Todo", cards);
     }
     @Test
     void getId() {
@@ -43,10 +43,6 @@ class ColumnTest {
     void getCards() {
         column.setCards(cards);
         assertEquals(cards, column.getCards());
-    }
-    @Test
-    void getBoard() {
-        assertEquals(board, column.getBoard());
     }
 
     @Test
@@ -69,28 +65,20 @@ class ColumnTest {
     }
 
     @Test
-    void setBoard() {
-        List<Column> newColumns = new ArrayList<>();
-        Board b = new Board("OOPP", newColumns, null );
-        column.setBoard(b);
-        assertEquals(column.getBoard(), b) ;
-    }
-
-    @Test
     void testEquals() {
-        Column column1 = new Column("Todo", cards, board);
+        Column column1 = new Column("Todo", cards);
         assertEquals(column, column1);
     }
 
     @Test
     void testEquals2() {
-        Column column2 = new Column("Todo", null, null );
+        Column column2 = new Column("Todo", null );
         assertNotEquals(column, column2);
     }
 
     @Test
     void testHashCode() {
-        Column column1 = new Column("Todo", cards , board);
+        Column column1 = new Column("Todo", cards);
         assertEquals(column.hashCode(), column1.hashCode());
     }
 

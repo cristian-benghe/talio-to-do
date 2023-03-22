@@ -223,4 +223,57 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
+    public Board addColumnToBoard(Long id, Column new_column, int i) {
+        Board board=getBoardById(id);
+        new_column.setIDinBoard(i);
+
+       // System.out.println(new_column.getIDinBoard());
+
+        //addColumn(new_column);
+        board.addColumn(new_column);
+        //System.out.println(board.getColumns().size());
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + id)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    public void updateColTitle(int columnID, String text, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get(columnID-1);
+        column.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateColumnInBoard(columnID, column, boardId);
+    }
+
+    private Board updateColumnInBoard(int columnID, Column column, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColumn(columnID-1, column);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    private Column updateColumn(int columnID, Column column) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + columnID)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+    /**
+     * Adds a new column to a board.
+     * This method sends a POST request to the server to add a new column to a board. The boardId parameter specifies the ID of the board to add the column to, while the column parameter should contain all necessary information about the new column.
+     * @param boardId The ID of the board to add the column to.
+     * @param column The column to add to the board.
+     * @return The deserialized column.
+     */
+//    public Column addColumnToBoard(Long boardId, Column column) {
+//        // Send a POST request to the server to add a new column to a board
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(getServerUrl("api/boards/" + boardId + "/columns"))
+//                .request(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .post(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+//    }
 }
