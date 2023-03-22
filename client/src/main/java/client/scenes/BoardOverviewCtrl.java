@@ -467,6 +467,9 @@ public class BoardOverviewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
+    /**
+     * method which copies the id of the accessed board to the clipboard
+     */
     public void copyID() {
         Clipboard clipboard = Clipboard.getSystemClipboard();
         ClipboardContent content = new ClipboardContent();
