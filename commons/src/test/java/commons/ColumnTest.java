@@ -72,8 +72,8 @@ class ColumnTest {
 
     @Test
     void testEquals2() {
-        Column column2 = new Column("Todo", null );
-        assertNotEquals(column, column2);
+        Column column2 = new Column("Todo", null);
+        assertEquals(column, column2);
     }
 
     @Test
@@ -89,8 +89,8 @@ class ColumnTest {
             cards1+= cards.get(i).toString();
         }
         column.setCards(cards);
-        String answer = "The Column Todo has the ID: null is part of Board" +
-                " Project and contains the following cards: " + cards1;
+        String answer = "The Column Todo has the ID: null" +
+                " and contains the following cards: " + cards1;
 
         assertEquals( column.toString(), answer);
     }

@@ -223,14 +223,20 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
-    public Board addColumnToBoard(Long id, Column new_column, int i) {
+    /**
+     * @param id = id of the board
+     * @param newColumn = column to add to board
+     * @param i = id of the column in the board
+     * @return the board after you add a column
+     */
+    public Board addColumnToBoard(Long id, Column newColumn, int i) {
         Board board=getBoardById(id);
-        new_column.setIDinBoard(i);
+        newColumn.setIDinBoard(i);
 
        // System.out.println(new_column.getIDinBoard());
 
         //addColumn(new_column);
-        board.addColumn(new_column);
+        board.addColumn(newColumn);
         //System.out.println(board.getColumns().size());
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + id)
@@ -238,6 +244,11 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * @param columnID = id of the column in the board
+     * @param text = the new title of the column
+     * @param boardId = the id of the board
+     */
     public void updateColTitle(int columnID, String text, Long boardId) {
         Board board=getBoardById(boardId);
         Column column=board.getColumns().get(columnID-1);
@@ -263,7 +274,9 @@ public class ServerUtils {
     }
     /**
      * Adds a new column to a board.
-     * This method sends a POST request to the server to add a new column to a board. The boardId parameter specifies the ID of the board to add the column to, while the column parameter should contain all necessary information about the new column.
+     * This method sends a POST request to the server to add a new column to a board.
+     * The boardId parameter specifies the ID of the board to add the column to,
+     * while the column parameter should contain all necessary information about the new column.
      * @param boardId The ID of the board to add the column to.
      * @param column The column to add to the board.
      * @return The deserialized column.

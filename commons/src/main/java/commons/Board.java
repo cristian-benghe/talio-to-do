@@ -169,10 +169,17 @@ public class Board {
         return result;
     }
 
-    public void addColumn(Column new_column) {
-        columns.add(new_column);
+    /**
+     * @param newColumn = column you add when pressing on addColumn button
+     */
+    public void addColumn(Column newColumn) {
+        columns.add(newColumn);
     }
 
+    /**
+     * @param columnID = the id of the column in a board
+     * @param column = set a column with a new title
+     */
     public void setColumn(int columnID, Column column) {
         columns.set(columnID, column);
     }

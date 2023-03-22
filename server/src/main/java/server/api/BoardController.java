@@ -16,7 +16,6 @@
 package server.api;
 
 import commons.Board;
-import commons.Column;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.BoardRepository;
@@ -132,17 +131,5 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }
     }
-//    @PostMapping("/{boardId}/columns")
-//    public ResponseEntity<Column> addColumnToBoard(@PathVariable("boardId") long boardId, @RequestBody Column column) {
-//        Optional<Board> existing = repo.findById(boardId);
-//        if (existing.isPresent()) {
-//            Board board = existing.get();
-//            board.getColumns().add(column);
-//            Board saved = repo.save(board);
-//            return ResponseEntity.ok(column);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
 
 }

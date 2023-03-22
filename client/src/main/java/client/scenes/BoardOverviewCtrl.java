@@ -98,7 +98,7 @@ public class BoardOverviewCtrl implements Initializable {
         Long nr=Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: "+nr);
         this.id = nr;
-        columns_refresh();
+        columnsRefresh();
 //        addOneColumn("To do");
 //        addOneColumn("Doing");
 //        addOneColumn("Done");
@@ -170,8 +170,10 @@ public class BoardOverviewCtrl implements Initializable {
         hbox.getChildren().add(anchorPaneVBox);
         nrCol++;
         //System.out.println(hbox.getChildren().indexOf(anchorPaneVBox)+1);
-        server.addColumnToBoard(id, new Column(("New column"+nrCol), new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox)+1);
-         textField.setOnKeyTyped(e->{updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
+        server.addColumnToBoard(id, new Column(("New column"+nrCol),
+                new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox)+1);
+        textField.setOnKeyTyped(e->
+        {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
     }
 
     private void updateColTitle(int i, String text) {
@@ -377,7 +379,10 @@ public class BoardOverviewCtrl implements Initializable {
         });
     }
 
-    public void columns_refresh(){
+    /**
+     * refreshed the boardOverview scene so that it updates the columns
+     */
+    public void columnsRefresh(){
         hbox.getChildren().clear();
         for(Column c:server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
@@ -400,11 +405,18 @@ public class BoardOverviewCtrl implements Initializable {
             // Only for deletion not to replace!
             setColumnDragDrop(anchorPaneVBox);
             hbox.getChildren().add(anchorPaneVBox);
-            textField.setOnKeyTyped(e->{updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
+            textField.setOnKeyTyped(e->
+            {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
 
         }
     }
 
+    /**
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //Set the expansion and contraction animations

@@ -13,15 +13,21 @@ public class Column {
     private Long id;
     private String title;
 
+    /**
+     * @return id of a column in a board
+     */
     public int getIDinBoard() {
-        return IDinBoard;
+        return idInBoard;
     }
 
-    public void setIDinBoard(int IDinBoard) {
-        this.IDinBoard = IDinBoard;
+    /**
+     * @param idInBoard = set the boardid when adding a column
+     */
+    public void setIDinBoard(int idInBoard) {
+        this.idInBoard = idInBoard;
     }
 
-    private int IDinBoard=-1;
+    private int idInBoard=-1;
 
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
     private List<Card> cards= new ArrayList<>();
@@ -107,13 +113,19 @@ public class Column {
      * @return returns true if and only if the two objects are equivalent
      */
     @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(!(o instanceof Column) || o == null) return false;
-        Column column = (Column) o;
-        return (getId() == column.getId() && getTitle().equals(column.getTitle())
-                && getCards().equals(column.getCards()));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Column)) return false;
 
+        Column column = (Column) o;
+
+        if (idInBoard != column.idInBoard) return false;
+        if (getId() != null ? !getId().equals(column.getId())
+                : column.getId() != null) return false;
+        if (getTitle() != null ? !getTitle().equals(column.getTitle()) :
+                column.getTitle() != null) return false;
+        return getCards() != null ? getCards().equals(column.getCards()) :
+                column.getCards() == null;
     }
 
     /**
