@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Fields for the dependency injection
     private final ServerUtils server;
+
     private final MainCtrl mainCtrl;
 
 
@@ -255,8 +257,18 @@ public class MainOverviewCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        server.registerForMessages("topic/boards", Board.class, board -> {
+
+    }
+
+    /**
+     * Method to be called one time for the websockets to
+     * start.
+     */
+    public void socketsCall() {
+        server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
+            System.out.println(board);
+            Platform.runLater(() -> refreshOverview());
         });
     }
 
@@ -266,5 +278,13 @@ public class MainOverviewCtrl implements Initializable {
      */
     public void setConnection(String address) {
         server.setServerAddress(address);
+    }
+
+    /**
+     * getter for the server
+     * @return the instance of the ServerUtils class
+     */
+    public ServerUtils getServer() {
+        return server;
     }
 }

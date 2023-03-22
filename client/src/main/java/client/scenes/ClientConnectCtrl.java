@@ -90,7 +90,9 @@ public class ClientConnectCtrl implements Initializable {
     public void connect(){
 
         String serverAddress = serverAddressField.getText();
-
+        System.out.println(serverAddress.substring(7,21));
+        ServerUtils.setSession(
+                ServerUtils.connect("ws://" + serverAddress.substring(7,21) + "/websocket"));
         //Check that the address is not blank
         if (serverAddress.isBlank()) {
 

@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -75,6 +76,8 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text) {
         System.out.println(text);
+
+
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
@@ -87,6 +90,8 @@ public class MainCtrl {
     public void showMainOverview() {
 
 
+        System.out.println(ServerUtils.getServer());
+        mainOverviewCtrl.socketsCall();
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();

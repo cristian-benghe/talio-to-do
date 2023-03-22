@@ -42,7 +42,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static String server = "localhost:8080";
+    private static String server;
 
     /**
      * set method used in the first scene of the application
@@ -233,9 +233,19 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
-    private StompSession session = connect("ws://" + server + "/websocket");
+    private static StompSession session;
 
-    private StompSession connect(String url) {
+    /**
+
+     Establishes a WebSocket connection to the specified
+     URL using STOMP protocol and returns a new {@link StompSession}.
+     @param url The URL to connect to as a String.
+     @return A new {@link StompSession} object representing the established connection.
+     @throws IllegalStateException If connection cannot be established.
+     @throws RuntimeException If an exception is thrown during the connection attempt.
+     @throws InterruptedException If the thread is interrupted during the connection attempt.
+     */
+    public static StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
@@ -282,4 +292,35 @@ public class ServerUtils {
         session.send(dest, o);
     }
 
+    /**
+     * gets the URL
+     * @return the URL of the server in String format
+     */
+    public static String getServer() {
+        return server;
+    }
+
+    /**
+     * sets the URL
+     * @param server the URL of the server in String format
+     */
+    public static void setServer(String server) {
+        ServerUtils.server = server;
+    }
+
+    /**
+     * gets the session
+     * @return the session
+     */
+    public static StompSession getSession() {
+        return session;
+    }
+
+    /**
+     * sets the session
+     * @param session the session
+     */
+    public static void setSession(StompSession session) {
+        ServerUtils.session = session;
+    }
 }
