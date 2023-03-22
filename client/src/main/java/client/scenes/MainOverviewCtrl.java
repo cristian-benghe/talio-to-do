@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,6 +24,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Fields for the dependency injection
     private final ServerUtils server;
+
     private final MainCtrl mainCtrl;
 
 
@@ -203,10 +205,19 @@ public class MainOverviewCtrl implements Initializable {
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
         System.out.println("\n\n\n" + board.getId() + "\n\n\n");
+
+        server.send("/app/boards", board);
+
         //Post the new board to the server
         //TODO Fix the POST method for board!
-        server.addBoard(board);
-        refreshOverview();
+
+
+        //server.addBoard(board);
+        refreshOverview(); //to be deleted after websockets implementation
+
+
+
+
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
 //        //As a temporary measure, set ID as 0
@@ -250,10 +261,30 @@ public class MainOverviewCtrl implements Initializable {
     }
 
     /**
+     * Method to be called one time for the websockets to
+     * start.
+     */
+    public void socketsCall() {
+        server.registerForMessages("/topic/boards", Board.class, board -> {
+            availableBoards.add(board);
+            System.out.println(board);
+            Platform.runLater(() -> refreshOverview());
+        });
+    }
+
+    /**
      * set up the connection to a certain URL
      * @param address the URL provided through a String
      */
     public void setConnection(String address) {
         server.setServerAddress(address);
+    }
+
+    /**
+     * getter for the server
+     * @return the instance of the ServerUtils class
+     */
+    public ServerUtils getServer() {
+        return server;
     }
 }

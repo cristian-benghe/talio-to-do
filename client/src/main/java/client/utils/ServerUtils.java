@@ -17,8 +17,11 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import commons.Board;
 import commons.Card;
@@ -29,6 +32,13 @@ import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
@@ -223,6 +233,98 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
+
+    private static StompSession session;
+
+    /**
+
+     Establishes a WebSocket connection to the specified
+     URL using STOMP protocol and returns a new {@link StompSession}.
+     @param url The URL to connect to as a String.
+     @return A new {@link StompSession} object representing the established connection.
+     @throws IllegalStateException If connection cannot be established.
+     @throws RuntimeException If an exception is thrown during the connection attempt.
+     @throws InterruptedException If the thread is interrupted during the connection attempt.
+     */
+    public static StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e){
+            throw new RuntimeException(e);
+        }
+        throw new IllegalStateException();
+    }
+
+
+    /**
+     * Registers a consumer for messages of the specified type from the specified destination.
+     * @param dest the destination to subscribe to
+     * @param type the class of the message payload
+     * @param consumer the consumer to handle the received messages
+     * @param <T> the method is can be used for any class template <T>
+     */
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    /**
+     * Sends an object to the specified destination.
+     * @param dest the destination to send the object to
+     * @param o the object to send
+     * @throws IllegalStateException if the WebSocket session is not connected
+     */
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    /**
+     * gets the URL
+     * @return the URL of the server in String format
+     */
+    public static String getServer() {
+        return server;
+    }
+
+    /**
+     * sets the URL
+     * @param server the URL of the server in String format
+     */
+    public static void setServer(String server) {
+        ServerUtils.server = server;
+    }
+
+    /**
+     * gets the session
+     * @return the session
+     */
+    public static StompSession getSession() {
+        return session;
+    }
+
+    /**
+     * sets the session
+     * @param session the session
+     */
+    public static void setSession(StompSession session) {
+        ServerUtils.session = session;
+    }
+
     /**
      * @param id = id of the board
      * @param newColumn = column to add to board
@@ -289,4 +391,5 @@ public class ServerUtils {
 //                .accept(MediaType.APPLICATION_JSON)
 //                .post(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
 //    }
+
 }
