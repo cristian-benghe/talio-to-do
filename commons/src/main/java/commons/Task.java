@@ -58,6 +58,13 @@ public class Task {
         this.status = status;
     }
 
+    /**
+     * empty constructor for the task
+     */
+    public Task() {
+
+    }
+
 
     /**
      * A getter for the task_id attribute.

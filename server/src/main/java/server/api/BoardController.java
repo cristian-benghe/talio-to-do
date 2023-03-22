@@ -105,7 +105,8 @@ public class BoardController {
             Board updated = existing.get();
             updated.setTitle(board.getTitle());
             updated.setTags(board.getTags());
-            Board saved = repo.save(updated);
+            updated.setColumns(board.getColumns()); // update the columns
+            Board saved = repo.save(board);
             return ResponseEntity.ok(saved);
         } else {
             return ResponseEntity.notFound().build();
@@ -132,6 +133,7 @@ public class BoardController {
         }
     }
 
+
     /**
      Receives a message with the specified mapping ("/boards") and adds a new board to the system.
      The method sends the newly added board to the "/topic/boards" endpoint.
@@ -144,4 +146,5 @@ public class BoardController {
         add(board);
         return board;
     }
+
 }
