@@ -374,6 +374,21 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
+
+    /**
+     * @param colInd the index of the the deleted column
+     * @param boardId the id of the board the column is in
+     * @return the updated board
+     */
+    public Board deleteColumn(int colInd, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.updateColIndex(colInd);
+        board.deleteColumn(colInd);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
     /**
      * Adds a new column to a board.
      * This method sends a POST request to the server to add a new column to a board.

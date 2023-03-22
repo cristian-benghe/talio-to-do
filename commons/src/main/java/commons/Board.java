@@ -183,4 +183,20 @@ public class Board {
     public void setColumn(int columnID, Column column) {
         columns.set(columnID, column);
     }
+
+    /**
+     * @param colInd delete a column with an id
+     */
+    public void deleteColumn(int colInd) {
+        columns.remove(colInd);
+    }
+
+    /**
+     * @param colInd the updated id of the columns that shift to the left
+     */
+    public void updateColIndex(int colInd) {
+        for(int i=colInd;i<columns.size();i++){
+            columns.get(i).setIDinBoard(columns.get(i).getIDinBoard()-1);
+        }
+    }
 }
