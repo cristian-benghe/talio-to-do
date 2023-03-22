@@ -353,6 +353,8 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(2).setOnDragDropped(event -> {
             //gesture source to pass dragged item
+            int colInd=hbox.getChildren().indexOf(event.getGestureSource());
+            server.deleteColumn(colInd, id);
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
