@@ -8,6 +8,8 @@ import java.util.List;
 
 @Entity
 public class Column {
+    private int idInBoard=-1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,8 +28,6 @@ public class Column {
     public void setIDinBoard(int idInBoard) {
         this.idInBoard = idInBoard;
     }
-
-    private int idInBoard=-1;
 
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
     private List<Card> cards= new ArrayList<>();
