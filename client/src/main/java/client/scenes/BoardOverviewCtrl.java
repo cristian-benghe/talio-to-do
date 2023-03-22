@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -465,4 +466,12 @@ public class BoardOverviewCtrl implements Initializable {
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
+
+    public void copyID() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(String.valueOf(id));
+        clipboard.setContent(content);
+    }
+
 }
