@@ -96,7 +96,6 @@ public class ColumnController {
         if (existing.isPresent()) {
             Column updated = existing.get();
             updated.setTitle(column.getTitle());
-            updated.setBoard(column.getBoard());
             updated.setCards(column.getCards());
             Column saved = repo.save(updated);
             return ResponseEntity.ok(saved);
@@ -126,6 +125,7 @@ public class ColumnController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
 
 

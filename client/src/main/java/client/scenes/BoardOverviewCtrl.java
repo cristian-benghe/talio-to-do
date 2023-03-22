@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Column;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -25,11 +26,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
+    private Long nrCol= Long.valueOf(0);
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -95,6 +98,10 @@ public class BoardOverviewCtrl implements Initializable {
         Long nr=Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: "+nr);
         this.id = nr;
+        columnsRefresh();
+//        addOneColumn("To do");
+//        addOneColumn("Doing");
+//        addOneColumn("Done");
         if(!idd.contains("New Board")) {
             boardTitle.setText(idd.split("--")[0].trim());
             return;
@@ -161,7 +168,16 @@ public class BoardOverviewCtrl implements Initializable {
         // Only for deletion not to replace!
         setColumnDragDrop(anchorPaneVBox);
         hbox.getChildren().add(anchorPaneVBox);
+        nrCol++;
+        //System.out.println(hbox.getChildren().indexOf(anchorPaneVBox)+1);
+        server.addColumnToBoard(id, new Column(("New column"+nrCol),
+                new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox)+1);
+        textField.setOnKeyTyped(e->
+        {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
+    }
 
+    private void updateColTitle(int i, String text) {
+        server.updateColTitle(i, text, id);
     }
 
     /**
@@ -364,22 +380,45 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
-     *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * refreshed the boardOverview scene so that it updates the columns
      */
+    public void columnsRefresh(){
+        hbox.getChildren().clear();
+        for(Column c:server.getBoardById(id).getColumns()) {
+            AnchorPane anchorPaneVBox = new AnchorPane();
+            ScrollPane scrollPane = new ScrollPane();
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.TOP_CENTER);
+            scrollPane.setContent(vBox);
+            vBox.setPrefHeight(380);
+            vBox.setPrefWidth(150);
+            Button button = createButton(vBox);
+            setVBoxDragDrop(button, vBox);
+            TextField textField = new TextField(c.getTitle());
+            textField.setAlignment(Pos.CENTER);
+            Label columnLabel = new Label("...");
+            vBox.setMargin(textField, new Insets(2));
+            button.setAlignment(Pos.BOTTOM_CENTER);
+            vBox.getChildren().addAll(columnLabel, textField, button);
+            anchorPaneVBox.getChildren().add(vBox);
+            //to set the functionality of the drag and drop of the new column.
+            // Only for deletion not to replace!
+            setColumnDragDrop(anchorPaneVBox);
+            hbox.getChildren().add(anchorPaneVBox);
+            textField.setOnKeyTyped(e->
+            {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
 
+        }
+    }
+
+    /**
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addOneColumn("To do");
-        addOneColumn("Doing");
-        addOneColumn("Done");
-
         //Set the expansion and contraction animations
         binExpansion = new ScaleTransition();
         binExpansion.setDuration(Duration.millis(800));

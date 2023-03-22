@@ -12,10 +12,10 @@ public class Board {
     private Long id;
     private String title;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
 
     /**
@@ -106,7 +106,7 @@ public class Board {
      * @param columns columns the new list of columns to set
      */
     public void setColumns(List<Column> columns) {
-        this.columns = columns;
+        this.columns=columns;
     }
 
     /**
@@ -167,5 +167,20 @@ public class Board {
         result = 31 * result + (getColumns() != null ? getColumns().hashCode() : 0);
         result = 31 * result + (getTags() != null ? getTags().hashCode() : 0);
         return result;
+    }
+
+    /**
+     * @param newColumn = column you add when pressing on addColumn button
+     */
+    public void addColumn(Column newColumn) {
+        columns.add(newColumn);
+    }
+
+    /**
+     * @param columnID = the id of the column in a board
+     * @param column = set a column with a new title
+     */
+    public void setColumn(int columnID, Column column) {
+        columns.set(columnID, column);
     }
 }

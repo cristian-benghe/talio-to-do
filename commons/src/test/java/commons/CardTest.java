@@ -98,7 +98,7 @@ class CardTest {
     @Test
     void testSetColumn() {
         Card c = new Card("Test Card", "basic description", null, null, null);
-        Column col = new Column("column1", null, null);
+        Column col = new Column("column1", null);
         c.setColumn(col);
         assertEquals(col, c.getColumn());
     }

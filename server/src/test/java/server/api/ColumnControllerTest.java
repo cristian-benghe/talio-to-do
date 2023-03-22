@@ -39,10 +39,10 @@ public class ColumnControllerTest {
     public void setUp() {
         columns = new ArrayList<>();
 
-        Column c1 = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        Column c1 = new Column("Column 1", new ArrayList<Card>());
         c1.setId(1L);
 
-        Column c2 = new Column("Column 2", new ArrayList<Card>(), new Board("Board 1"));
+        Column c2 = new Column("Column 2", new ArrayList<Card>());
         c2.setId(2L);
 
         columns.add(c1);
@@ -65,7 +65,7 @@ public class ColumnControllerTest {
     void testGetById() {
         // Given
         long id = 1L;
-        Column column = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        Column column = new Column("Column 1", new ArrayList<Card>());
         when(repo.findById(id)).thenReturn(Optional.of(column));
         when(repo.existsById(id)).thenReturn(true);
 
@@ -91,7 +91,7 @@ public class ColumnControllerTest {
     @Test
     void testAdd() {
         // Given
-        Column column = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        Column column = new Column("Column 1", new ArrayList<Card>());
         when(repo.save(column)).thenReturn(column);
 
         // When
@@ -104,7 +104,7 @@ public class ColumnControllerTest {
     @Test
     void testAddWithNullTitle() {
         // Given
-        Column column = new Column(null, new ArrayList<Card>(), new Board("Board 1"));
+        Column column = new Column(null, new ArrayList<Card>());
 
         // When
         ResponseEntity<Column> response = controller.add(column);
@@ -117,8 +117,8 @@ public class ColumnControllerTest {
     void testUpdate() {
         // Given
         long id = 1L;
-        Column existing = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
-        Column updated = new Column("Updated Column", new ArrayList<Card>(), new Board("Board 1"));
+        Column existing = new Column("Column 1", new ArrayList<Card>());
+        Column updated = new Column("Updated Column", new ArrayList<Card>());
         when(repo.findById(id)).thenReturn(Optional.of(existing));
         when(repo.save(existing)).thenReturn(existing);
 
@@ -134,7 +134,7 @@ public class ColumnControllerTest {
     void testUpdateNotExistingByID() {
         // Given
         long id = -1L;
-        Column updated = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        Column updated = new Column("Column 1", new ArrayList<Card>());
         when(repo.findById(id)).thenReturn(Optional.empty());
 
         // When
@@ -161,7 +161,7 @@ public class ColumnControllerTest {
     void testDelete() {
         // Given
         long id = 1L;
-        Column existing = new Column("Column 1", new ArrayList<Card>(), new Board("Board 1"));
+        Column existing = new Column("Column 1", new ArrayList<Card>());
         existing.setCards(List.of(new Card("card",null,null,null,existing)));
         when(repo.findById(id)).thenReturn(Optional.of(existing));
 
