@@ -8,29 +8,17 @@ import java.util.List;
 
 @Entity
 public class Column {
-    private int idInBoard=-1;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
 
-    /**
-     * @return id of a column in a board
-     */
-    public int getIDinBoard() {
-        return idInBoard;
-    }
-
-    /**
-     * @param idInBoard = set the boardid when adding a column
-     */
-    public void setIDinBoard(int idInBoard) {
-        this.idInBoard = idInBoard;
-    }
-
     @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
     private List<Card> cards= new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     /**
      * a default constructor for the Column class.
@@ -44,10 +32,12 @@ public class Column {
      * and board attributes of the new instance
      * @param title the title of the new Column
      * @param cards the list of cards that are contained in the new Column
+     * @param board the board instance to which the new Column belongs to
      */
-    public Column(String title, List<Card> cards) {
+    public Column(String title, List<Card> cards, Board board) {
         this.title = title;
         this.cards = new ArrayList<>();
+        this.board= board;
     }
 
     //setters and getters
@@ -97,13 +87,27 @@ public class Column {
     public void setCards(List<Card> cards) { this.cards = cards; }
 
     /**
+     * a getter for the board attribute of the Column
+     * @return the board instance that contains this Column instance
+     */
+    public Board getBoard() {
+        return board;
+    }
+
+    /**
+     * a setter for the board attribute of the Column
+     * @param board the new Board instance that contains this Column instance
+     */
+    public void setBoard(Board board) {this.board = board; }
+
+    /**
      * A HashCode implementation for this Column class. If two Column instances are equivalent,
      * then there hash codes should also be equivalent
      * @return a hash code that corresponds to this Column instance
      */
     @Override
     public int hashCode(){
-        return Objects.hash(getId(), getTitle(), getCards());
+        return Objects.hash(getId(), getTitle(), getCards(), getBoard());
     }
 
     /**
@@ -113,19 +117,13 @@ public class Column {
      * @return returns true if and only if the two objects are equivalent
      */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Column)) return false;
-
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(!(o instanceof Column) || o == null) return false;
         Column column = (Column) o;
+        return (getId() == column.getId() && getTitle().equals(column.getTitle())
+                && getBoard().equals(column.getBoard()  ) && getCards().equals(column.getCards()));
 
-        if (idInBoard != column.idInBoard) return false;
-        if (getId() != null ? !getId().equals(column.getId())
-                : column.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(column.getTitle()) :
-                column.getTitle() != null) return false;
-        return getCards() != null ? getCards().equals(column.getCards()) :
-                column.getCards() == null;
     }
 
     /**
@@ -143,6 +141,8 @@ public class Column {
                 + this.title
                 + " has the ID: "
                 + this.id
+                + " is part of Board "
+                + this.board.getTitle()
                 + " and contains the following cards: "
                 + cards1;
     }
