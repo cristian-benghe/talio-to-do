@@ -104,8 +104,7 @@ public class BoardController {
             Board updated = existing.get();
             updated.setTitle(board.getTitle());
             updated.setTags(board.getTags());
-            updated.setColumns(board.getColumns()); // update the columns
-            Board saved = repo.save(board);
+            Board saved = repo.save(updated);
             return ResponseEntity.ok(saved);
         } else {
             return ResponseEntity.notFound().build();
@@ -131,5 +130,4 @@ public class BoardController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
