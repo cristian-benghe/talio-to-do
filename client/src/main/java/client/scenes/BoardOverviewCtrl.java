@@ -220,9 +220,7 @@ public class BoardOverviewCtrl implements Initializable {
         vbox.setAlignment(Pos.CENTER);
         anchorPane1.getChildren().add(vbox);
         textField.setFont(new Font("System", 18));
-        textField.setOnMouseClicked(event -> {
 
-        });
         anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
         anchorPane1.setPrefSize(150, 80);
         return anchorPane1;
@@ -252,8 +250,17 @@ public class BoardOverviewCtrl implements Initializable {
     public void setButtonAction(Button button, VBox vBox, Long columnid) {
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
-            server.addCardToColumn(id, columnid,new Card("Card", null,null,null),
+            Card mycard = new Card("Card", null,null,null);
+            server.addCardToColumn(id, columnid,mycard,
                     (long)vBox.getChildren().indexOf(button)-2);
+            ((TextField)((HBox)((VBox)anchorPane1.getChildren().get(0)).
+                    getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
+                        server.updateCardTitle((long)vBox
+                                        .getChildren().indexOf(button)-2, columnid,
+                                ((TextField)((HBox)((VBox)anchorPane1
+                                        .getChildren().get(0)).
+                                getChildren().get(1)).getChildren().get(0)).getText(), id);
+                    });
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
