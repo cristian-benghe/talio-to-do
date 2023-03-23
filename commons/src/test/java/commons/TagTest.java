@@ -16,7 +16,7 @@ class TagTest {
     Tag tag;
     @BeforeEach
     public void setUp() {
-        card = new Card("Project_1", "OOPP", null, null, null);
+        card = new Card("Project_1", "OOPP", null, null);
         cards = new HashSet<>();
         cards.add(card);
         tag = new Tag(100L, "Done", cards);
@@ -50,7 +50,7 @@ class TagTest {
 
     @Test
     void setCards() {
-        Card new_card = new Card("Project", "R&L", null, null, null);
+        Card new_card = new Card("Project", "R&L", null, null);
         Set<Card> newSet = new HashSet<>();
         newSet.add(card);
         tag.setCards(newSet);

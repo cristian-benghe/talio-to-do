@@ -16,10 +16,10 @@ class ColumnTest {
     @BeforeEach
     public void setUp() {
         cards = new ArrayList<>();
-        Card card = new Card("Project_1", "OOPP", null, null, null);
-        Card card1 = new Card("Project_1", "OOPP", null, null, null);
-        Card card2 = new Card("Project_1", "OOPP", null, null, null);
-        Card card3 = new Card("Project_1", "OOPP", null, null, null);
+        Card card = new Card("Project_1", "OOPP", null, null);
+        Card card1 = new Card("Project_1", "OOPP", null, null);
+        Card card2 = new Card("Project_1", "OOPP", null, null);
+        Card card3 = new Card("Project_1", "OOPP", null, null);
         cards.add(card);
         cards.add(card1);
         cards.add(card2);

@@ -69,6 +69,48 @@ public class ServerUtils {
         return server + path;
     }
 
+    private Column updateCardInColumn(int cardId, Card card, Long columnId) {
+        Column column=getColumnById(columnId);
+        column.getCards().set(cardId-1, card);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * A method to Add card to column (serverside)
+     * @param boardid board id to add the card
+     * @param columnid an id of the column
+     * @param newCard
+     * @param cardid
+     * @return column
+     */
+    public Column addCardToColumn(Long boardid, Long columnid, Card newCard, Long cardid) {
+        Board board = getBoardById(boardid);
+        Column column = board.getColumns().get(Math.toIntExact(columnid)-1);
+        newCard.setColumnId(cardid);
+        column.getCards().add(newCard);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + column.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * to get column by id
+     * @param columnId to get column
+     * @return Column object
+     */
+    public Column getColumnById(long columnId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Column.class);
+    }
+
     /**
      * Adds a new board.
      * This method sends a POST request to the server to add a new card
@@ -334,12 +376,8 @@ public class ServerUtils {
     public Board addColumnToBoard(Long id, Column newColumn, int i) {
         Board board=getBoardById(id);
         newColumn.setIDinBoard(i);
-
-       // System.out.println(new_column.getIDinBoard());
-
-        //addColumn(new_column);
         board.addColumn(newColumn);
-        //System.out.println(board.getColumns().size());
+
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + id)
                 .request(MediaType.APPLICATION_JSON)
