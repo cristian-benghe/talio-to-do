@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainOverviewCtrl implements Initializable {
@@ -46,9 +47,10 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * Constructs a new instance of the MainOverviewCtrl class with the
      * specified ServerUtils and MainCtrl objects injected as dependencies.
-     * @param server the ServerUtils object to use for interacting with the server
+     *
+     * @param server   the ServerUtils object to use for interacting with the server
      * @param mainCtrl the MainCtrl object to use for coordinating the application's
-     * main control flow
+     *                 main control flow
      */
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -216,8 +218,6 @@ public class MainOverviewCtrl implements Initializable {
         refreshOverview(); //to be deleted after websockets implementation
 
 
-
-
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
 //        //As a temporary measure, set ID as 0
@@ -247,13 +247,11 @@ public class MainOverviewCtrl implements Initializable {
 
     /**
      * Function implemented to use/load certain functions when the MainOverview scene is shown
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
      *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -265,15 +263,32 @@ public class MainOverviewCtrl implements Initializable {
      * start.
      */
     public void socketsCall() {
-        server.registerForMessages("/topic/boards", Board.class, board -> {
-            availableBoards.add(board);
-            System.out.println(board);
+        server.registerForMessages("/topic/delete-board", Long.class, id -> {
+            Board toBeDeleted = null;
+            for (Board b : availableBoards)
+                if (Objects.equals(b.getId(), id)) toBeDeleted = b;
+            if (toBeDeleted != null) availableBoards.remove(toBeDeleted);
+            //System.out.println("Deleted board " + toBeDeleted.toStringShort());
             Platform.runLater(() -> refreshOverview());
         });
+        server.registerForMessages("/topic/boards", Board.class, board -> {
+            availableBoards.add(board);
+            Platform.runLater(() -> refreshOverview());
+        });
+
+        server.registerForMessages("/topic/update-board", Board.class, board -> {
+            Board toBeChanged = null;
+            for (Board b : availableBoards)
+                if (Objects.equals(b.getId(), board.getId()))
+                    b.setTitle(board.getTitle());
+            Platform.runLater(() -> refreshOverview());
+        });
+
     }
 
     /**
      * set up the connection to a certain URL
+     *
      * @param address the URL provided through a String
      */
     public void setConnection(String address) {
@@ -282,6 +297,7 @@ public class MainOverviewCtrl implements Initializable {
 
     /**
      * getter for the server
+     *
      * @return the instance of the ServerUtils class
      */
     public ServerUtils getServer() {

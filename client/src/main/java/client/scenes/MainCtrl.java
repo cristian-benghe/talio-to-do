@@ -26,6 +26,7 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    private boolean shownMainOverviewOneTime = false;
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -91,13 +92,14 @@ public class MainCtrl {
 
 
         System.out.println(ServerUtils.getServer());
-        mainOverviewCtrl.socketsCall();
+        if(!shownMainOverviewOneTime)
+            mainOverviewCtrl.socketsCall();
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
-
+        shownMainOverviewOneTime = true;
 
     }
 

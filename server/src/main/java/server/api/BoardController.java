@@ -19,6 +19,7 @@ import commons.Board;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import server.database.BoardRepository;
 
@@ -144,6 +145,20 @@ public class BoardController {
     @SendTo("/topic/boards")
     public Board addMessage(Board board) {
         add(board);
+        return board;
+    }
+
+    @MessageMapping("/delete-board") // app/delete-board TODO: error handling
+    @SendTo("/topic/delete-board")
+    public Long addMessageDelete(Long id) {
+        delete(id);
+        return id;
+    }
+
+    @MessageMapping("/update-board") // app/update-board
+    @SendTo("/topic/update-board")
+    public Board addMessageUpdate(Board board) {
+        update(board.getId(), board);
         return board;
     }
 
