@@ -427,7 +427,8 @@ public class BoardOverviewCtrl implements Initializable {
             {
                 updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
             });
-            Button button = createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+            Button button =
+                    createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
             setVBoxDragDrop(button, vBox);
             button.setAlignment(Pos.BOTTOM_CENTER);
             vBox.getChildren().addAll(columnLabel, textField);
