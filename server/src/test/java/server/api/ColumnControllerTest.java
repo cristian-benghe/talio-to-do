@@ -1,6 +1,6 @@
 package server.api;
 
-import commons.Board;
+//import commons.Board;
 import commons.Card;
 import commons.Column;
 import org.junit.jupiter.api.BeforeEach;
@@ -162,7 +162,7 @@ public class ColumnControllerTest {
         // Given
         long id = 1L;
         Column existing = new Column("Column 1", new ArrayList<Card>());
-        existing.setCards(List.of(new Card("card",null,null,null,existing)));
+        existing.setCards(List.of(new Card("card",null,null,null)));
         when(repo.findById(id)).thenReturn(Optional.of(existing));
 
         // When

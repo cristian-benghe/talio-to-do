@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
 import commons.Column;
+import commons.Card;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -155,25 +156,27 @@ public class BoardOverviewCtrl implements Initializable {
         scrollPane.setContent(vBox);
         vBox.setPrefHeight(380);
         vBox.setPrefWidth(150);
-        Button button = createButton(vBox);
-        setVBoxDragDrop(button, vBox);
+
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
         Label columnLabel = new Label("...");
         vBox.setMargin(textField, new Insets(2));
-        button.setAlignment(Pos.BOTTOM_CENTER);
-        vBox.getChildren().addAll(columnLabel, textField, button);
+
         anchorPaneVBox.getChildren().add(vBox);
         //to set the functionality of the drag and drop of the new column.
         // Only for deletion not to replace!
         setColumnDragDrop(anchorPaneVBox);
         hbox.getChildren().add(anchorPaneVBox);
         nrCol++;
-        //System.out.println(hbox.getChildren().indexOf(anchorPaneVBox)+1);
         server.addColumnToBoard(id, new Column(("New column"+nrCol),
                 new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox)+1);
         textField.setOnKeyTyped(e->
         {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
+
+        Button button = createButton(vBox, (long)hbox.getChildren().indexOf(anchorPaneVBox)+1);
+        setVBoxDragDrop(button, vBox);
+        button.setAlignment(Pos.BOTTOM_CENTER);
+        vBox.getChildren().addAll(columnLabel, textField, button);
     }
 
     private void updateColTitle(int i, String text) {
@@ -228,11 +231,12 @@ public class BoardOverviewCtrl implements Initializable {
      * A method to create a button
      *
      * @param vBox the vBox that the element is created in
+     * @param  columnid
      * @return new created button
      */
-    public Button createButton(VBox vBox) {
+    public Button createButton(VBox vBox, Long columnid) {
         Button button = new Button("AddCard");
-        setButtonAction(button, vBox);
+        setButtonAction(button, vBox, columnid);
         vBox.setMargin(button, new Insets(5, 0, 0, 0));
         return button;
     }
@@ -242,10 +246,13 @@ public class BoardOverviewCtrl implements Initializable {
      *
      * @param button a button to be arranged
      * @param vBox   Vbox that contains the button
+     * @param columnid column id
      */
-    public void setButtonAction(Button button, VBox vBox) {
+    public void setButtonAction(Button button, VBox vBox, Long columnid) {
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
+            server.addCardToColumn(id, columnid,new Card("Card", null,null,null),
+                    (long)vBox.getChildren().indexOf(button)-2);
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
@@ -392,14 +399,12 @@ public class BoardOverviewCtrl implements Initializable {
             scrollPane.setContent(vBox);
             vBox.setPrefHeight(380);
             vBox.setPrefWidth(150);
-            Button button = createButton(vBox);
-            setVBoxDragDrop(button, vBox);
+
             TextField textField = new TextField(c.getTitle());
             textField.setAlignment(Pos.CENTER);
             Label columnLabel = new Label("...");
             vBox.setMargin(textField, new Insets(2));
-            button.setAlignment(Pos.BOTTOM_CENTER);
-            vBox.getChildren().addAll(columnLabel, textField, button);
+
             anchorPaneVBox.getChildren().add(vBox);
             //to set the functionality of the drag and drop of the new column.
             // Only for deletion not to replace!
@@ -407,7 +412,18 @@ public class BoardOverviewCtrl implements Initializable {
             hbox.getChildren().add(anchorPaneVBox);
             textField.setOnKeyTyped(e->
             {updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox)+1, textField.getText());});
-
+            Button button = createButton(vBox, (long)hbox.getChildren().indexOf(anchorPaneVBox)+1);
+            setVBoxDragDrop(button, vBox);
+            button.setAlignment(Pos.BOTTOM_CENTER);
+            vBox.getChildren().addAll(columnLabel, textField);
+            for(Card kard: c.getCards())
+            {
+                AnchorPane anchorPane1 = addCard(vBox);
+                ((TextField)((HBox)((VBox)anchorPane1.getChildren().get(0)).
+                        getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
+                vBox.getChildren().add(anchorPane1);
+            }
+            vBox.getChildren().add(button);
         }
     }
 

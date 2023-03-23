@@ -29,7 +29,7 @@ public class Column {
         this.idInBoard = idInBoard;
     }
 
-    @OneToMany(mappedBy = "column", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Card> cards= new ArrayList<>();
 
     /**
