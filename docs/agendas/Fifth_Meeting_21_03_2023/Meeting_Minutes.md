@@ -61,8 +61,6 @@ There were no issues with the previous minute notes.
    * The order of the implementation won't be penalized heavily. Overlap of user stories won't be considered.
 
 
-
-
 # Summary of action points
 
 * Christian, David, and Halid are assigned to complete the Drag-and-Drop, auto-synchronization, and multiboards.
@@ -78,6 +76,6 @@ The meeting went well.
 # Closing
 * We will send meaningful merge request ids/links to the TA to be checked. Do not forget to do BuddyCheck!
 
-* Next minute taker: David
-* Next chair-person: Teodora
+* Next chair-person: David
+* Next minute taker: Teodora
 
