@@ -6,7 +6,7 @@
 Location:       {DW, PC1}\
 Date:           {21/03/2023}\
 Time:     {15:45-16:30}\
-Attendees:      {David Ghergut, Denisa Arsene, Halid Çırak, Teodora Mihaila, Yair Chizi}
+Attendees:      {Cristian Benghe, David Ghergut, Denisa Arsene, Halid Çırak, Teodora Mihaila, Yair Chizi}
 
 
 ### <span style="color:LightBlue">Agenda Items</span>
