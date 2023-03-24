@@ -11,7 +11,7 @@
 
 <AnchorPane prefHeight="466.0" prefWidth="933.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainOverviewCtrl">
     <children>
-        <Button layoutX="90.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBoard" prefHeight="40.0" prefWidth="136.0" text="Search">
+        <Button layoutX="60.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBoard" prefHeight="40.0" prefWidth="166.0" text="Enter board by ID">
             <font>
                 <Font size="18.0" />
             </font>
@@ -23,8 +23,8 @@
         </Button>
         <TextField layoutX="14.0" layoutY="339.0" prefHeight="32.0" prefWidth="216.0" promptText="Please enter the password..." />
         <TextField fx:id="searchTextField" layoutX="236.0" layoutY="39.0" onKeyTyped="#updateSearchConstraintText" prefHeight="40.0" prefWidth="680.0" />
-        <Line endX="94.4000015258789" endY="140.0928955078125" layoutX="-43.0" layoutY="-73.0" startX="80.99998474121094" startY="160.60000610351562" />
-        <Circle fill="WHITE" layoutX="57.0" layoutY="54.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
+        <Line endX="94.4000015258789" endY="140.0928955078125" layoutX="-66.0" layoutY="-78.0" startX="80.99998474121094" startY="160.60000610351562" />
+        <Circle fill="WHITE" layoutX="34.0" layoutY="49.0" radius="16.0" stroke="BLACK" strokeType="INSIDE" />
         <AnchorPane layoutX="236.0" layoutY="105.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="680.0">
             <children>
                 <ListView fx:id="boardsListElement" layoutX="1.0" onMouseClicked="#onBoardClick" prefHeight="200.0" prefWidth="520.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
@@ -55,5 +55,10 @@
                 <Font size="10.0" />
             </font>
         </Label>
+      <Label fx:id="labelMessage" layoutX="236.0" layoutY="78.0" prefHeight="18.0" prefWidth="304.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
