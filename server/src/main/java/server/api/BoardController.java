@@ -135,15 +135,44 @@ public class BoardController {
 
 
     /**
-     Receives a message with the specified mapping ("/boards") and adds a new board to the system.
-     The method sends the newly added board to the "/topic/boards" endpoint.
-     @param board the Board object to be added to the system
-     @return the Board object that was added to the system
+     * Receives a message with the specified mapping ("/boards") and adds a new board to the system.
+     * The method sends the newly added board to the "/topic/boards" endpoint.
+     * @param board the Board object to be added to the system
+     * @return the Board object that was added to the system
      */
     @MessageMapping("/boards") // app/boards TODO: error handling
     @SendTo("/topic/boards")
     public Board addMessage(Board board) {
         add(board);
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/delete-board") and deletes
+     * a certain board from the system.
+     * The method sends the newly added board to the "/topic/delete-board" endpoint.
+     * @param id the id of the Board object to be deleted to the system
+     * @return the id of the deleted board
+     */
+    @MessageMapping("/delete-board") // app/delete-board TODO: error handling
+    @SendTo("/topic/delete-board")
+    public Long addMessageDelete(Long id) {
+        delete(id);
+        return id;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-board") and deletes
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-board" endpoint.
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-board") // app/update-board
+    @SendTo("/topic/update-board")
+    public Board addMessageUpdate(Board board) {
+        update(board.getId(), board);
         return board;
     }
 
