@@ -192,6 +192,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public AnchorPane addCard(VBox vBox) {
         AnchorPane anchorPane1 = createCard();
+
         setCardDragDrop(anchorPane1, vBox);
         vBox.setMargin(anchorPane1, new Insets(2, 2, 2, 2));
         return anchorPane1;
@@ -248,6 +249,7 @@ public class BoardOverviewCtrl implements Initializable {
      * @param columnid column id
      */
     public void setButtonAction(Button button, VBox vBox, Long columnid) {
+
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
             Card mycard = new Card("Card", null,null,null);
@@ -256,7 +258,7 @@ public class BoardOverviewCtrl implements Initializable {
             ((TextField)((HBox)((VBox)anchorPane1.getChildren().get(0)).
                     getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
                         server.updateCardTitle((long)vBox
-                                        .getChildren().indexOf(button)-2, columnid,
+                                        .getChildren().indexOf(anchorPane1)-1, columnid,
                                 ((TextField)((HBox)((VBox)anchorPane1
                                         .getChildren().get(0)).
                                 getChildren().get(1)).getChildren().get(0)).getText(), id);
@@ -265,6 +267,26 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
         });
+    }
+
+    /**
+     * A method that is needed tu update the name of the card.
+     * @param anchorPane1 Card, namely
+     * @param button button to refresh
+     * @param vBox card container
+     * @param columnid id of the specific column
+     */
+    public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid)
+    {
+
+        ((TextField)((HBox)((VBox)anchorPane1.getChildren().get(0)).
+                getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
+                    server.updateCardTitle((long)vBox
+                            .getChildren().indexOf(anchorPane1)-1, columnid,
+                        ((TextField)((HBox)((VBox)anchorPane1
+                            .getChildren().get(0)).
+                            getChildren().get(1)).getChildren().get(0)).getText(), id);
+                });
     }
 
     /**
@@ -428,12 +450,19 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.getChildren().addAll(columnLabel, textField);
             for(Card kard: c.getCards())
             {
+                vBox.getChildren().add(button);
                 AnchorPane anchorPane1 = addCard(vBox);
                 ((TextField)((HBox)((VBox)anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
+                setTextField(anchorPane1,button,vBox,
+                        (long)hbox.getChildren().indexOf(anchorPaneVBox)+1);
                 vBox.getChildren().add(anchorPane1);
+
+                vBox.getChildren().remove(button);
+
             }
             vBox.getChildren().add(button);
+
         }
     }
 
