@@ -69,13 +69,30 @@ public class ServerUtils {
         return server + path;
     }
 
-    private Column updateCardInColumn(int cardId, Card card, Long columnId) {
-        Column column=getColumnById(columnId);
+    private Column updateCardInColumn(int cardId, Card card, Long columnId, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get(Math.toIntExact(columnId)-1);
         column.getCards().set(cardId-1, card);
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + columnId)
+                .target(server).path("api/columns/" + column.getId())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * update the card title
+     * @param cardid cardid to be updated
+     * @param columnID columid to be updated
+     * @param text text that will be replaced
+     * @param boardId boardid
+     */
+    public void updateCardTitle(Long cardid, Long columnID, String text, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get((int)(columnID-1));
+        Card card = column.getCards().get(Math.toIntExact(cardid)-1);
+        card.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateCardInColumn(Math.toIntExact(cardid), card, columnID, boardId);
     }
 
     /**
