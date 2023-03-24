@@ -17,28 +17,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import commons.Card;
-//import commons.Column;
-import server.database.CardRepository;
-import server.database.ColumnRepository;
+
+import server.service.CardService;
+
 
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
 
 
-    private final CardRepository repo;
-    private final ColumnRepository columnrepo;
+    private final CardService cardservice;
 
     /**
-     * Constructs a new ColumnController with the specified repositories.
-     * @param repo the repository for Card objects
-     * @param columnrepo the repository for Column objects
+     * Constructs a new CardController with the specified service.
+     * @param cardservice the service for Card operation
      */
 
-    public CardController(CardRepository repo, ColumnRepository columnrepo) {
+    public CardController(CardService cardservice) {
 
-        this.repo = repo;
-        this.columnrepo = columnrepo;
+        this.cardservice=cardservice;
     }
 
     /**
@@ -47,7 +44,7 @@ public class CardController {
      */
     @GetMapping(path = { "", "/" })
     public List<Card> getAll() {
-        return repo.findAll();
+        return cardservice.getAll();
     }
 
     /**
@@ -57,12 +54,13 @@ public class CardController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Card> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+        Optional<Card> card = cardservice.getById(id);
+        if (card.isPresent()) {
+            return ResponseEntity.ok(card.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
     }
-
     /**
      * Adds a new Card object to the database.
      * @param card the Card object to add
@@ -72,22 +70,16 @@ public class CardController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Card> add(@RequestBody Card card) {
 
-        if (isNullOrEmpty(card.getTitle())){
+        if (card.getTitle() == null || card.getTitle().isEmpty()){
 
             return ResponseEntity.badRequest().build();
         }
 
-        Card saved = repo.save(card);
+        Card saved = cardservice.add(card);
         return ResponseEntity.ok(saved);
     }
-    /**
-     * This method verifies if the given string is null or not
-     * @param s - a string
-     * @return true/false if the string is empty or not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
+
+
 
 //    /**
 //     * Updates an existing Card object with the specified id.
@@ -147,9 +139,9 @@ public class CardController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
-        Optional<Card> existing = repo.findById(id);
+        Optional<Card> existing = cardservice.getById(id);
         if (existing.isPresent()) {
-            repo.deleteById(id);
+            cardservice.delete(id);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();

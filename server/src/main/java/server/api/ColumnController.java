@@ -16,27 +16,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import commons.Column;
-import commons.Card;
-import server.database.ColumnRepository;
-import server.database.CardRepository;
+
+import server.service.ColumnService;
+
 
 @RestController
 @RequestMapping("/api/columns")
 public class ColumnController {
 
 
-    private final ColumnRepository repo;
-    private final CardRepository cardrepo;
+    private final ColumnService columnservice;
 
     /**
-     * Constructs a new ColumnController with the specified repositories.
-     * @param repo the repository for Column objects
-     * @param cardrepo the repository for Card objects
+     * Constructs a new ColumnController with the specified service.
+     * @param columnservice the service for Column operation
      */
-    public ColumnController(ColumnRepository repo, CardRepository cardrepo) {
 
-        this.repo = repo;
-        this.cardrepo = cardrepo;
+    public ColumnController(ColumnService columnservice) {
+
+        this.columnservice=columnservice;
     }
     /**
      * Returns a list of all Column objects in the database.
@@ -44,7 +42,7 @@ public class ColumnController {
      */
     @GetMapping(path = { "", "/" })
     public List<Column> getAll() {
-        return repo.findAll();
+        return columnservice.getAll();
     }
 
     /**
@@ -55,10 +53,12 @@ public class ColumnController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Column> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+        Optional<Column> column = columnservice.getById(id);
+        if (column.isPresent()) {
+            return ResponseEntity.ok(column.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
     }
 
     /**
@@ -69,18 +69,10 @@ public class ColumnController {
      */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Column> add(@RequestBody Column column) {
-
-        if (isNullOrEmpty(column.getTitle())){
-
-            return ResponseEntity.badRequest().build();
-        }
-
-        Column saved = repo.save(column);
+        Column saved = columnservice.add(column);
         return ResponseEntity.ok(saved);
     }
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
+
 
     /**
      * Updates an existing Column object with the specified id.
@@ -92,12 +84,10 @@ public class ColumnController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Column> update(@PathVariable("id") long id, @RequestBody Column column) {
-        Optional<Column> existing = repo.findById(id);
+        Optional<Column> existing = columnservice.getById(id);
         if (existing.isPresent()) {
-            Column updated = existing.get();
-            updated.setTitle(column.getTitle());
-            updated.setCards(column.getCards());
-            Column saved = repo.save(updated);
+            Column saved = columnservice.update(existing.get(),column);
+
             return ResponseEntity.ok(saved);
         } else {
             return ResponseEntity.notFound().build();
@@ -112,18 +102,8 @@ public class ColumnController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") long id) {
-        Optional<Column> existing = repo.findById(id);
-        if (existing.isPresent()) {
-            Column column = existing.get();
-            List<Card> cards = column.getCards();
-            repo.deleteById(id);
-            for(Card card : cards){
-                cardrepo.deleteById(card.getId());
-            }
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        boolean deleted = columnservice.delete(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
 

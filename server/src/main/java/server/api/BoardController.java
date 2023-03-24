@@ -16,11 +16,12 @@
 package server.api;
 
 import commons.Board;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-import server.database.BoardRepository;
+import server.service.BoardService;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,16 +31,16 @@ import java.util.Random;
 public class BoardController {
 
     private final Random random; //TODO: delete + adapt tests
-    private final BoardRepository repo;
+    private final BoardService boardservice;
 
     /**
-     * Constructs a new BoardRepository object.
-     * @param random - instance of class Random
-     * @param repo - the board Repository
+     * Constructs a new BoardController with the specified service.
+     * @param boardservice the service for Board operation
+     * @param random
      */
-    public BoardController(Random random, BoardRepository repo) {
+    public BoardController(Random random, BoardService boardservice) {
         this.random = random;
-        this.repo = repo;
+        this.boardservice = boardservice;
     }
 
     /**
@@ -48,7 +49,7 @@ public class BoardController {
      */
     @GetMapping(path = { "/api/boards", "/api/boards/" })
     public List<Board> getAll() {
-        return repo.findAll();
+        return boardservice.getAll();
     }
 
     /**
@@ -59,10 +60,12 @@ public class BoardController {
      */
     @GetMapping("/api/boards/{id}")
     public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+        Optional<Board> board = boardservice.getById(id);
+        if (board.isPresent()) {
+            return ResponseEntity.ok(board.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
     }
 
     /**
@@ -73,13 +76,8 @@ public class BoardController {
      */
     @PostMapping(path = { "/api/boards", "/api/boards/" })
     public ResponseEntity<Board> add(@RequestBody Board board) {
-
-        if (isNullOrEmpty(board.getTitle())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Board saved = repo.save(board);
-        return ResponseEntity.ok(saved);
+        Board added = boardservice.add(board);
+        return ResponseEntity.ok(added);
     }
 
     /**
@@ -100,17 +98,8 @@ public class BoardController {
      */
     @PutMapping("/api/boards/{id}")
     public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
-        Optional<Board> existing = repo.findById(id);
-        if (existing.isPresent()) {
-            Board updated = existing.get();
-            updated.setTitle(board.getTitle());
-            updated.setTags(board.getTags());
-            updated.setColumns(board.getColumns()); // update the columns
-            Board saved = repo.save(board);
-            return ResponseEntity.ok(saved);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Board updated = boardservice.update(id, board);
+        return ResponseEntity.ok(updated);
     }
 
     /**
@@ -122,15 +111,8 @@ public class BoardController {
      */
     @DeleteMapping("/api/boards/{id}")
     public ResponseEntity delete(@PathVariable("id") long id) {
-        if (repo.existsById(id)) {
-            repo.deleteById(id);
-            // this creates a ResponseEntity with a HTTP status code of 204 (No Content)
-            return ResponseEntity.noContent().build();
-        }
-        else {
-            // this creates a ResponseEntity with a HTTP status code of 404 (Not Found)
-            return ResponseEntity.notFound().build();
-        }
+        boardservice.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 
