@@ -43,6 +43,8 @@ public class MainOverviewCtrl implements Initializable {
     private Label boardsText;
     @FXML
     private Label emptyBoardListMsg;
+    @FXML
+    private Label labelMessage;
 
     /**
      * Constructs a new instance of the MainOverviewCtrl class with the
@@ -70,6 +72,7 @@ public class MainOverviewCtrl implements Initializable {
      * The method is used to refresh all the elements of the MainOverview.
      */
     public void refreshOverview() {
+        labelMessage.setVisible(false);
 
         //Reset the availableBoards list
         availableBoards = server.getBoards();
@@ -183,16 +186,49 @@ public class MainOverviewCtrl implements Initializable {
 
         //Retrieve the search input from the searchTextField
         String input = searchTextField.getText();
+        labelMessage.setVisible(true);
 
         //Make sure that the
         if (input.length() > SEARCH_MAX_LENGTH) {
-
+            labelMessage.setText("The input is too long");
             //TODO Add an error message through a ??? pop-up (to improve usability)
             return;
         }
+        if (notNumber(input)) {
+            labelMessage.setText("The input is not a valid ID");
+            return;
+        }
+        int nr = Integer.parseInt(input);
+        if (existsBoard(nr) == null) {
+            labelMessage.setText("The board with the given ID doesn't exist");
+            return;
+        }
+        String text = existsBoard(nr);
+        mainCtrl.showBoardOverview(text + " -- " + nr);
+
 
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
+    }
+
+    private String existsBoard(int nr) {
+        List<Board> boards = server.getBoards();
+        for (Board board : boards) {
+            if (board.getId() == nr) {
+                return board.getTitle();
+            }
+        }
+        return null;
+    }
+
+    private boolean notNumber(String input) {
+        for (int i = 0; i < input.length(); i++) {
+            Character c = input.charAt(i);
+            if (!(c >= '0' && c <= '9')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
