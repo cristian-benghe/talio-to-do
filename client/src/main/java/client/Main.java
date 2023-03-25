@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.*;
+import client.utils.ServerUtils;
 import com.google.inject.Injector;
 //import commons.Card;  //commented because of redlined
 import javafx.application.Application;
@@ -28,6 +29,7 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
+    private final ServerUtils serverUtils = INJECTOR.getInstance(ServerUtils.class);
     /**
      * launches the application
      * @param args =

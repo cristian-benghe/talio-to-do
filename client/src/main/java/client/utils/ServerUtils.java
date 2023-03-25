@@ -37,12 +37,16 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+@Component
 public class ServerUtils {
 
-    private String server;
+    private String server = "ws://localhost:8080/websocket";
+    private StompSession session = connect("ws://localhost:8080/websocket");
+
 
     /**
      * set method used in the first scene of the application
@@ -314,7 +318,7 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
-    private StompSession session;
+
 
     /**
      * Establishes a WebSocket connection to the specified
