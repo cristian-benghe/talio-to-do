@@ -42,37 +42,40 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static String server;
+    private String server;
 
     /**
      * set method used in the first scene of the application
+     *
      * @param serverAddress the string containing the URL
      */
-    public static void setServerAddress(String serverAddress) {
-        ServerUtils.server = serverAddress;
+    public void setServerAddress(String serverAddress) {
+        server = serverAddress;
     }
 
     /**
      * getter for the server address
+     *
      * @return the string containing the URL
      */
-    public static String getServerAddress() {
+    public String getServerAddress() {
         return server;
     }
 
     /**
      * Returns an URL with a certain path added
+     *
      * @param path the desired path
      * @return the string containing the URL
      */
-    private static String getServerUrl(String path) {
+    private String getServerUrl(String path) {
         return server + path;
     }
 
     private Column updateCardInColumn(int cardId, Card card, Long columnId, Long boardId) {
-        Board board=getBoardById(boardId);
-        Column column=board.getColumns().get(Math.toIntExact(columnId)-1);
-        column.getCards().set(cardId-1, card);
+        Board board = getBoardById(boardId);
+        Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
+        column.getCards().set(cardId - 1, card);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/columns/" + column.getId())
                 .request(MediaType.APPLICATION_JSON)
@@ -81,15 +84,16 @@ public class ServerUtils {
 
     /**
      * update the card title
-     * @param cardid cardid to be updated
+     *
+     * @param cardid   cardid to be updated
      * @param columnID columid to be updated
-     * @param text text that will be replaced
-     * @param boardId boardid
+     * @param text     text that will be replaced
+     * @param boardId  boardid
      */
     public void updateCardTitle(Long cardid, Long columnID, String text, Long boardId) {
-        Board board=getBoardById(boardId);
-        Column column=board.getColumns().get((int)(columnID-1));
-        Card card = column.getCards().get(Math.toIntExact(cardid)-1);
+        Board board = getBoardById(boardId);
+        Column column = board.getColumns().get((int) (columnID - 1));
+        Card card = column.getCards().get(Math.toIntExact(cardid) - 1);
         card.setTitle(text);
         //updateColumn(Math.toIntExact(column.getId()), column);
         updateCardInColumn(Math.toIntExact(cardid), card, columnID, boardId);
@@ -97,7 +101,8 @@ public class ServerUtils {
 
     /**
      * A method to Add card to column (serverside)
-     * @param boardid board id to add the card
+     *
+     * @param boardid  board id to add the card
      * @param columnid an id of the column
      * @param newCard
      * @param cardid
@@ -105,7 +110,7 @@ public class ServerUtils {
      */
     public Column addCardToColumn(Long boardid, Long columnid, Card newCard, Long cardid) {
         Board board = getBoardById(boardid);
-        Column column = board.getColumns().get(Math.toIntExact(columnid)-1);
+        Column column = board.getColumns().get(Math.toIntExact(columnid) - 1);
         newCard.setColumnId(cardid);
         column.getCards().add(newCard);
         return ClientBuilder.newClient(new ClientConfig())
@@ -116,6 +121,7 @@ public class ServerUtils {
 
     /**
      * to get column by id
+     *
      * @param columnId to get column
      * @return Column object
      */
@@ -131,6 +137,7 @@ public class ServerUtils {
     /**
      * Adds a new board.
      * This method sends a POST request to the server to add a new card
+     *
      * @param board The board to be added to the list.
      * @return The deserialized board
      */
@@ -145,6 +152,7 @@ public class ServerUtils {
 
     /**
      * Retrieves an HTTP GET request for the boards resource.
+     *
      * @return a list of boards
      */
     public List<Board> getBoards() {
@@ -152,7 +160,8 @@ public class ServerUtils {
                 .target(server).path("api/boards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Board>>() {});
+                .get(new GenericType<List<Board>>() {
+                });
     }
 
 
@@ -161,6 +170,7 @@ public class ServerUtils {
      * This method sends a POST request to the server to add a new card
      * to the to-do list. The card parameter should contain all necessary
      * information about the new card, including the task description.
+     *
      * @param card The card to add to the list.
      * @return The deserialized card.
      */
@@ -174,6 +184,7 @@ public class ServerUtils {
 
     /**
      * Retrieves an HTTP GET request for the cards resource.
+     *
      * @return all the cards in the database
      */
     public List<Card> getCards() {
@@ -181,11 +192,13 @@ public class ServerUtils {
                 .target(server).path("api/cards") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Card>>() {});
+                .get(new GenericType<List<Card>>() {
+                });
     }
 
     /**
      * Retrieves an HTTP GET request for the cards resource where the cards are in a certain column.
+     *
      * @param column the column we search cards in
      * @return a list of cards
      */
@@ -195,7 +208,8 @@ public class ServerUtils {
                 .queryParam("column_id", column.getId())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Card>>() {});
+                .get(new GenericType<List<Card>>() {
+                });
     }
 
     /**
@@ -203,6 +217,7 @@ public class ServerUtils {
      * This method sends a POST request to the server to add a new card
      * to the to-do list. The column parameter should contain all necessary
      * information about the new column
+     *
      * @param column The column to add to the list.
      * @return returns a Column object, which is the server's representation
      * of the newly created column. The response body from the server is
@@ -219,6 +234,7 @@ public class ServerUtils {
 
     /**
      * Retrieves an HTTP GET request for the columns resource.
+     *
      * @return all the columns in the database
      */
     public List<Column> getColumns() {
@@ -226,12 +242,14 @@ public class ServerUtils {
                 .target(server).path("api/columns") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Column>>() {});
+                .get(new GenericType<List<Column>>() {
+                });
     }
 
     /**
      * Retrieves an HTTP GET request for the columns resource
      * where the columns are in a certain board.
+     *
      * @param board the board in which we are looking for columns
      * @return a list of cards
      */
@@ -241,12 +259,14 @@ public class ServerUtils {
                 .queryParam("board_id", board.getId())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Column>>() {});
+                .get(new GenericType<List<Column>>() {
+                });
     }
 
     /**
      * update the board title when it's modified
-     * @param boardId the id of the board to be modified
+     *
+     * @param boardId  the id of the board to be modified
      * @param newTitle the new title the board will have
      * @return The deserialized Board object
      */
@@ -267,6 +287,7 @@ public class ServerUtils {
 
     /**
      * This method sends an HTTP DELETE request using the Jersey client library
+     *
      * @param boardId - the id of the board that has to be deleted
      */
     public void deleteBoard(long boardId) {
@@ -280,6 +301,7 @@ public class ServerUtils {
 
     /**
      * Retrieves using an HTTP GET request a board with a certain id
+     *
      * @param boardId the id of the board we are looking for
      * @return The deserialized Board object
      */
@@ -292,27 +314,28 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
-    private static StompSession session;
+    private StompSession session;
 
     /**
-
-     Establishes a WebSocket connection to the specified
-     URL using STOMP protocol and returns a new {@link StompSession}.
-     @param url The URL to connect to as a String.
-     @return A new {@link StompSession} object representing the established connection.
-     @throws IllegalStateException If connection cannot be established.
-     @throws RuntimeException If an exception is thrown during the connection attempt.
-     @throws InterruptedException If the thread is interrupted during the connection attempt.
+     * Establishes a WebSocket connection to the specified
+     * URL using STOMP protocol and returns a new {@link StompSession}.
+     *
+     * @param url The URL to connect to as a String.
+     * @return A new {@link StompSession} object representing the established connection.
+     * @throws IllegalStateException If connection cannot be established.
+     * @throws RuntimeException      If an exception is thrown during the connection attempt.
+     * @throws InterruptedException  If the thread is interrupted during the connection attempt.
      */
-    public static StompSession connect(String url) {
+    public StompSession connect(String url) {
         var client = new StandardWebSocketClient();
         var stomp = new WebSocketStompClient(client);
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
         try {
-            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+            return stomp.connect(url, new StompSessionHandlerAdapter() {
+            }).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (ExecutionException e){
+        } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
         throw new IllegalStateException();
@@ -321,10 +344,11 @@ public class ServerUtils {
 
     /**
      * Registers a consumer for messages of the specified type from the specified destination.
-     * @param dest the destination to subscribe to
-     * @param type the class of the message payload
+     *
+     * @param dest     the destination to subscribe to
+     * @param type     the class of the message payload
      * @param consumer the consumer to handle the received messages
-     * @param <T> the method is can be used for any class template <T>
+     * @param <T>      the method is can be used for any class template <T>
      */
     public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
         session.subscribe(dest, new StompFrameHandler() {
@@ -343,8 +367,9 @@ public class ServerUtils {
 
     /**
      * Sends an object to the specified destination.
+     *
      * @param dest the destination to send the object to
-     * @param o the object to send
+     * @param o    the object to send
      * @throws IllegalStateException if the WebSocket session is not connected
      */
     public void send(String dest, Object o) {
@@ -353,44 +378,48 @@ public class ServerUtils {
 
     /**
      * gets the URL
+     *
      * @return the URL of the server in String format
      */
-    public static String getServer() {
+    public String getServer() {
         return server;
     }
 
     /**
      * sets the URL
+     *
      * @param server the URL of the server in String format
      */
-    public static void setServer(String server) {
-        ServerUtils.server = server;
+    public void setServer(String server) {
+        server = server;
     }
 
     /**
      * gets the session
+     *
      * @return the session
      */
-    public static StompSession getSession() {
+    public StompSession getSession() {
         return session;
     }
 
     /**
      * sets the session
+     *
      * @param session the session
      */
-    public static void setSession(StompSession session) {
-        ServerUtils.session = session;
+    public void setSession(StompSession session) {
+        this.session = session;
     }
 
     /**
-     * @param id = id of the board
+     * @param id        = id of the board
      * @param newColumn = column to add to board
-     * @param i = id of the column in the board
+     * @param i         = id of the column in the board
      * @return the board after you add a column
      */
     public Board addColumnToBoard(Long id, Column newColumn, int i) {
-        Board board=getBoardById(id);
+        Board board = getBoardById(id);
         newColumn.setIDinBoard(i);
         board.addColumn(newColumn);
 
@@ -403,20 +432,20 @@ public class ServerUtils {
 
     /**
      * @param columnID = id of the column in the board
-     * @param text = the new title of the column
-     * @param boardId = the id of the board
+     * @param text     = the new title of the column
+     * @param boardId  = the id of the board
      */
     public void updateColTitle(int columnID, String text, Long boardId) {
-        Board board=getBoardById(boardId);
-        Column column=board.getColumns().get(columnID-1);
+        Board board = getBoardById(boardId);
+        Column column = board.getColumns().get(columnID - 1);
         column.setTitle(text);
         //updateColumn(Math.toIntExact(column.getId()), column);
         updateColumnInBoard(columnID, column, boardId);
     }
 
     private Board updateColumnInBoard(int columnID, Column column, Long boardId) {
-        Board board=getBoardById(boardId);
-        board.setColumn(columnID-1, column);
+        Board board = getBoardById(boardId);
+        board.setColumn(columnID - 1, column);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
@@ -431,12 +460,12 @@ public class ServerUtils {
     }
 
     /**
-     * @param colInd the index of the the deleted column
+     * @param colInd  the index of the the deleted column
      * @param boardId the id of the board the column is in
      * @return the updated board
      */
     public Board deleteColumn(int colInd, Long boardId) {
-        Board board=getBoardById(boardId);
+        Board board = getBoardById(boardId);
         board.updateColIndex(colInd);
         board.deleteColumn(colInd);
         return ClientBuilder.newClient(new ClientConfig())
