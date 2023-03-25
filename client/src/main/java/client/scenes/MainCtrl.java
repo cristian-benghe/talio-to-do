@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.ServerUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -90,8 +89,6 @@ public class MainCtrl {
      */
     public void showMainOverview() {
 
-
-        System.out.println(ServerUtils.getServer());
         if(!shownMainOverviewOneTime)
             mainOverviewCtrl.socketsCall();
         primaryStage.setTitle("Talio - Home");

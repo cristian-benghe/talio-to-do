@@ -299,6 +299,7 @@ public class MainOverviewCtrl implements Initializable {
      * start.
      */
     public void socketsCall() {
+
         server.registerForMessages("/topic/delete-board", Long.class, id -> {
             Board toBeDeleted = null;
             for (Board b : availableBoards)
