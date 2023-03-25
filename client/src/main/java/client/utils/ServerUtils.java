@@ -17,8 +17,11 @@ package client.utils;
 
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import commons.Board;
 import commons.Card;
@@ -29,6 +32,13 @@ import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
@@ -57,6 +67,65 @@ public class ServerUtils {
      */
     private static String getServerUrl(String path) {
         return server + path;
+    }
+
+    private Column updateCardInColumn(int cardId, Card card, Long columnId, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get(Math.toIntExact(columnId)-1);
+        column.getCards().set(cardId-1, card);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + column.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * update the card title
+     * @param cardid cardid to be updated
+     * @param columnID columid to be updated
+     * @param text text that will be replaced
+     * @param boardId boardid
+     */
+    public void updateCardTitle(Long cardid, Long columnID, String text, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get((int)(columnID-1));
+        Card card = column.getCards().get(Math.toIntExact(cardid)-1);
+        card.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateCardInColumn(Math.toIntExact(cardid), card, columnID, boardId);
+    }
+
+    /**
+     * A method to Add card to column (serverside)
+     * @param boardid board id to add the card
+     * @param columnid an id of the column
+     * @param newCard
+     * @param cardid
+     * @return column
+     */
+    public Column addCardToColumn(Long boardid, Long columnid, Card newCard, Long cardid) {
+        Board board = getBoardById(boardid);
+        Column column = board.getColumns().get(Math.toIntExact(columnid)-1);
+        newCard.setColumnId(cardid);
+        column.getCards().add(newCard);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + column.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * to get column by id
+     * @param columnId to get column
+     * @return Column object
+     */
+    public Column getColumnById(long columnId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Column.class);
     }
 
     /**
@@ -222,5 +291,175 @@ public class ServerUtils {
                 .accept(MediaType.APPLICATION_JSON)
                 .get(Board.class);
     }
+
+    private static StompSession session;
+
+    /**
+
+     Establishes a WebSocket connection to the specified
+     URL using STOMP protocol and returns a new {@link StompSession}.
+     @param url The URL to connect to as a String.
+     @return A new {@link StompSession} object representing the established connection.
+     @throws IllegalStateException If connection cannot be established.
+     @throws RuntimeException If an exception is thrown during the connection attempt.
+     @throws InterruptedException If the thread is interrupted during the connection attempt.
+     */
+    public static StompSession connect(String url) {
+        var client = new StandardWebSocketClient();
+        var stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e){
+            throw new RuntimeException(e);
+        }
+        throw new IllegalStateException();
+    }
+
+
+    /**
+     * Registers a consumer for messages of the specified type from the specified destination.
+     * @param dest the destination to subscribe to
+     * @param type the class of the message payload
+     * @param consumer the consumer to handle the received messages
+     * @param <T> the method is can be used for any class template <T>
+     */
+    public <T> void registerForMessages(String dest, Class<T> type, Consumer<T> consumer) {
+        session.subscribe(dest, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+    }
+
+    /**
+     * Sends an object to the specified destination.
+     * @param dest the destination to send the object to
+     * @param o the object to send
+     * @throws IllegalStateException if the WebSocket session is not connected
+     */
+    public void send(String dest, Object o) {
+        session.send(dest, o);
+    }
+
+    /**
+     * gets the URL
+     * @return the URL of the server in String format
+     */
+    public static String getServer() {
+        return server;
+    }
+
+    /**
+     * sets the URL
+     * @param server the URL of the server in String format
+     */
+    public static void setServer(String server) {
+        ServerUtils.server = server;
+    }
+
+    /**
+     * gets the session
+     * @return the session
+     */
+    public static StompSession getSession() {
+        return session;
+    }
+
+    /**
+     * sets the session
+     * @param session the session
+     */
+    public static void setSession(StompSession session) {
+        ServerUtils.session = session;
+    }
+
+    /**
+     * @param id = id of the board
+     * @param newColumn = column to add to board
+     * @param i = id of the column in the board
+     * @return the board after you add a column
+     */
+    public Board addColumnToBoard(Long id, Column newColumn, int i) {
+        Board board=getBoardById(id);
+        newColumn.setIDinBoard(i);
+        board.addColumn(newColumn);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + id)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+
+    /**
+     * @param columnID = id of the column in the board
+     * @param text = the new title of the column
+     * @param boardId = the id of the board
+     */
+    public void updateColTitle(int columnID, String text, Long boardId) {
+        Board board=getBoardById(boardId);
+        Column column=board.getColumns().get(columnID-1);
+        column.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateColumnInBoard(columnID, column, boardId);
+    }
+
+    private Board updateColumnInBoard(int columnID, Column column, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColumn(columnID-1, column);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    private Column updateColumn(int columnID, Column column) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + columnID)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * @param colInd the index of the the deleted column
+     * @param boardId the id of the board the column is in
+     * @return the updated board
+     */
+    public Board deleteColumn(int colInd, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.updateColIndex(colInd);
+        board.deleteColumn(colInd);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+    /**
+     * Adds a new column to a board.
+     * This method sends a POST request to the server to add a new column to a board.
+     * The boardId parameter specifies the ID of the board to add the column to,
+     * while the column parameter should contain all necessary information about the new column.
+     * @param boardId The ID of the board to add the column to.
+     * @param column The column to add to the board.
+     * @return The deserialized column.
+     */
+//    public Column addColumnToBoard(Long boardId, Column column) {
+//        // Send a POST request to the server to add a new column to a board
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(getServerUrl("api/boards/" + boardId + "/columns"))
+//                .request(MediaType.APPLICATION_JSON)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .post(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+//    }
 
 }

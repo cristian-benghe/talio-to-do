@@ -1,6 +1,6 @@
 package commons;
 
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+//import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -15,14 +15,14 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 @Entity
 @Table(name = "card")
 public class Card {
-
+    private Long columnid = (long)-1;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
 
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -30,10 +30,6 @@ public class Card {
             joinColumns = { @JoinColumn(name = "card_id") },
             inverseJoinColumns = { @JoinColumn(name = "tag_id") })
     private Set<Tag> tags = new HashSet<>();
-
-    @ManyToOne
-    @JoinColumn(name = "column_id")
-    private Column column;
 
     /**
      * empty constructor
@@ -47,17 +43,17 @@ public class Card {
      * @param description = description of a card for advanced feat
      * @param taskList = a list of tasks for a card, also advanced feat
      * @param tags = list of tags for a card
-     * @param column = column in which the card is placed
      */
 
     public Card(String title, String description,
-                List<Task> taskList, Set<Tag> tags, Column column) {
+                List<Task> taskList, Set<Tag> tags) {
         this.title = title;
         this.description = description;
         this.taskList = taskList;
         this.tags = tags;
-        this.column = column;
+
     }
+
 
     // getters and setters
 
@@ -68,6 +64,22 @@ public class Card {
 
     public Long getId() {
         return id;
+    }
+
+    /**
+     * to get column id
+     * @return columnid
+     */
+    public Long getColumnId() {
+        return columnid;
+    }
+
+    /**
+     * set column id
+     * @param id a value to set columnid
+     */
+    public void setColumnId(Long id) {
+        columnid = id;
     }
 
     /**
@@ -138,34 +150,26 @@ public class Card {
         this.tags = tags;
     }
 
-    /**
-     * @return the list of columns
-     */
-    public Column getColumn() {
-        return column;
-    }
-
-    /**
-     * @param column = the list of columns after update
-     */
-    public void setColumn(Column column) {
-        this.column = column;
-    }
 
     /**
      * @param o = object to be compared
      * @return if objects are equal or not
      */
+
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(id, card.id) && Objects.equals(title, card.title) &&
+        return Objects.equals(id, card.id) &&
+                Objects.equals(title, card.title) &&
                 Objects.equals(description, card.description) &&
                 Objects.equals(taskList, card.taskList) &&
-                Objects.equals(tags, card.tags) && Objects.equals(column, card.column);
+                Objects.equals(tags, card.tags);
     }
+
+
 
     /**
      * hashing function
@@ -173,7 +177,7 @@ public class Card {
      */
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return Objects.hash(id, title, description, taskList, tags);
     }
 
     /**

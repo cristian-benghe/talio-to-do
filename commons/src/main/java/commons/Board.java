@@ -12,10 +12,10 @@ public class Board {
     private Long id;
     private String title;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Tag> tags = new ArrayList<>();
 
     /**
@@ -61,6 +61,7 @@ public class Board {
      */
     public Board(){}
 
+
     /**
      * Get method for Id attribute
      * @return the ID of this Board object
@@ -83,6 +84,21 @@ public class Board {
      */
     public String getTitle() {
         return title;
+    }
+
+    /**
+     * @param newColumn to add to a boad
+     */
+    public void addColumn(Column newColumn) {
+        columns.add(newColumn);
+    }
+
+    /**
+     * @param columnID = the id of the column in a board
+     * @param column = set a column with a new title
+     */
+    public void setColumn(int columnID, Column column) {
+        columns.set(columnID, column);
     }
 
     /**
@@ -168,4 +184,20 @@ public class Board {
         result = 31 * result + (getTags() != null ? getTags().hashCode() : 0);
         return result;
     }
+    /**
+     * @param colInd delete a column with an id
+     */
+    public void deleteColumn(int colInd) {
+        columns.remove(colInd);
+    }
+
+    /**
+     * @param colInd the updated id of the columns that shift to the left
+     */
+    public void updateColIndex(int colInd) {
+        for(int i=colInd;i<columns.size();i++){
+            columns.get(i).setIDinBoard(columns.get(i).getIDinBoard()-1);
+        }
+    }
+
 }

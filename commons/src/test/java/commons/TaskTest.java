@@ -14,7 +14,7 @@ class TaskTest {
 
     @BeforeEach
     public void setup(){
-        c = new Card("Test Card",null,null,null,null);
+        c = new Card("Test Card",null,null,null);
         c.setId(10L);
 
         t = new Task(1L,c,"Test Task",false);

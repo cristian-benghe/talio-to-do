@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MainOverviewCtrl implements Initializable {
@@ -23,6 +25,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Fields for the dependency injection
     private final ServerUtils server;
+
     private final MainCtrl mainCtrl;
 
 
@@ -40,13 +43,16 @@ public class MainOverviewCtrl implements Initializable {
     private Label boardsText;
     @FXML
     private Label emptyBoardListMsg;
+    @FXML
+    private Label labelMessage;
 
     /**
      * Constructs a new instance of the MainOverviewCtrl class with the
      * specified ServerUtils and MainCtrl objects injected as dependencies.
-     * @param server the ServerUtils object to use for interacting with the server
+     *
+     * @param server   the ServerUtils object to use for interacting with the server
      * @param mainCtrl the MainCtrl object to use for coordinating the application's
-     * main control flow
+     *                 main control flow
      */
     @Inject
     public MainOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -66,6 +72,7 @@ public class MainOverviewCtrl implements Initializable {
      * The method is used to refresh all the elements of the MainOverview.
      */
     public void refreshOverview() {
+        labelMessage.setVisible(false);
 
         //Reset the availableBoards list
         availableBoards = server.getBoards();
@@ -179,16 +186,49 @@ public class MainOverviewCtrl implements Initializable {
 
         //Retrieve the search input from the searchTextField
         String input = searchTextField.getText();
+        labelMessage.setVisible(true);
 
         //Make sure that the
         if (input.length() > SEARCH_MAX_LENGTH) {
-
+            labelMessage.setText("The input is too long");
             //TODO Add an error message through a ??? pop-up (to improve usability)
             return;
         }
+        if (notNumber(input)) {
+            labelMessage.setText("The input is not a valid ID");
+            return;
+        }
+        int nr = Integer.parseInt(input);
+        if (existsBoard(nr) == null) {
+            labelMessage.setText("The board with the given ID doesn't exist");
+            return;
+        }
+        String text = existsBoard(nr);
+        mainCtrl.showBoardOverview(text + " -- " + nr);
+
 
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
+    }
+
+    private String existsBoard(int nr) {
+        List<Board> boards = server.getBoards();
+        for (Board board : boards) {
+            if (board.getId() == nr) {
+                return board.getTitle();
+            }
+        }
+        return null;
+    }
+
+    private boolean notNumber(String input) {
+        for (int i = 0; i < input.length(); i++) {
+            Character c = input.charAt(i);
+            if (!(c >= '0' && c <= '9')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -203,10 +243,17 @@ public class MainOverviewCtrl implements Initializable {
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
         System.out.println("\n\n\n" + board.getId() + "\n\n\n");
+
+        server.send("/app/boards", board);
+
         //Post the new board to the server
         //TODO Fix the POST method for board!
-        server.addBoard(board);
-        refreshOverview();
+
+
+        //server.addBoard(board);
+        refreshOverview(); //to be deleted after websockets implementation
+
+
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
 //        //As a temporary measure, set ID as 0
@@ -236,13 +283,11 @@ public class MainOverviewCtrl implements Initializable {
 
     /**
      * Function implemented to use/load certain functions when the MainOverview scene is shown
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
      *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -250,10 +295,48 @@ public class MainOverviewCtrl implements Initializable {
     }
 
     /**
+     * Method to be called one time for the websockets to
+     * start.
+     */
+    public void socketsCall() {
+        server.registerForMessages("/topic/delete-board", Long.class, id -> {
+            Board toBeDeleted = null;
+            for (Board b : availableBoards)
+                if (Objects.equals(b.getId(), id)) toBeDeleted = b;
+            if (toBeDeleted != null) availableBoards.remove(toBeDeleted);
+            //System.out.println("Deleted board " + toBeDeleted.toStringShort());
+            Platform.runLater(() -> refreshOverview());
+        });
+        server.registerForMessages("/topic/boards", Board.class, board -> {
+            availableBoards.add(board);
+            Platform.runLater(() -> refreshOverview());
+        });
+
+        server.registerForMessages("/topic/update-board", Board.class, board -> {
+            Board toBeChanged = null;
+            for (Board b : availableBoards)
+                if (Objects.equals(b.getId(), board.getId()))
+                    b.setTitle(board.getTitle());
+            Platform.runLater(() -> refreshOverview());
+        });
+
+    }
+
+    /**
      * set up the connection to a certain URL
+     *
      * @param address the URL provided through a String
      */
     public void setConnection(String address) {
         server.setServerAddress(address);
+    }
+
+    /**
+     * getter for the server
+     *
+     * @return the instance of the ServerUtils class
+     */
+    public ServerUtils getServer() {
+        return server;
     }
 }

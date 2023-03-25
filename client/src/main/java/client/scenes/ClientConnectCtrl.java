@@ -116,6 +116,9 @@ public class ClientConnectCtrl implements Initializable {
             return;
         }
 
+        if(serverAddress.contains("http://")) ServerUtils.setSession(
+                ServerUtils.connect("ws://" + serverAddress.substring(7) + "websocket"));
+
         // Set the server address in the ServerUtils class
         ServerUtils.setServerAddress(serverAddress);
         mainCtrl.createConnection(serverAddress);

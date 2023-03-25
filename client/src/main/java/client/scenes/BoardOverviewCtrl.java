@@ -3,6 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Column;
+import commons.Card;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -12,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -25,11 +28,13 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
+    private Long nrCol = Long.valueOf(0);
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -46,7 +51,7 @@ public class BoardOverviewCtrl implements Initializable {
     //Dialog box for the delete board button
     private Dialog deleteBoardDialog;
     //id of the board
-    private Long id = Long.valueOf(-1);
+    private Long id = (long) -1;
     @FXML
     private AnchorPane anchorPane;
 
@@ -71,7 +76,8 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * Handles the initialization and interaction with the elements of the BoardOverview.fxml
-     * @param server - the server of the application
+     *
+     * @param server   - the server of the application
      * @param mainCtrl - the main controller
      */
     @Inject
@@ -89,24 +95,28 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * Sets the title and ID of the board.
+     *
      * @param idd - the id of the new board
      */
-    public void setBoardTitle(String idd){
-        Long nr=Long.parseLong(idd.split("--")[1].trim());
-        keyID.setText("keyID: "+nr);
+    public void setBoardTitle(String idd) {
+        Long nr = Long.parseLong(idd.split("--")[1].trim());
+        keyID.setText("keyID: " + nr);
         this.id = nr;
-        if(!idd.contains("New Board")) {
+        columnsRefresh();
+//        addOneColumn("To do");
+//        addOneColumn("Doing");
+//        addOneColumn("Done");
+        if (!idd.contains("New Board")) {
             boardTitle.setText(idd.split("--")[0].trim());
             return;
         }
         //this should set a default title for boards that are not new
         // but haven't been modified either
         //or set the title to the title of the board object with an ID
-        Board board=server.getBoardById(nr);
-        if(board.getTitle().equals("New Board")){
-            boardTitle.setText("Board "+nr);
-        }
-        else {
+        Board board = server.getBoardById(nr);
+        if (board.getTitle().equals("New Board")) {
+            boardTitle.setText("Board " + nr);
+        } else {
             boardTitle.setText(server.getBoardById(nr).getTitle());
         }
 
@@ -115,22 +125,30 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * This method should update the title when you edit it
      */
-    public void editTitle(){
-        server.updateBoardTitle(this.id, boardTitle.getText());
+    public void editTitle() {
+
+        //server.updateBoardTitle(this.id, boardTitle.getText());
+
+        Board board = server.getBoardById(this.id);
+        board.setTitle(boardTitle.getText());
+        System.out.println(board.toStringShort());
+        //server.send("/app/delete-board", board.getId());
+        server.send("/app/update-board", board);
+
     }
 
     /**
      * This changes the scene to the Main Overview
      */
 
-    public void goBackHome(){
+    public void goBackHome() {
         mainCtrl.showMainOverview();
     }
 
     /**
      * This method adds a new default column
      */
-    public void addColumn(){
+    public void addColumn() {
         addOneColumn("New column");
     }
 
@@ -148,20 +166,33 @@ public class BoardOverviewCtrl implements Initializable {
         scrollPane.setContent(vBox);
         vBox.setPrefHeight(380);
         vBox.setPrefWidth(150);
-        Button button = createButton(vBox);
-        setVBoxDragDrop(button, vBox);
+
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
         Label columnLabel = new Label("...");
         vBox.setMargin(textField, new Insets(2));
-        button.setAlignment(Pos.BOTTOM_CENTER);
-        vBox.getChildren().addAll(columnLabel, textField, button);
+
         anchorPaneVBox.getChildren().add(vBox);
         //to set the functionality of the drag and drop of the new column.
         // Only for deletion not to replace!
         setColumnDragDrop(anchorPaneVBox);
         hbox.getChildren().add(anchorPaneVBox);
+        nrCol++;
+        server.addColumnToBoard(id, new Column(("New column" + nrCol),
+                new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+        textField.setOnKeyTyped(e ->
+        {
+            updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+        });
 
+        Button button = createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+        setVBoxDragDrop(button, vBox);
+        button.setAlignment(Pos.BOTTOM_CENTER);
+        vBox.getChildren().addAll(columnLabel, textField, button);
+    }
+
+    private void updateColTitle(int i, String text) {
+        server.updateColTitle(i, text, id);
     }
 
     /**
@@ -172,6 +203,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public AnchorPane addCard(VBox vBox) {
         AnchorPane anchorPane1 = createCard();
+
         setCardDragDrop(anchorPane1, vBox);
         vBox.setMargin(anchorPane1, new Insets(2, 2, 2, 2));
         return anchorPane1;
@@ -200,9 +232,7 @@ public class BoardOverviewCtrl implements Initializable {
         vbox.setAlignment(Pos.CENTER);
         anchorPane1.getChildren().add(vbox);
         textField.setFont(new Font("System", 18));
-        textField.setOnMouseClicked(event -> {
 
-        });
         anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
         anchorPane1.setPrefSize(150, 80);
         return anchorPane1;
@@ -211,12 +241,13 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * A method to create a button
      *
-     * @param vBox the vBox that the element is created in
+     * @param vBox     the vBox that the element is created in
+     * @param columnid
      * @return new created button
      */
-    public Button createButton(VBox vBox) {
+    public Button createButton(VBox vBox, Long columnid) {
         Button button = new Button("AddCard");
-        setButtonAction(button, vBox);
+        setButtonAction(button, vBox, columnid);
         vBox.setMargin(button, new Insets(5, 0, 0, 0));
         return button;
     }
@@ -224,16 +255,47 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * A method to set an action of the button
      *
-     * @param button a button to be arranged
-     * @param vBox   Vbox that contains the button
+     * @param button   a button to be arranged
+     * @param vBox     Vbox that contains the button
+     * @param columnid column id
      */
-    public void setButtonAction(Button button, VBox vBox) {
+    public void setButtonAction(Button button, VBox vBox, Long columnid) {
+
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
+            Card mycard = new Card("Card", null, null, null);
+            server.addCardToColumn(id, columnid, mycard,
+                    (long) vBox.getChildren().indexOf(button) - 2);
+            ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
+                    getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
+                        server.updateCardTitle((long) vBox
+                                .getChildren().indexOf(anchorPane1) - 1,
+                            columnid, ((TextField) ((HBox) ((VBox) anchorPane1
+                                .getChildren().get(0)).
+                                getChildren().get(1)).getChildren().get(0)).getText(), id);});
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
         });
+    }
+
+    /**
+     * A method that is needed tu update the name of the card.
+     *
+     * @param anchorPane1 Card, namely
+     * @param button      button to refresh
+     * @param vBox        card container
+     * @param columnid    id of the specific column
+     */
+    public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
+        ((TextField)((HBox)((VBox) anchorPane1.getChildren().get(0)).getChildren().
+                get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
+                    server.updateCardTitle((long) vBox.getChildren().
+                            indexOf(anchorPane1) - 1, columnid,
+                        ((TextField)((HBox)((VBox) anchorPane1
+                            .getChildren().get(0)).getChildren().get(1)).
+                            getChildren().get(0)).getText(), id);
+                });
     }
 
     /**
@@ -267,18 +329,18 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A function to replace/switch the card between the columns
+     *
      * @param button button parameters mostly passed because of deletion/recreation
      *               to always align at the bottom.
      *               I did a lot of research it was the most appropriate
      * @param myVBox vBox that will be effected
      */
-    private void setVBoxDragDrop(Button button, VBox myVBox)
-    {
+    private void setVBoxDragDrop(Button button, VBox myVBox) {
         // Bug fix of disappearing of the addCard button because of duplication error
         myVBox.setOnDragOver(event -> {
             //To solve the issue of drag and drop of the column into column
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
-                !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){
+            if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                    !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 if (event.getDragboard().hasString()) {
                     event.acceptTransferModes(TransferMode.MOVE);
                 }
@@ -289,10 +351,10 @@ public class BoardOverviewCtrl implements Initializable {
         // Bug fix of disappearing of the addCard button because of duplication error
         myVBox.setOnDragDropped(event -> {
             //To solve the issue of drag and drop of the column into column
-            if(Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
-                    !(((AnchorPane)event.getGestureSource()).getParent().equals(myVBox))){
+            if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                    !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
-                setCardDragDrop((AnchorPane) event.getGestureSource(),myVBox);
+                setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
                 //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
@@ -323,8 +385,7 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * set the BIN according to column deletion to avoid gesture/drag and drop conflicts
      */
-    private void columnBin()
-    {
+    private void columnBin() {
         //set the BIN text (get(2) because BIN is second indexed element in the anchorPane.
         // TODO This can be done byID later on)...
         anchorPane.getChildren().get(2).setOnDragOver(event -> {
@@ -337,6 +398,8 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(2).setOnDragDropped(event -> {
             //gesture source to pass dragged item
+            int colInd = hbox.getChildren().indexOf(event.getGestureSource());
+            server.deleteColumn(colInd, id);
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -364,22 +427,63 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
-     *
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
-     *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * refreshed the boardOverview scene so that it updates the columns
      */
+    public void columnsRefresh() {
+        hbox.getChildren().clear();
+        for (Column c : server.getBoardById(id).getColumns()) {
+            AnchorPane anchorPaneVBox = new AnchorPane();
+            ScrollPane scrollPane = new ScrollPane();
+            VBox vBox = new VBox();
+            vBox.setAlignment(Pos.TOP_CENTER);
+            scrollPane.setContent(vBox);
+            vBox.setPrefHeight(380);
+            vBox.setPrefWidth(150);
 
+            TextField textField = new TextField(c.getTitle());
+            textField.setAlignment(Pos.CENTER);
+            Label columnLabel = new Label("...");
+            vBox.setMargin(textField, new Insets(2));
+
+            anchorPaneVBox.getChildren().add(vBox);
+            //to set the functionality of the drag and drop of the new column.
+            // Only for deletion not to replace!
+            setColumnDragDrop(anchorPaneVBox);
+            hbox.getChildren().add(anchorPaneVBox);
+            textField.setOnKeyTyped(e ->
+            {
+                updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+            });
+            Button button =
+                    createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+            setVBoxDragDrop(button, vBox);
+            button.setAlignment(Pos.BOTTOM_CENTER);
+            vBox.getChildren().addAll(columnLabel, textField);
+            for (Card kard : c.getCards()) {
+                vBox.getChildren().add(button);
+                AnchorPane anchorPane1 = addCard(vBox);
+                ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
+                        getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
+                setTextField(anchorPane1, button, vBox,
+                        (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+                vBox.getChildren().add(anchorPane1);
+
+                vBox.getChildren().remove(button);
+
+            }
+            vBox.getChildren().add(button);
+
+        }
+    }
+
+    /**
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        addOneColumn("To do");
-        addOneColumn("Doing");
-        addOneColumn("Done");
-
         //Set the expansion and contraction animations
         binExpansion = new ScaleTransition();
         binExpansion.setDuration(Duration.millis(800));
@@ -424,7 +528,7 @@ public class BoardOverviewCtrl implements Initializable {
      * This method is part of the "drag and drop" animation of deleting cards and columns.
      * It increases the size of the bin.
      */
-    public void expandBin(){
+    public void expandBin() {
         binContraction.stop();
         binExpansion.stop();
         binExpansion.play();
@@ -434,7 +538,7 @@ public class BoardOverviewCtrl implements Initializable {
      * This method is part of the "drag and drop" animation of deleting cards and columns.
      * It decreases the size of the bin.
      */
-    public void contractBin(){
+    public void contractBin() {
         binContraction.stop();
         binExpansion.stop();
         binContraction.play();
@@ -452,7 +556,9 @@ public class BoardOverviewCtrl implements Initializable {
         //Check whether the user confirmed the delete operation
         if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
 
-            server.deleteBoard(id);
+            //server.deleteBoard(id);
+
+            server.send("/app/delete-board", id);
             mainCtrl.showMainOverview();
 
         }
@@ -460,9 +566,21 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A method that sets the connection to a server
+     *
      * @param address the address of the server\
      */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
+
+    /**
+     * method which copies the id of the accessed board to the clipboard
+     */
+    public void copyID() {
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(String.valueOf(id));
+        clipboard.setContent(content);
+    }
+
 }

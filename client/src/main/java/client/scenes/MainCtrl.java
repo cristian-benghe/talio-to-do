@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ServerUtils;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -25,6 +26,7 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    private boolean shownMainOverviewOneTime = false;
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -75,6 +77,8 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text) {
         System.out.println(text);
+
+
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
@@ -87,12 +91,15 @@ public class MainCtrl {
     public void showMainOverview() {
 
 
+        System.out.println(ServerUtils.getServer());
+        if(!shownMainOverviewOneTime)
+            mainOverviewCtrl.socketsCall();
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
-
+        shownMainOverviewOneTime = true;
 
     }
 

@@ -16,38 +16,40 @@
 package server.api;
 
 import commons.Board;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
-import server.database.BoardRepository;
+import server.service.BoardService;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
 @RestController
-@RequestMapping("/api/boards")
 public class BoardController {
 
-    private final Random random;
-    private final BoardRepository repo;
+    private final Random random; //TODO: delete + adapt tests
+    private final BoardService boardservice;
 
     /**
-     * Constructs a new BoardRepository object.
-     * @param random - instance of class Random
-     * @param repo - the board Repository
+     * Constructs a new BoardController with the specified service.
+     * @param boardservice the service for Board operation
+     * @param random
      */
-    public BoardController(Random random, BoardRepository repo) {
+    public BoardController(Random random, BoardService boardservice) {
         this.random = random;
-        this.repo = repo;
+        this.boardservice = boardservice;
     }
 
     /**
      * GET request for obtaining all the boards from the database
      * @return - all the boards from the database
      */
-    @GetMapping(path = { "", "/" })
+    @GetMapping(path = { "/api/boards", "/api/boards/" })
     public List<Board> getAll() {
-        return repo.findAll();
+        return boardservice.getAll();
     }
 
     /**
@@ -56,12 +58,14 @@ public class BoardController {
      * @return - the searched board (status 200) if it exists in the database
      * or BAD REQUEST (error 400) if it does not exist
      */
-    @GetMapping("/{id}")
+    @GetMapping("/api/boards/{id}")
     public ResponseEntity<Board> getById(@PathVariable("id") long id) {
-        if (id < 0 || !repo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+        Optional<Board> board = boardservice.getById(id);
+        if (board.isPresent()) {
+            return ResponseEntity.ok(board.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repo.findById(id).get());
     }
 
     /**
@@ -70,15 +74,10 @@ public class BoardController {
      * @return - status 200 if the board has been successfully added in the database or
      * BAD REQUEST (error 400) if the board title is null or empty
      */
-    @PostMapping(path = { "", "/" })
+    @PostMapping(path = { "/api/boards", "/api/boards/" })
     public ResponseEntity<Board> add(@RequestBody Board board) {
-
-        if (isNullOrEmpty(board.getTitle())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Board saved = repo.save(board);
-        return ResponseEntity.ok(saved);
+        Board added = boardservice.add(board);
+        return ResponseEntity.ok(added);
     }
 
     /**
@@ -97,18 +96,10 @@ public class BoardController {
      * @return - status 200 if the board has been successfully
      * updated in the database or NOT FOUND (error 404) if the board is not found in the database
      */
-    @PutMapping("/{id}")
+    @PutMapping("/api/boards/{id}")
     public ResponseEntity<Board> update(@PathVariable("id") long id, @RequestBody Board board) {
-        Optional<Board> existing = repo.findById(id);
-        if (existing.isPresent()) {
-            Board updated = existing.get();
-            updated.setTitle(board.getTitle());
-            updated.setTags(board.getTags());
-            Board saved = repo.save(updated);
-            return ResponseEntity.ok(saved);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Board updated = boardservice.update(id, board);
+        return ResponseEntity.ok(updated);
     }
 
     /**
@@ -118,16 +109,52 @@ public class BoardController {
      * it will return a response with HTTP status code 204 or
      * if the board is not found, it will return a response with HTTP status code 404.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
-        if (repo.existsById(id)) {
-            repo.deleteById(id);
-            // this creates a ResponseEntity with a HTTP status code of 204 (No Content)
-            return ResponseEntity.noContent().build();
-        }
-        else {
-            // this creates a ResponseEntity with a HTTP status code of 404 (Not Found)
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/api/boards/{id}")
+    public ResponseEntity delete(@PathVariable("id") long id) {
+        boardservice.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    /**
+     * Receives a message with the specified mapping ("/boards") and adds a new board to the system.
+     * The method sends the newly added board to the "/topic/boards" endpoint.
+     * @param board the Board object to be added to the system
+     * @return the Board object that was added to the system
+     */
+    @MessageMapping("/boards") // app/boards TODO: error handling
+    @SendTo("/topic/boards")
+    public Board addMessage(Board board) {
+        add(board);
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/delete-board") and deletes
+     * a certain board from the system.
+     * The method sends the newly added board to the "/topic/delete-board" endpoint.
+     * @param id the id of the Board object to be deleted to the system
+     * @return the id of the deleted board
+     */
+    @MessageMapping("/delete-board") // app/delete-board TODO: error handling
+    @SendTo("/topic/delete-board")
+    public Long addMessageDelete(Long id) {
+        delete(id);
+        return id;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-board") and deletes
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-board" endpoint.
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-board") // app/update-board
+    @SendTo("/topic/update-board")
+    public Board addMessageUpdate(Board board) {
+        update(board.getId(), board);
+        return board;
     }
 }

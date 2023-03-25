@@ -11,8 +11,8 @@ class BoardTest {
     Board board1;
     @BeforeEach
     public void setUp() {
-         board1 = new Board("board", null,null);
-          board=new Board("board", null, null);
+        board1 = new Board("board", null,null);
+        board=new Board("board", null, null);
     }
     @Test
     void getTitle() {
