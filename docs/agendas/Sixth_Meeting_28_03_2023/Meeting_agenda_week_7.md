@@ -5,18 +5,18 @@
 
 Location:       {DW, PC1}\
 Date:           {28/03/2023}\
-Time:     {15:45-16:30}\
+Time:     {15:50-16:35}\
 Attendees:      {Cristian Benghe, David Ghergut, Denisa Arsene, Halid Çırak, Teodora Mihaila, Yair Chizi}
 
 
 ### <span style="color:LightBlue">Agenda Items</span>
 ---
-* ⏳ 15:45 - 15:46   
+* ⏳ 15:50 - 15:51   
   **Opening by chair 👋🏻**
 
-* ⏳ 15:46 - 15:55   
+* ⏳ 15:51 - 15:55   
   **Check-in 🚪** <br />
-  How is everyone doing? Did all of you read about Teamwork Self Reflection and what does the draft imply? (Situation, Task, Action, Result, Reflection, Advice; possible questions about the assignment). How about the draft for the Product Pitch? (Discussion about the contents and layout of the video and how will the team proceed to create the video)
+  How is everyone doing? Did all of you read about Teamwork Self Reflection and what does the draft imply? (Situation, Task, Action, Result, Reflection, Advice; possible questions about the assignment). How about the draft for the Product Pitch? 
 
 * ⏳ 15:55 - 15:58   
   - **Announcements 📣** <br />
@@ -36,24 +36,25 @@ Attendees:      {Cristian Benghe, David Ghergut, Denisa Arsene, Halid Çırak, T
   **Demo with the progress made last week 🏃🏻‍** <br />
   Add columns and cards in the database / Auto-synchronization / etc.
 
-* ⏳ 16:05 - 16:20  
+* ⏳ 16:05 - 16:25  
   **Frontend/Backend tasks division 🎯**<br />
-  **1) [10 min.] Brainstorm 🤔** about the next tasks that need to be implemented (in order of priority: **finish** *Multiboards*, **begin** *Nested Cards, Tags, Customization, Keyboard shortcuts, Password Protected Boards*) <br />
-  **2) [5 min.] Divide the tasks 🚀** in the 2 teams (frontend and backend). Any changes in the teams structure?
+  **1) [5 min.] Discuss about the product pitch video 🎥** -> contents and overall layout of the video and how will the team proceed to create the video <br />
+  **2) [10 min.] Brainstorm 🤔** about the next tasks that need to be implemented (in order of priority: **finish** *Multiboards*, **begin** *Nested Cards, Tags, Customization, Keyboard shortcuts, Password Protected Boards*) <br />
+  **3) [5 min.] Divide the tasks 🚀** in the 2 teams (frontend and backend). Any changes in the teams structure?
 
-* ⏳ 16:20 - 16:23  
+* ⏳ 16:25 - 16:28  
   **Summary actions points** <br />
   Did everyone understand what they have to do until the next meeting? Decide deadlines for the divided tasks and the order to implement remaining features. Who will be the chair and minute-taker for next week's meeting?
 
-* ⏳ 16:23 - 16:24  
+* ⏳ 16:28 - 16:29  
   **Feedback round 🗣️** <br />
   What went well and what can be improved?
 
-* ⏳ 15:24 - 15:29  
+* ⏳ 15:29 - 15:34  
   **Questions round 🙋‍** <br />
   Does anyone have anything to add?  Any questions for the TA?
 
-* ⏳ 16:29 - 16:30  
+* ⏳ 16:34 - 16:35  
   **Closure 👏** 
 
 
