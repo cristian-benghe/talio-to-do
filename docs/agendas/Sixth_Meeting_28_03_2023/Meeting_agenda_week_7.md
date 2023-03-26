@@ -38,10 +38,10 @@ Attendees:      {Cristian Benghe, David Ghergut, Denisa Arsene, Halid Çırak, T
 
 * ⏳ 16:05 - 16:25  
   **Frontend/Backend tasks division 🎯**<br />
-  **1) [5 min.] Discuss about the product pitch video 🎥** -> contents and overall layout of the video and how will the team proceed to create the video <br />
-  **2) [5 min.] Discuss about the Task and Planning rubric (Yair's request)
-  **3) [5 min.] Brainstorm 🤔** about the next tasks that need to be implemented (in order of priority: **finish** *Multiboards*, **begin** *Nested Cards, Tags, Customization, Keyboard shortcuts, Password Protected Boards*) <br />
-  **4) [5 min.] Divide the tasks 🚀** in the 2 teams (frontend and backend). Any changes in the teams structure?
+  - **1) [5 min.] Discuss about the product pitch video 🎥** -> contents and overall layout of the video and how will the team proceed to create the video <br />
+  - **2) [5 min.] Discuss about the Task and Planning rubric 📋** (*Yair's request*) <br />
+  - **3) [5 min.] Brainstorm 🤔** about the next tasks that need to be implemented (in order of priority: **finish** *Multiboards*, **begin** *Nested Cards, Tags, Customization, Keyboard shortcuts, Password Protected Boards*) <br />
+  - **4) [5 min.] Divide the tasks 🚀** in the 2 teams (frontend and backend). Any changes in the teams structure?
 
 * ⏳ 16:25 - 16:28  
   **Summary actions points** <br />
