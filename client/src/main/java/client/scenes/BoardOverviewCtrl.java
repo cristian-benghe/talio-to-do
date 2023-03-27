@@ -7,6 +7,7 @@ import commons.Column;
 import commons.Card;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -133,8 +134,8 @@ public class BoardOverviewCtrl implements Initializable {
         board.setTitle(boardTitle.getText());
         System.out.println(board.toStringShort());
         //server.send("/app/delete-board", board.getId());
-        server.send("/app/update-board", board);
-
+        server.send("/app/update-in-board", server.getBoardById(id));
+        server.send("/app/update-board", server.getBoardById(id));
     }
 
     /**
@@ -189,10 +190,12 @@ public class BoardOverviewCtrl implements Initializable {
         setVBoxDragDrop(button, vBox);
         button.setAlignment(Pos.BOTTOM_CENTER);
         vBox.getChildren().addAll(columnLabel, textField, button);
+        server.send("/app/update-in-board", server.getBoardById(id));
     }
 
     private void updateColTitle(int i, String text) {
         server.updateColTitle(i, text, id);
+        server.send("/app/update-in-board", server.getBoardById(id));
     }
 
     /**
@@ -268,14 +271,17 @@ public class BoardOverviewCtrl implements Initializable {
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                     getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
-                        server.updateCardTitle((long) vBox
+                server.updateCardTitle((long) vBox
                                 .getChildren().indexOf(anchorPane1) - 1,
-                            columnid, ((TextField) ((HBox) ((VBox) anchorPane1
+                        columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).
-                                getChildren().get(1)).getChildren().get(0)).getText(), id);});
+                                getChildren().get(1)).getChildren().get(0)).getText(), id);
+                server.send("/app/update-in-board", server.getBoardById(id));
+            });
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
+            server.send("/app/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -288,14 +294,15 @@ public class BoardOverviewCtrl implements Initializable {
      * @param columnid    id of the specific column
      */
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
-        ((TextField)((HBox)((VBox) anchorPane1.getChildren().get(0)).getChildren().
+        ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
                 get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
-                    server.updateCardTitle((long) vBox.getChildren().
+            server.updateCardTitle((long) vBox.getChildren().
                             indexOf(anchorPane1) - 1, columnid,
-                        ((TextField)((HBox)((VBox) anchorPane1
+                    ((TextField) ((HBox) ((VBox) anchorPane1
                             .getChildren().get(0)).getChildren().get(1)).
                             getChildren().get(0)).getText(), id);
-                });
+            server.send("/app/update-in-board", server.getBoardById(id));
+        });
     }
 
     /**
@@ -403,6 +410,7 @@ public class BoardOverviewCtrl implements Initializable {
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
+            server.send("/app/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -581,6 +589,16 @@ public class BoardOverviewCtrl implements Initializable {
         ClipboardContent content = new ClipboardContent();
         content.putString(String.valueOf(id));
         clipboard.setContent(content);
+    }
+
+    public void socketsCall() {
+        server.registerForMessages("/topic/update-in-board", Board.class, board -> {
+            System.out.println("asadasdasd");
+            if (Objects.equals(board.getId(), id))
+                System.out.println("asadasdasd");
+                Platform.runLater(() -> columnsRefresh());
+                //Platform.runLater(() -> setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+        });
     }
 
 }

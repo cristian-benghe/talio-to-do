@@ -77,6 +77,7 @@ public class MainCtrl {
     public void showBoardOverview(String text) {
         System.out.println(text);
 
+        boardOverviewCtrl.socketsCall();
 
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);

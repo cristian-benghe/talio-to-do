@@ -29,8 +29,6 @@ import java.util.Random;
 
 @RestController
 public class BoardController {
-
-    private final Random random; //TODO: delete + adapt tests
     private final BoardService boardservice;
 
     /**
@@ -39,7 +37,6 @@ public class BoardController {
      * @param random
      */
     public BoardController(Random random, BoardService boardservice) {
-        this.random = random;
         this.boardservice = boardservice;
     }
 
@@ -155,6 +152,12 @@ public class BoardController {
     @SendTo("/topic/update-board")
     public Board addMessageUpdate(Board board) {
         update(board.getId(), board);
+        return board;
+    }
+
+    @MessageMapping("/update-in-board") // app/update-in-board
+    @SendTo("/topic/update-in-board")
+    public Board addMessageUpdateInBoard(Board board) {
         return board;
     }
 }

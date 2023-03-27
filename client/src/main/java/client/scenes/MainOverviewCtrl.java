@@ -314,7 +314,6 @@ public class MainOverviewCtrl implements Initializable {
         });
 
         server.registerForMessages("/topic/update-board", Board.class, board -> {
-            Board toBeChanged = null;
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
