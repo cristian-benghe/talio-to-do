@@ -51,18 +51,29 @@ public class BoardCustomizationCtrl implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
     }
+
+    /**
+     * gets the color from the color picker
+     */
     public void getColor(){
         this.blue= colorPicker.getValue().getBlue();
         this.green=  colorPicker.getValue().getGreen();
         this.red=colorPicker.getValue().getRed();
 
     }
+
+    /**
+     * save the changes of board customziation
+     */
     public void save(){
         System.out.println(blue+" "+green+" "+red+" "+ mainCtrl.getBoardId());
         server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
         mainCtrl.showBoardOverview(text, blue, green, red);
     }
 
+    /**
+     * @param text title of the board
+     */
     public void setBoardText(String text) {
         this.text = text;
     }

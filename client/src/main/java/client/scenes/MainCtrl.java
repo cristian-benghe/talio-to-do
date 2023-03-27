@@ -39,6 +39,7 @@ public class MainCtrl {
      * @param clientConnect an injection of the ClientConnect scene and controller
      * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
+     * @param boardCustomization on injection of the boardCustomization scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -48,7 +49,8 @@ public class MainCtrl {
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView,
-                           Pair<BoardCustomizationCtrl, Parent> boardCustomization) throws Exception {
+                           Pair<BoardCustomizationCtrl, Parent> boardCustomization)
+            throws Exception {
 
 
         this.primaryStage = primaryStage;
@@ -158,13 +160,19 @@ public class MainCtrl {
     }
 
 
+    /**
+     * changes the scene to board customization
+     */
     public void showBoardCustomization() {
         primaryStage.setTitle("Board Customization");
         primaryStage.setScene(boardCustomization);
     }
 
+    /**
+     * @return the id of the board
+     */
     public Long getBoardId() {
         System.out.println(boardOverviewCtrl.getId());
-            return boardOverviewCtrl.getId();
+        return boardOverviewCtrl.getId();
     }
 }

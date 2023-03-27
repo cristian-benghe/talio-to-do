@@ -95,10 +95,12 @@ public class BoardOverviewCtrl implements Initializable {
         mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
     }
 
+
     /**
-     * Sets the title and ID of the board.
-     *
-     * @param idd - the id of the new board
+     * @param idd the id of the board
+     * @param blue value of blue in rgb
+     * @param green value of green in rgb
+     * @param red value of red in rgb
      */
     public void setBoardTitle(String idd, Double blue, Double green, Double red) {
         Long nr = Long.parseLong(idd.split("--")[1].trim());
@@ -433,7 +435,7 @@ public class BoardOverviewCtrl implements Initializable {
      * refreshed the boardOverview scene so that it updates the columns
      */
     public void columnsRefresh() {
-for (Column c : server.getBoardById(id).getColumns()) {
+        for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
             VBox vBox = new VBox();
@@ -581,10 +583,19 @@ for (Column c : server.getBoardById(id).getColumns()) {
         content.putString(String.valueOf(id));
         clipboard.setContent(content);
     }
+
+    /**
+     * changes scene to board customization
+     */
     public void goToSettings(){
         mainCtrl.showBoardCustomization();
     }
 
+    /**
+     * @param blue the rgb value of blue set from the database
+     * @param green the rgb value of green set from the database
+     * @param red the rgb value of red set from the database
+     */
     public void setColors(Double blue, Double green, Double red) {
         Board board=server.getBoardById(id);
         Color color = Color.color(board.getRed(), board.getGreen(), board.getBlue());
@@ -592,6 +603,11 @@ for (Column c : server.getBoardById(id).getColumns()) {
         // Set the background color of the AnchorPane to the RGB color value
         anchorPane.setStyle("-fx-background-color: " + toRgbCode(color) + ";");
     }
+
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
     private String toRgbCode(Color color) {
         int r = (int) Math.round(color.getRed() * 255);
         int g = (int) Math.round(color.getGreen() * 255);

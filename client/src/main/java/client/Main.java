@@ -18,8 +18,6 @@ package client;
 import client.scenes.*;
 import client.utils.ServerUtils;
 import com.google.inject.Injector;
-//import commons.Card;  //commented because of redlined
-import commons.Board;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -60,7 +58,8 @@ public class Main extends Application {
         var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class,
                 "client", "scenes", "DeleteBoard.fxml");
         var cardView = FXML.load(CardViewCtrl.class, "client", "scenes", "CardView.fxml");
-        var boardCustomization=FXML.load(BoardCustomizationCtrl.class, "client", "scenes", "BoardCustomization.fxml");
+        var boardCustomization=FXML.load
+                (BoardCustomizationCtrl.class, "client", "scenes", "BoardCustomization.fxml");
 
         mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
                 clientCtrl, popUpStage, cardView, boardCustomization);
