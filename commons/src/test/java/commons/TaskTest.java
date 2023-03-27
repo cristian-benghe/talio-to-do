@@ -72,7 +72,7 @@ class TaskTest {
 
     @Test
     public void changeCompleteStatePositiveTest(){
-        assertTrue(t.changeCompleteState());
+        assertTrue(t.setStatus(true));
     }
 
     @Test
@@ -106,7 +106,7 @@ class TaskTest {
     @Test
     public void notSameStatusEqualityNegativeTest(){
         Task t1 = new Task(t);
-        t1.changeCompleteState();
+        t1.setStatus(true);
         assertNotEquals(t,t1);
     }
 

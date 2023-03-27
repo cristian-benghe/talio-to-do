@@ -19,6 +19,10 @@ public class Task {
     private String title;
     private boolean status;
 
+    /**
+     * A default constructor for the Task class.
+     */
+    public Task(){}
 
     /**
      * A constructor for the Task class that initializes a newly created instance.
@@ -114,11 +118,12 @@ public class Task {
 
     /**
      * Inverts the value of this instance's status attribute.
+     * @param status The new status value for the instance.
      * @return The current value of this instance's status attribute.
      */
-    public boolean changeCompleteState(){
-        this.status = !this.status;
-        return this.status;
+    public boolean setStatus(boolean status){
+        this.status = status;
+        return status;
     }
 
 

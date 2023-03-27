@@ -29,7 +29,7 @@ public class TaskController {
      * A GET request for all the available Task objects in the repository
      * @return all the available Task objects
      */
-    @GetMapping(path={"getAll, getAll/"})
+    @GetMapping(path={"getAll", "getAll/"})
     public List<Task> getAll(){return taskService.getAll();}
 
     /**
@@ -39,7 +39,7 @@ public class TaskController {
      * @return the corresponding Task object, or a BAD REQUEST
      * if the object does not exist.
      */
-    @GetMapping(path={"getByID/{id}"})
+    @GetMapping("getByID/{id}")
     public ResponseEntity<Task> getByID(@PathVariable("id")long id){
         Optional<Task> task = taskService.getByID(id);
         if(task.isPresent()){
@@ -77,6 +77,37 @@ public class TaskController {
     }
 
 
+    /**
+     * A PUT request for changing the title field for a particular Task instance,
+     * specified by the given id.
+     * @param id the id of the Task instance to be updated
+     * @param title the new title value for the Task instance
+     * @return if the Task object is found and updated,
+     * it will return a response with HTTP status code 204 or
+     * if the Task object is not found, it will return
+     * a response with HTTP status code 404.
+     */
+    @PutMapping(path={"update/title","update/title/"})
+    public ResponseEntity<Task> updateTitle(@RequestParam long id, @RequestParam String title){
+        taskService.updateTitle(id, title);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * A PUT request for changing the status field for a particular Task instance,
+     * specified by the given id.
+     * @param id the id of the Task instance to be updated
+     * @param status the new status value for the Task instance
+     * @return if the Task object is found and updated,
+     *      * it will return a response with HTTP status code 204 or
+     *      * if the Task object is not found, it will return
+     *      * a response with HTTP status code 404.
+     */
+    @PutMapping(path={"update/status","update/status/"})
+    public ResponseEntity<Task> updateStatus(@RequestParam long id, @RequestParam boolean status){
+        taskService.updateStatus(id, status);
+        return ResponseEntity.noContent().build();
+    }
 
 
 }
