@@ -3,8 +3,8 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import commons.Column;
 import commons.Card;
+import commons.Column;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -26,6 +26,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.paint.Color;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -90,19 +92,22 @@ public class BoardOverviewCtrl implements Initializable {
      * This changes the scene to the Board Overview
      */
     public void showOverview() {
-        mainCtrl.showBoardOverview("");
+        mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
     }
 
+
     /**
-     * Sets the title and ID of the board.
-     *
-     * @param idd - the id of the new board
+     * @param idd the id of the board
+     * @param blue value of blue in rgb
+     * @param green value of green in rgb
+     * @param red value of red in rgb
      */
-    public void setBoardTitle(String idd) {
+    public void setBoardTitle(String idd, Double blue, Double green, Double red) {
         Long nr = Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
         columnsRefresh();
+        setColors(blue, green, red);
 //        addOneColumn("To do");
 //        addOneColumn("Doing");
 //        addOneColumn("Done");
@@ -430,7 +435,6 @@ public class BoardOverviewCtrl implements Initializable {
      * refreshed the boardOverview scene so that it updates the columns
      */
     public void columnsRefresh() {
-        hbox.getChildren().clear();
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
@@ -446,8 +450,6 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.setMargin(textField, new Insets(2));
 
             anchorPaneVBox.getChildren().add(vBox);
-            //to set the functionality of the drag and drop of the new column.
-            // Only for deletion not to replace!
             setColumnDragDrop(anchorPaneVBox);
             hbox.getChildren().add(anchorPaneVBox);
             textField.setOnKeyTyped(e ->
@@ -472,7 +474,6 @@ public class BoardOverviewCtrl implements Initializable {
 
             }
             vBox.getChildren().add(button);
-
         }
     }
 
@@ -583,4 +584,34 @@ public class BoardOverviewCtrl implements Initializable {
         clipboard.setContent(content);
     }
 
+    /**
+     * changes scene to board customization
+     */
+    public void goToSettings(){
+        mainCtrl.showBoardCustomization();
+    }
+
+    /**
+     * @param blue the rgb value of blue set from the database
+     * @param green the rgb value of green set from the database
+     * @param red the rgb value of red set from the database
+     */
+    public void setColors(Double blue, Double green, Double red) {
+        Board board=server.getBoardById(id);
+        Color color = Color.color(board.getRed(), board.getGreen(), board.getBlue());
+
+        // Set the background color of the AnchorPane to the RGB color value
+        anchorPane.setStyle("-fx-background-color: " + toRgbCode(color) + ";");
+    }
+
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
 }

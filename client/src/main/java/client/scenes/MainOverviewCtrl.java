@@ -204,7 +204,7 @@ public class MainOverviewCtrl implements Initializable {
             return;
         }
         String text = existsBoard(nr);
-        mainCtrl.showBoardOverview(text + " -- " + nr);
+        mainCtrl.showBoardOverview((text + " -- " + nr), (double) 0, (double) 0, (double) 0);
 
 
         //TODO Retrieve boards through key input or name input
@@ -278,7 +278,7 @@ public class MainOverviewCtrl implements Initializable {
         }
 
         // Navigate to the board view for the selected board
-        mainCtrl.showBoardOverview(selectedBoardStr);
+        mainCtrl.showBoardOverview(selectedBoardStr, (double) 0, (double) 0, (double) 0);
     }
 
     /**

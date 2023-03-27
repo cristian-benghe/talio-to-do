@@ -2,6 +2,7 @@ package commons;
 
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    private Double red;
+    private Double green;
+    private Double blue;
 
     @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
@@ -29,6 +33,7 @@ public class Board {
         this.title = title;
         this.columns = columns;
         this.tags=tags;
+        this.setColor((double) 0, (double) 0, (double) 0);
     }
 
     /**
@@ -200,4 +205,34 @@ public class Board {
         }
     }
 
+    /**
+     * @param red from rgb
+     * @param green from rgb
+     * @param blue from rgb
+     */
+    public void setColor(Double red, Double green, Double blue){
+        this.red=red;
+        this.green=green;
+        this.blue=blue;
+    }
+
+    /**
+     * @return the red double value in rgb
+     */
+    public Double getRed() {
+        return red;
+    }
+
+    /**
+     * @return the green double value in rgb
+     */
+    public Double getGreen() {
+        return green;
+    }
+    /**
+     * @return the blue double value in rgb
+     */
+    public Double getBlue() {
+        return blue;
+    }
 }

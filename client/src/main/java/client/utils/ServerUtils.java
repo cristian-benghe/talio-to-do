@@ -477,6 +477,23 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
+
+    /**
+     * @param blue the rgb value of blue
+     * @param green the rgb value of green
+     * @param red the rgb value of red
+     * @param boardId the id of the board
+     * @return an updated board with the new color
+     */
+    public Board updateBoardColor(Double blue, Double green, Double red, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColor(red, green, blue);
+        
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
     /**
      * Adds a new column to a board.
      * This method sends a POST request to the server to add a new column to a board.
