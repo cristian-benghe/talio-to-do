@@ -120,6 +120,11 @@ public class Board {
     public void setTag(int tagID, Tag tag) {
         tags.set(tagID, tag);
     }
+
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
