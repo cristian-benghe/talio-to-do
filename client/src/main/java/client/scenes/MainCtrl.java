@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.awt.*;
+
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -25,6 +27,9 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    private BoardCustomizationCtrl boardCustomizationCtrl;
+
+    private Scene boardCustomization;
     private boolean shownMainOverviewOneTime = false;
     /**
      * This method initializes this controller instances
@@ -42,10 +47,12 @@ public class MainCtrl {
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
-                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
+                           Pair<CardViewCtrl, Parent> cardView,
+                           Pair<BoardCustomizationCtrl, Parent> boardCustomization) throws Exception {
 
 
         this.primaryStage = primaryStage;
+        
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -57,6 +64,9 @@ public class MainCtrl {
 
         this.cardViewCtrl = cardView.getKey();
         this.cardView = new Scene(cardView.getValue());
+
+        this.boardCustomizationCtrl=boardCustomization.getKey();
+        this.boardCustomization=new Scene(boardCustomization.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -71,17 +81,17 @@ public class MainCtrl {
 
 
     /**
-     * The method changes the scene to the BoardOverview
-     * @param text the name of the selected board
+     * @param text the title of the board, to get the id
+     * @param blue from rgb
+     * @param green from rgb
+     * @param red from rgb
      */
-    public void showBoardOverview(String text) {
-        System.out.println(text);
-
-
+    public void showBoardOverview(String text, Double blue, Double green, Double red) {
+        boardCustomizationCtrl.setBoardText(text);
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoardTitle(text);
+        boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
     /**
@@ -122,13 +132,6 @@ public class MainCtrl {
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
     }
-
-
-
-
-
-
-
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
@@ -151,7 +154,17 @@ public class MainCtrl {
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
+        boardCustomizationCtrl.setConnection(address);
     }
 
 
+    public void showBoardCustomization() {
+        primaryStage.setTitle("Board Customization");
+        primaryStage.setScene(boardCustomization);
+    }
+
+    public Long getBoardId() {
+        System.out.println(boardOverviewCtrl.getId());
+            return boardOverviewCtrl.getId();
+    }
 }
