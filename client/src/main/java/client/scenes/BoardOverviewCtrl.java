@@ -92,7 +92,7 @@ public class BoardOverviewCtrl implements Initializable {
      * This changes the scene to the Board Overview
      */
     public void showOverview() {
-        mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
+        mainCtrl.showBoardOverview("", (double) 255, (double) 255, (double) 255);
     }
 
 
@@ -435,6 +435,7 @@ public class BoardOverviewCtrl implements Initializable {
      * refreshed the boardOverview scene so that it updates the columns
      */
     public void columnsRefresh() {
+        hbox.getChildren().clear();
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();

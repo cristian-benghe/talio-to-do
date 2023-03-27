@@ -27,6 +27,6 @@ public class CardViewCtrl {
     @FXML
     private void getBackCard()
     {
-        mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
+        mainCtrl.showBoardOverview("", (double) 1, (double) 1, (double) 1);
     }
 }

@@ -51,7 +51,7 @@ public class DeleteBoardPopUpCtrl implements Initializable {
      */
     @FXML
     private void keep() {
-        mainCtrl.showBoardOverview(text, (double) 0, (double) 0, (double) 0);
+        mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
 
     /**
