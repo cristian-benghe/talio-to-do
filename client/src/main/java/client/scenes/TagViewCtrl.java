@@ -1,14 +1,14 @@
 package client.scenes;
+
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-public class CardViewCtrl {
 
+
+public class TagViewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    @FXML
-    private Button cardViewBack;
+
 
     /**
      * Initialize the controller and the scene
@@ -16,23 +16,14 @@ public class CardViewCtrl {
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
-    public CardViewCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public TagViewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
-    /**
-     * To get back to the boardOverview
-     */
     @FXML
-    private void getBackCard()
+    private void gettoCard()
     {
-        mainCtrl.showBoardOverview("");
-    }
-
-    @FXML
-    private void getTagView()
-    {
-        mainCtrl.showTagView();
+        mainCtrl.showCardView();
     }
 }

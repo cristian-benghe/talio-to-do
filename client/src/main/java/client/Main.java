@@ -20,7 +20,9 @@ import client.utils.ServerUtils;
 import com.google.inject.Injector;
 //import commons.Card;  //commented because of redlined
 import javafx.application.Application;
+//import javafx.scene.Parent;
 import javafx.stage.Stage;
+//import javafx.util.Pair;
 
 import static com.google.inject.Guice.createInjector;
 
@@ -30,6 +32,8 @@ public class Main extends Application {
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
     private final ServerUtils serverUtils = INJECTOR.getInstance(ServerUtils.class);
+
+
     /**
      * launches the application
      * @param args =
@@ -58,9 +62,12 @@ public class Main extends Application {
                 "client", "scenes", "ClientConnect.fxml");
         var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class,
                 "client", "scenes", "DeleteBoard.fxml");
-        var cardView = FXML.load(CardViewCtrl.class, "client", "scenes", "CardView.fxml");
+        var cardView = FXML.load(CardViewCtrl.class,
+                "client", "scenes", "CardView.fxml");
+        var tagView = FXML.load(TagViewCtrl.class,
+                "client", "scenes", "TagView.fxml");
 
         mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
-                clientCtrl, popUpStage, cardView);
+                clientCtrl, popUpStage, cardView, tagView);
     }
 }

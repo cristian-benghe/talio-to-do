@@ -25,6 +25,9 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    private TagViewCtrl tagViewCtrl;
+    private Scene tagView;
+
     private boolean shownMainOverviewOneTime = false;
     /**
      * This method initializes this controller instances
@@ -34,6 +37,7 @@ public class MainCtrl {
      * @param clientConnect an injection of the ClientConnect scene and controller
      * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
+     * @param tagView an injection of the CardView scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -42,7 +46,8 @@ public class MainCtrl {
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
-                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
+                           Pair<CardViewCtrl, Parent> cardView,
+                           Pair<TagViewCtrl, Parent> tagView) throws Exception {
 
 
         this.primaryStage = primaryStage;
@@ -57,6 +62,9 @@ public class MainCtrl {
 
         this.cardViewCtrl = cardView.getKey();
         this.cardView = new Scene(cardView.getValue());
+
+        this.tagViewCtrl = tagView.getKey();
+        this.tagView = new Scene(tagView.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -119,6 +127,17 @@ public class MainCtrl {
         primaryStage.setTitle("Talio - CardView");
 
         primaryStage.setScene(cardView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+    }
+
+    /**
+     * A method to switch the scene to the TagView
+     */
+    public void showTagView() {
+        primaryStage.setTitle("Talio - TagView");
+
+        primaryStage.setScene(tagView);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
     }

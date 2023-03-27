@@ -105,6 +105,21 @@ public class Board {
      * Set method for the title
      * @param title the new title to set
      */
+
+    /**
+     * @param newTag to add to a borad
+     */
+    public void addTag(Tag newTag) {
+        tags.add(newTag);
+    }
+
+    /**
+     * @param tagID = the id of the tag in a board
+     * @param tag = set a tag with a new title
+     */
+    public void setTag(int tagID, Tag tag) {
+        tags.set(tagID, tag);
+    }
     public void setTitle(String title) {
         this.title = title;
     }
@@ -197,6 +212,23 @@ public class Board {
     public void updateColIndex(int colInd) {
         for(int i=colInd;i<columns.size();i++){
             columns.get(i).setIDinBoard(columns.get(i).getIDinBoard()-1);
+        }
+    }
+
+    /**
+     * @param tagInd delete a tag with an id
+     */
+
+    public void deleteTag(int tagInd) {
+        tags.remove(tagInd);
+    }
+
+    /**
+     * @param tagInd the updated id of the tag that shift to the left
+     */
+    public void updateTagIndex(int tagInd) {
+        for(int i=tagInd;i<tags.size();i++){
+            tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
         }
     }
 
