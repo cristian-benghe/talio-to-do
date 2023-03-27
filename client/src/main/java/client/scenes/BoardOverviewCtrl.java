@@ -388,7 +388,7 @@ public class BoardOverviewCtrl implements Initializable {
     private void columnBin() {
         //set the BIN text (get(2) because BIN is second indexed element in the anchorPane.
         // TODO This can be done byID later on)...
-        anchorPane.getChildren().get(2).setOnDragOver(event -> {
+        anchorPane.getChildren().get(3).setOnDragOver(event -> {
             if (event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
@@ -396,7 +396,7 @@ public class BoardOverviewCtrl implements Initializable {
         });
 
         //deletion of the dragged item
-        anchorPane.getChildren().get(2).setOnDragDropped(event -> {
+        anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
             server.deleteColumn(colInd, id);
@@ -410,7 +410,7 @@ public class BoardOverviewCtrl implements Initializable {
      * set the BIN according to card deletion to avoid gesture/drag and drop conflicts
      */
     private void cardBin(VBox vBox) {
-        anchorPane.getChildren().get(2).setOnDragOver(event -> {
+        anchorPane.getChildren().get(3).setOnDragOver(event -> {
             if (event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
@@ -418,7 +418,7 @@ public class BoardOverviewCtrl implements Initializable {
         });
 
         //deletion of the dragged item
-        anchorPane.getChildren().get(2).setOnDragDropped(event -> {
+        anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             // gesture source to pass dragged item
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
