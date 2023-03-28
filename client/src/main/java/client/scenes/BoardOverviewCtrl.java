@@ -134,8 +134,8 @@ public class BoardOverviewCtrl implements Initializable {
         board.setTitle(boardTitle.getText());
         System.out.println(board.toStringShort());
         //server.send("/app/delete-board", board.getId());
-        server.send("/app/update-in-board", server.getBoardById(id));
-        server.send("/app/update-board", server.getBoardById(id));
+        server.send("/app/update-in-board", board);
+        server.send("/app/update-board", board);
     }
 
     /**
@@ -601,8 +601,8 @@ public class BoardOverviewCtrl implements Initializable {
             if (Objects.equals(board.getId(), id))
                 System.out.println("asadasdasd");
             Platform.runLater(() -> columnsRefresh());
-                //Platform.runLater(() ->
-                // setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+//            Platform.runLater(() ->
+//                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
         });
     }
 
