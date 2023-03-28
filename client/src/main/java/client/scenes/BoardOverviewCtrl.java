@@ -153,6 +153,22 @@ public class BoardOverviewCtrl implements Initializable {
     public void addColumn() {
         addOneColumn("New column");
     }
+    //TODO: ADD column rearrangement functionality to the hbox!
+
+    /**
+     * It'll be done later on
+     * @param myhbox hbox to be changed
+     */
+    public void setHBoxDrop(HBox myhbox)
+    {
+        myhbox.setOnDragOver(event -> {
+            if(hbox.getChildren().contains(event.getGestureSource()))
+            {
+                event.acceptTransferModes(TransferMode.MOVE);
+                event.consume();
+            }
+        });
+    }
 
     /**
      * Add a new column. All the set methods that are used to initialize the elements properly
@@ -345,39 +361,113 @@ public class BoardOverviewCtrl implements Initializable {
     private void setVBoxDragDrop(Button button, VBox myVBox) {
         // Bug fix of disappearing of the addCard button because of duplication error
         myVBox.setOnDragOver(event -> {
-            //To solve the issue of drag and drop of the column into column
-            if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
-                    !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
-                if (event.getDragboard().hasString()) {
-                    event.acceptTransferModes(TransferMode.MOVE);
-                }
-                event.consume();
+            if (((Objects.equals(event.getDragboard().getString(), "DeletionCard") )||
+                    (Objects.equals(event.getDragboard().getString(), "DeletionColumn")) &&
+                            !Objects.equals(event.getGestureSource(),myVBox.getParent()) &&
+                    !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox)))) {
+                event.acceptTransferModes(TransferMode.MOVE); event.consume();
             }
         });
 
         // Bug fix of disappearing of the addCard button because of duplication error
         myVBox.setOnDragDropped(event -> {
-            //To solve the issue of drag and drop of the column into column
             if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
-                server.cardDragDropUpdate(
-                        Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
-                                getChildrenUnmodifiable().indexOf((AnchorPane) event.
-                                        getGestureSource())),
-                        (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
-                                getParent().getParent()),
-                        (long) hbox.getChildren().indexOf(myVBox.getParent()), id);
+                server.cardDragDropUpdate(Long.valueOf(((AnchorPane) event.getGestureSource()).
+                    getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
+                    getGestureSource())),(long) hbox.getChildren().indexOf(((AnchorPane) event.
+                        getGestureSource()).getParent().getParent()), (long) hbox.getChildren().
+                        indexOf(myVBox.getParent()), id);
                 server.send("/app/update-in-board", server.getBoardById(id));
-                //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
                 event.setDropCompleted(true);
                 event.consume();
                 server.send("app/update-in-board", server.getBoardById(id));
             }
+            if((Objects.equals(event.getDragboard().getString(), "DeletionColumn")))
+            {
+                if (event.getX() >= 75) {
+                    if ((hbox.getChildren().indexOf(((AnchorPane)event.getGestureSource()))) -
+                         (hbox.getChildren().indexOf(myVBox.getParent())) == 1) {
+                        event.setDropCompleted(true); event.consume();
+                    } else {
+                        rightColumnDrop(myVBox,event); event.setDropCompleted(true);event.consume();
+                    }
+                }
+                else {
+                    if ((hbox.getChildren().indexOf(myVBox.getParent())) - (hbox.getChildren()
+                         .indexOf(((AnchorPane)event.getGestureSource()))) == 1) {
+                        event.setDropCompleted(true); event.consume();
+                    }   else {
+                        leftColumnDrop(myVBox,event); event.setDropCompleted(true); event.consume();
+                    }
+                }
+            }
         });
+    }
+
+    /**
+     * A method to rearrange Column with drag and drop
+     * @param vBox vBox that the column is dropped in
+     * @param event Drag event handler to get the source of the drag&drop
+     */
+    public void leftColumnDrop(VBox vBox, DragEvent event)
+    {
+        Board board1 = server.getBoardById(id);
+        int sourceIndex = hbox.getChildren().indexOf((AnchorPane)event.getGestureSource());
+        int targetIndex = hbox.getChildren().indexOf(vBox.getParent());
+        Column targetColumn = board1.getColumns().get(targetIndex);
+        Column sourceColumn = board1.getColumns().get(sourceIndex);
+        Board boardTmp = new Board();
+        boardTmp = boardTmp.copyBoard(board1,boardTmp);
+        board1.getColumns().clear();
+        boardTmp.getColumns().set(sourceIndex,null);
+        for (int i = boardTmp.getColumns().size() - 1; i >= 0; i--) {
+
+            if (boardTmp.getColumns().get(i) != null) {
+                board1.getColumns().add(boardTmp.getColumns().get(i));
+            }
+            if (i == targetIndex) {
+                board1.getColumns().add(sourceColumn);
+            }
+        }
+        Collections.reverse(board1.getColumns());
+        server.updateBoard(board1, Math.toIntExact(id));
+        columnsRefresh();
+    }
+
+    /**
+     * A method to rearrange Column with drag and drop
+     * @param vBox vBox that the column is dropped in
+     * @param event Drag event handler to get the source of the drag&drop
+     */
+    public void rightColumnDrop(VBox vBox, DragEvent event)
+    {
+        Board board1 = server.getBoardById(id);
+        int sourceIndex = hbox.getChildren().indexOf((AnchorPane)event.getGestureSource());
+        int targetIndex = hbox.getChildren().indexOf(vBox.getParent());
+        Column targetColumn = board1.getColumns().get(targetIndex);
+        Column sourceColumn = board1.getColumns().get(sourceIndex);
+        Board boardTmp = new Board();
+        boardTmp = boardTmp.copyBoard(board1,boardTmp);
+        board1.getColumns().clear();
+        boardTmp.getColumns().set(sourceIndex,null);
+
+        for(int i = 0; i < boardTmp.getColumns().size(); i++)
+        {
+            if (boardTmp.getColumns().get(i) != null) {
+                board1.getColumns().add(boardTmp.getColumns().get(i));
+            }
+            if (i == targetIndex) {
+                board1.getColumns().add(sourceColumn);
+            }
+        }
+        server.updateBoard(board1, Math.toIntExact(id));
+        columnsRefresh();
+
     }
 
     /**

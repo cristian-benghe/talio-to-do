@@ -560,6 +560,19 @@ public class ServerUtils {
     }
 
     /**
+     * A method to update the board after the column rearrangement
+     * @param board board that will be updated
+     * @param boardId id of the board
+     */
+    public void updateBoard(Board board, int boardId)
+    {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
      * A ,ethod to delete the column from api/columns
      * @param columnId Id of the column that will be deleted
      * @return Response of the server/request
