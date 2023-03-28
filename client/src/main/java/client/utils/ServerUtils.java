@@ -113,6 +113,21 @@ public class ServerUtils {
     }
 
     /**
+     * A method to change card arrangement
+     * @param columnID An id of hte column that will changed
+     * @param column the object ofcolumn
+     * @param boardId the boardId
+     */
+    public void updateCardArrangement(int columnID, Column column, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.setColumn(columnID, column);
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
      * A method to delete a card with server from database
      * @param board board to be used
      * @param cardId card to be deleted
@@ -521,7 +536,14 @@ public class ServerUtils {
         updateColumnInBoard(columnID, column, boardId);
     }
 
-    private Board updateColumnInBoard(int columnID, Column column, Long boardId) {
+    /**
+     * A method to update the column in board
+     * @param columnID An id of the column that will be updated
+     * @param column The column object
+     * @param boardId id of the board
+     * @return Board object
+     */
+    public Board updateColumnInBoard(int columnID, Column column, Long boardId) {
         Board board = getBoardById(boardId);
         board.setColumn(columnID - 1, column);
         return ClientBuilder.newClient(new ClientConfig())

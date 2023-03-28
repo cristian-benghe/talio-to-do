@@ -15,10 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,10 +28,7 @@ import javafx.scene.paint.Color;
 
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class BoardOverviewCtrl implements Initializable {
     private Long nrCol = Long.valueOf(0);
@@ -99,13 +93,13 @@ public class BoardOverviewCtrl implements Initializable {
 
 
     /**
-     * @param idd the id of the board
-     * @param blue value of blue in rgb
+     * @param idd   the id of the board
+     * @param blue  value of blue in rgb
      * @param green value of green in rgb
-     * @param red value of red in rgb
+     * @param red   value of red in rgb
      */
     public void setBoardTitle(String idd, Double blue, Double green, Double red) {
-        this.title=idd;
+        this.title = idd;
         Long nr = Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
@@ -283,8 +277,7 @@ public class BoardOverviewCtrl implements Initializable {
                             columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).
                                 getChildren().get(1)).getChildren().get(0)).getText(), id);
-                        server.send("/app/update-in-board", server.getBoardById(id));
-                    });
+                        server.send("/app/update-in-board", server.getBoardById(id));});
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
@@ -371,7 +364,7 @@ public class BoardOverviewCtrl implements Initializable {
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
                 server.cardDragDropUpdate(
                         Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
-                                getChildrenUnmodifiable().indexOf((AnchorPane)event.
+                                getChildrenUnmodifiable().indexOf((AnchorPane) event.
                                         getGestureSource())),
                         (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
                                 getParent().getParent()),
@@ -382,7 +375,7 @@ public class BoardOverviewCtrl implements Initializable {
                 myVBox.getChildren().add(button);
                 event.setDropCompleted(true);
                 event.consume();
-                server.send("app/update-in-board",server.getBoardById(id));
+                server.send("app/update-in-board", server.getBoardById(id));
             }
         });
     }
@@ -403,8 +396,116 @@ public class BoardOverviewCtrl implements Initializable {
             event.consume();
             cardBin(vBox);
         });
+
+        card.setOnDragOver(event -> {
+            if (event.getDragboard().getString().
+                    equals("DeletionCard") && !card.equals(event.getGestureSource())
+                    && ((AnchorPane) event.getGestureSource()).getParent().equals(vBox)) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        card.setOnDragDropped(event -> {
+
+            //bottom side
+            if (event.getY() >= 40) {
+                if ((vBox.getChildren().indexOf(event.getGestureSource()) - 2) -
+                        (vBox.getChildren().indexOf(card) - 2) == 1) {
+                    event.setDropCompleted(true);
+                    event.consume();
+                } else {
+                    lowerCardDrop(card,vBox,event);
+                    event.setDropCompleted(true);
+                    event.consume();
+                }
+            } //upperside
+            else {
+                if ((vBox.getChildren().indexOf(card) - 2) -
+                        (vBox.getChildren().indexOf(event.getGestureSource()) - 2) == 1) {
+                    event.setDropCompleted(true);
+                    event.consume();
+                } else {
+                    upperCardDrop(card,vBox,event);
+                    event.setDropCompleted(true);
+                    event.consume();
+                }
+            }
+        });
     }
 
+    /**
+     * A method to handle lower part of the drag and drop
+     * @param card the card that is dragged
+     * @param vBox The container that the cards will be arranged
+     * @param event Drag event handler that handles
+     *              the mouse movements and other functionalities etc.
+     */
+    public void lowerCardDrop(AnchorPane card, VBox vBox, DragEvent event)
+    {
+        Board board1 = server.getBoardById(id);
+        Column column = board1.getColumns()
+                .get(hbox.getChildren().indexOf(vBox.getParent()));
+        Column columnTmp = new Column();
+        columnTmp = column.copyCards(column, columnTmp);
+        Card sourceCard = column.getCards()
+                .get(vBox.getChildren().indexOf(event.getGestureSource()) - 2);
+        Card targetCard = column.getCards().get(vBox.getChildren().indexOf(card) - 2);
+        int indexSource = vBox.getChildren().indexOf(event.getGestureSource()) - 2;
+        int indexTarget = vBox.getChildren().indexOf(card) - 2;
+        column.getCards().clear();
+        columnTmp.getCards()
+                .set(vBox.getChildren().indexOf(event.getGestureSource()) - 2, null);
+        for (int i = 0; i < columnTmp.getCards().size(); i++) {
+
+            if (columnTmp.getCards().get(i) != null) {
+                column.getCards().add(columnTmp.getCards().get(i));
+            }
+            if (i == indexTarget) {
+                column.getCards().add(sourceCard);
+            }
+        }
+        server.updateCardArrangement(hbox.getChildren()
+                .indexOf(vBox.getParent()), column, id);
+        columnsRefresh();
+    }
+
+    /**
+     * A method to handle upper part of the drag and drop
+     * @param card the card that is dragged
+     * @param vBox The container that the cards will be arranged
+     * @param event Drag event handler that handles the
+     *              mouse movements and other functionalities etc.
+     */
+    public void upperCardDrop(AnchorPane card, VBox vBox, DragEvent event)
+    {
+        Board board1 = server.getBoardById(id);
+        Column column = board1.getColumns()
+                .get(hbox.getChildren().indexOf(vBox.getParent()));
+        Column columnTmp = new Column();
+        columnTmp = column.copyCards(column, columnTmp);
+        Card sourceCard = column.getCards()
+                .get(vBox.getChildren().indexOf(event.getGestureSource()) - 2);
+        Card targetCard = column.getCards().get(vBox.getChildren().indexOf(card) - 2);
+        int indexSource = vBox.getChildren().indexOf(event.getGestureSource()) - 2;
+        int indexTarget = vBox.getChildren().indexOf(card) - 2;
+        column.getCards().clear();
+        columnTmp.getCards()
+                .set(vBox.getChildren().indexOf(event.getGestureSource()) - 2, null);
+        for (int i = columnTmp.getCards().size() - 1; i >= 0; i--) {
+
+            if (columnTmp.getCards().get(i) != null) {
+                column.getCards().add(columnTmp.getCards().get(i));
+            }
+            if (i == indexTarget) {
+                column.getCards().add(sourceCard);
+            }
+        }
+        Collections.reverse(column.getCards());
+        server.updateCardArrangement(hbox.getChildren()
+                .indexOf(vBox.getParent()), column, id);
+        columnsRefresh();
+    }
     /**
      * set the BIN according to column deletion to avoid gesture/drag and drop conflicts
      */
@@ -423,7 +524,7 @@ public class BoardOverviewCtrl implements Initializable {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
             //server.deleteColumn(colInd, id);
-            server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd,id)));
+            server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd, id)));
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -449,10 +550,10 @@ public class BoardOverviewCtrl implements Initializable {
             Long cardId = server.deleteCardServer(server.getBoardById(id),
                     Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
                             getChildrenUnmodifiable().
-                            indexOf((AnchorPane)event.getGestureSource())),
+                            indexOf((AnchorPane) event.getGestureSource())),
                     (long) hbox.getChildren().
                             indexOf(((AnchorPane) event.getGestureSource()).
-                                    getParent().getParent())+1,id);
+                                    getParent().getParent()) + 1, id);
             server.send("/app/update-in-board", server.getBoardById(id));
             System.out.println(server.deleteCardFromCardApi(cardId));
 
@@ -619,17 +720,17 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * changes scene to board customization
      */
-    public void goToSettings(){
+    public void goToSettings() {
         mainCtrl.showBoardCustomization();
     }
 
     /**
-     * @param blue the rgb value of blue set from the database
+     * @param blue  the rgb value of blue set from the database
      * @param green the rgb value of green set from the database
-     * @param red the rgb value of red set from the database
+     * @param red   the rgb value of red set from the database
      */
     public void setColors(Double blue, Double green, Double red) {
-        Board board=server.getBoardById(id);
+        Board board = server.getBoardById(id);
         Color color = Color.color(board.getRed(), board.getGreen(), board.getBlue());
 
         // Set the background color of the AnchorPane to the RGB color value
