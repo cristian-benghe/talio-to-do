@@ -8,18 +8,28 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class ClientConnectCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    @FXML
+    private Label errorPassword;
+    @FXML
+    private CheckBox adminCheckbox;
+    @FXML
+    private TextField password;
     private RotateTransition shakeAnim; //Rotation animation for the error message.
     private boolean isAnimPlaying; //A flag for whenever the error message animation is playing.
 
@@ -36,9 +46,10 @@ public class ClientConnectCtrl implements Initializable {
     /**
      * Constructs a new instance of the ClientConnectCtrl class with the specified
      * ServerUtils and MainCtrl objects injected as dependencies.
-     * @param server the ServerUtils object to use for interacting with the server
-     * @param mainCtrl the MainCtrl object to use for coordinating the application's
-     * main control flow
+     *
+     * @param server        the ServerUtils object to use for interacting with the server
+     * @param mainCtrl      the MainCtrl object to use for coordinating the application's
+     *                      main control flow
      */
     @Inject
     public ClientConnectCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -59,7 +70,6 @@ public class ClientConnectCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-
         //Refresh the current scene
         refresh();
 
@@ -78,7 +88,11 @@ public class ClientConnectCtrl implements Initializable {
             public void handle(ActionEvent event) {isAnimPlaying = false;}
         });
 
-
+        adminCheckbox.setOnAction(e -> {
+            // If the checkbox is checked, show the password field
+            password.setVisible(adminCheckbox.isSelected());
+            errorPassword.setVisible(adminCheckbox.isSelected());
+        });
 
     }
 
@@ -88,43 +102,126 @@ public class ClientConnectCtrl implements Initializable {
      * primary stage to the MainOverview scene.
      */
     public void connect(){
-
         String serverAddress = serverAddressField.getText();
+        if(adminCheckbox.isSelected() && isValidAdminPassword(password.getText())) {
+            //Check that the address is not blank
+            if (serverAddress.isBlank()) {
 
-        //Check that the address is not blank
-        if (serverAddress.isBlank()) {
+                errorMsg.setText("Please enter a non-blank address above.");
+                errorShakeAnim();
+                return;
 
-            errorMsg.setText("Please enter a non-blank address above.");
+            }
+
+            //Check that the address is in a valid format
+            if (!isValidUrl(serverAddress)) {
+
+                errorMsg.setText("Please enter an address in a valid format.");
+                errorShakeAnim();
+                return;
+
+            }
+
+            //Check that a connection with the server can be established
+            if (!validConnection(serverAddress)) {
+                errorMsg.setText("Connection cannot be established. Try again!");
+                errorShakeAnim();
+                return;
+            }
+
+            if (serverAddress.contains("http://")) server.setSession(
+                    server.connect("ws://" + serverAddress.substring(7) + "websocket"));
+
+            // Set the server address in the ServerUtils class
+            mainCtrl.setHasAdminRole(true);
+            server.setServerAddress(serverAddress);
+            mainCtrl.createConnection(serverAddress);
+
+            //Switch the scene to the main overview
+            mainCtrl.showMainOverview();
+            password.setText("");
+        }
+        if(adminCheckbox.isSelected() && !isValidAdminPassword(password.getText()))  {
+            shakeAnim.setNode(errorPassword);
+            errorPassword.setText("Password is invalid!");
+            errorPassword.setTextFill(Color.RED);
             errorShakeAnim();
-            return;
+            errorMsg.setVisible(false);
+        }
+        else{
+
+            shakeAnim.setNode(errorMsg);
+            //Check that the address is not blank
+            if (serverAddress.isBlank()) {
+
+                errorMsg.setText("Please enter a non-blank address above.");
+                errorShakeAnim();
+                return;
+
+            }
+
+            //Check that the address is in a valid format
+            if (!isValidUrl(serverAddress)) {
+
+                errorMsg.setText("Please enter an address in a valid format.");
+                errorShakeAnim();
+                return;
+
+            }
+
+            //Check that a connection with the server can be established
+            if (!validConnection(serverAddress)) {
+                errorMsg.setText("Connection cannot be established. Try again!");
+                errorShakeAnim();
+                return;
+            }
+
+            if (serverAddress.contains("http://")) server.setSession(
+                    server.connect("ws://" + serverAddress.substring(7) + "websocket"));
+
+            // Set the server address in the ServerUtils class
+            server.setServerAddress(serverAddress);
+            mainCtrl.createConnection(serverAddress);
+            //Switch the scene to the main overview
+            mainCtrl.showMainOverview();
+            mainCtrl.setHasAdminRole(false);
+            password.setText("");
 
         }
 
-        //Check that the address is in a valid format
-        if(!isValidUrl(serverAddress)){
+    }
+    /**
+     * Method which generates a random password of 7 characters
+     * which consist of uppercase letters and numbers
+     * @return - the generated password
+     */
+    public String generatePassword() {
+        int passwordLength = 7;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder password = new StringBuilder();
 
-            errorMsg.setText("Please enter an address in a valid format.");
-            errorShakeAnim();
-            return;
-
+        Random random = new Random();
+        for (int i = 0; i < passwordLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            password.append(characters.charAt(randomIndex));
         }
+        System.out.println(password.toString());
+        mainCtrl.setAdminPassword(password.toString());
+        return password.toString();
+    }
 
-        //Check that a connection with the server can be established
-        if(!validConnection(serverAddress)){
-            errorMsg.setText("Connection cannot be established. Try again!");
-            errorShakeAnim();
-            return;
+    /**
+     * Method which verifies if the password input by the user is valid or not
+     * @param password - the password input by the user
+     * @return true / false if the password is valid or not
+     */
+    public boolean isValidAdminPassword(String password){
+        if (password == null)
+            return false;
+        if (Objects.equals(password, mainCtrl.getAdminPassword())) {
+            return true;
         }
-
-        if(serverAddress.contains("http://")) server.setSession(
-                server.connect("ws://" + serverAddress.substring(7) + "websocket"));
-
-        // Set the server address in the ServerUtils class
-        server.setServerAddress(serverAddress);
-        mainCtrl.createConnection(serverAddress);
-        //Switch the scene to the main overview
-        mainCtrl.showMainOverview();
-
+        return false;
     }
 
     /**
@@ -187,7 +284,6 @@ public class ClientConnectCtrl implements Initializable {
         //Resets the default input of the serverAddress
         serverAddressField.setText("http://localhost:8080/");
 
-
     }
 
     /**
@@ -197,4 +293,5 @@ public class ClientConnectCtrl implements Initializable {
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
+
 }

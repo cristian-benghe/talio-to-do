@@ -25,7 +25,12 @@ public class MainCtrl {
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
 
+    private boolean isAdmin=false;
+
     private boolean shownMainOverviewOneTime = false;
+    private String adminPassword;
+    private boolean hasAdminRole;
+
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -45,6 +50,7 @@ public class MainCtrl {
                            Pair<CardViewCtrl, Parent> cardView) throws Exception {
 
 
+        this.isAdmin = false;
         this.primaryStage = primaryStage;
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
@@ -104,6 +110,7 @@ public class MainCtrl {
      * This method changes the scene to the ClientConnectScene.
      */
     public void showClientConnect() {
+        this.adminPassword = clientConnectCtrl.generatePassword();
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
@@ -153,5 +160,57 @@ public class MainCtrl {
         boardOverviewCtrl.setConnection(address);
     }
 
+    /**
+     * gets the value of the isAdmin
+     *
+     * @return the value of the isAdmin
+     */
+    public boolean isAdmin() {
+        return isAdmin;
+    }
 
+    /**
+     * Sets the value of isAdmin
+     *
+     * @param admin - the value of the isAdmin
+     */
+    public void setAdmin(boolean admin) {
+        this.isAdmin = admin;
+    }
+
+    /**
+     * gets the value of the AdminPassword
+     *
+     * @return the value of the AdminPassword
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    /**
+     * Sets the value of AdminPassword
+     *
+     * @param adminPassword - the value of the AdminPassword
+     */
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
+    /**
+     * gets the value of the hasAdminRole
+     *
+     * @return the value of the hasAdminRole
+     */
+    public boolean isHasAdminRole() {
+        return hasAdminRole;
+    }
+
+    /**
+     * Sets the value of hasAdminRole
+     *
+     * @param hasAdminRole - the value of the hasAdminRole
+     */
+    public void setHasAdminRole(boolean hasAdminRole) {
+        this.hasAdminRole = hasAdminRole;
+    }
 }
