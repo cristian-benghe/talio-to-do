@@ -36,9 +36,6 @@ public class ClientConnectCtrl implements Initializable {
     //to get the text from the text field with ID serverAddressField
     @FXML
     private TextField serverAddressField;
-//
-//    @FXML
-//    private Button go_to_home;
 
     @FXML
     private Label errorMsg; //the error message label for the server address input
@@ -102,92 +99,62 @@ public class ClientConnectCtrl implements Initializable {
      * primary stage to the MainOverview scene.
      */
     public void connect(){
-        String serverAddress = serverAddressField.getText();
-        if(adminCheckbox.isSelected() && isValidAdminPassword(password.getText())) {
-            //Check that the address is not blank
-            if (serverAddress.isBlank()) {
 
-                errorMsg.setText("Please enter a non-blank address above.");
-                errorShakeAnim();
-                return;
-
-            }
-
-            //Check that the address is in a valid format
-            if (!isValidUrl(serverAddress)) {
-
-                errorMsg.setText("Please enter an address in a valid format.");
-                errorShakeAnim();
-                return;
-
-            }
-
-            //Check that a connection with the server can be established
-            if (!validConnection(serverAddress)) {
-                errorMsg.setText("Connection cannot be established. Try again!");
-                errorShakeAnim();
-                return;
-            }
-
-            if (serverAddress.contains("http://")) server.setSession(
-                    server.connect("ws://" + serverAddress.substring(7) + "websocket"));
-
-            // Set the server address in the ServerUtils class
-            mainCtrl.setHasAdminRole(true);
-            server.setServerAddress(serverAddress);
-            mainCtrl.createConnection(serverAddress);
-
-            //Switch the scene to the main overview
-            mainCtrl.showMainOverview();
-            password.setText("");
-        }
+        //Check that the password entered is correct
         if(adminCheckbox.isSelected() && !isValidAdminPassword(password.getText()))  {
-            shakeAnim.setNode(errorPassword);
-            errorPassword.setText("Password is invalid!");
+
+            errorPassword.setText("The password is incorrect!");
             errorPassword.setTextFill(Color.RED);
-            errorShakeAnim();
-            errorMsg.setVisible(false);
+
+            errorShakeAnim(true);
+
+            return;
         }
-        else{
 
-            shakeAnim.setNode(errorMsg);
-            //Check that the address is not blank
-            if (serverAddress.isBlank()) {
+        //Get the server address
+        String serverAddress = serverAddressField.getText();
 
-                errorMsg.setText("Please enter a non-blank address above.");
-                errorShakeAnim();
-                return;
+        //Check that the address is not blank
+        if (serverAddress.isBlank()) {
 
-            }
+            errorMsg.setText("Please enter a non-blank address above.");
+            errorShakeAnim(false);
+            return;
 
-            //Check that the address is in a valid format
-            if (!isValidUrl(serverAddress)) {
+        }
 
-                errorMsg.setText("Please enter an address in a valid format.");
-                errorShakeAnim();
-                return;
+        //Check that the address is in a valid format
+        if (!isValidUrl(serverAddress)) {
 
-            }
+            errorMsg.setText("Please enter an address in a valid format.");
+            errorShakeAnim(false);
+            return;
 
-            //Check that a connection with the server can be established
-            if (!validConnection(serverAddress)) {
-                errorMsg.setText("Connection cannot be established. Try again!");
-                errorShakeAnim();
-                return;
-            }
+        }
 
-            if (serverAddress.contains("http://")) server.setSession(
+        //Check that a connection with the server can be established
+        if (!validConnection(serverAddress)) {
+            errorMsg.setText("Connection cannot be established. Try again!");
+            errorShakeAnim(false);
+            return;
+        }
+
+        //Set up the websocket
+        if (serverAddress.contains("http://")) {
+            server.setSession(
                     server.connect("ws://" + serverAddress.substring(7) + "websocket"));
-
-            // Set the server address in the ServerUtils class
-            server.setServerAddress(serverAddress);
-            mainCtrl.createConnection(serverAddress);
-            //Switch the scene to the main overview
-            mainCtrl.showMainOverview();
-            mainCtrl.setHasAdminRole(false);
-            password.setText("");
-
         }
+
+        //Handle the admin login
+        //By this point, the password is correct if the admin login option was selected.
+        mainCtrl.setHasAdminRole(adminCheckbox.isSelected());
+
+        // Set the server address in the ServerUtils class
+        server.setServerAddress(serverAddress);
+        mainCtrl.createConnection(serverAddress);
+        //Switch the scene to the main overview
+        mainCtrl.showMainOverview();
+        mainCtrl.setHasAdminRole(false);
 
     }
     /**
@@ -218,19 +185,47 @@ public class ClientConnectCtrl implements Initializable {
     public boolean isValidAdminPassword(String password){
         if (password == null)
             return false;
-        if (Objects.equals(password, mainCtrl.getAdminPassword())) {
-            return true;
-        }
-        return false;
+
+        return Objects.equals(password, mainCtrl.getAdminPassword());
     }
 
     /**
      * Display a shake animation if the input text is wrong
+     * @param isAdmin Set true if the error is due to the admin password.
+     *                Otherwise, the error is due to the server address.
      */
-    public void errorShakeAnim(){
+    public void errorShakeAnim(boolean isAdmin){
 
-        //Show the error message
-        errorMsg.setVisible(true);
+        //Show the error message and assign the animation to the correct error label
+        if(isAdmin){
+            //Alternate the visibility of the error labels
+            errorMsg.setVisible(false);
+            errorPassword.setVisible(true);
+
+            //Stop the animation and reset
+            if(shakeAnim.getNode().equals(errorMsg)) {
+                shakeAnim.stop();
+                isAnimPlaying = false;
+            }
+
+            //Assign the animation
+            shakeAnim.setNode(errorPassword);
+
+        }else{
+            //Alternate the visibility of the error labels
+            errorMsg.setVisible(true);
+            errorPassword.setVisible(false);
+
+            //Stop the animation and reset
+            if(shakeAnim.getNode().equals(errorPassword)) {
+                shakeAnim.stop();
+                isAnimPlaying = false;
+            }
+
+            //Assign the animation
+            shakeAnim.setNode(errorMsg);
+        }
+
 
         //Play a short rotation animation if the animation is not already playing.
         if(!isAnimPlaying){
@@ -257,8 +252,8 @@ public class ClientConnectCtrl implements Initializable {
     /**
      * checks if a connection to a certain URL is valid
      * @param address the URL in String format
-     * @return true if the connection is done with succes,
-     * false else.
+     * @return true if the connection is made successfully,
+     * false otherwise.
      */
     public boolean validConnection(String address){
         try{
@@ -278,11 +273,18 @@ public class ClientConnectCtrl implements Initializable {
      */
     public void refresh(){
 
-        //Resets the visibility of the error message
+        //Resets the visibility of the error messages
         errorMsg.setVisible(false);
+        errorPassword.setVisible(false);
+        adminCheckbox.setSelected(false);
+        password.setVisible(false);
 
         //Resets the default input of the serverAddress
         serverAddressField.setText("http://localhost:8080/");
+
+        //Reset the password text area and label
+        password.setText("");
+        errorPassword.setText("Please enter the admin password!");
 
     }
 
