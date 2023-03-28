@@ -362,6 +362,13 @@ public class BoardOverviewCtrl implements Initializable {
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
+                server.cardDragDropUpdate(
+                        Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                                getChildrenUnmodifiable().indexOf((AnchorPane)event.
+                                        getGestureSource())),
+                        (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
+                                getParent().getParent()),
+                        (long) hbox.getChildren().indexOf(myVBox.getParent()), id);
                 //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
@@ -406,7 +413,8 @@ public class BoardOverviewCtrl implements Initializable {
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
-            server.deleteColumn(colInd, id);
+            //server.deleteColumn(colInd, id);
+            server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd,id)));
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -427,6 +435,17 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             // gesture source to pass dragged item
+
+            Long cardId = server.deleteCardServer(server.getBoardById(id),
+                    Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                            getChildrenUnmodifiable().
+                            indexOf((AnchorPane)event.getGestureSource())),
+                    (long) hbox.getChildren().
+                            indexOf(((AnchorPane) event.getGestureSource()).
+                                    getParent().getParent())+1,id);
+
+            System.out.println(server.deleteCardFromCardApi(cardId));
+
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
