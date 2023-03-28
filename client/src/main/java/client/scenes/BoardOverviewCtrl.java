@@ -376,11 +376,13 @@ public class BoardOverviewCtrl implements Initializable {
                         (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
                                 getParent().getParent()),
                         (long) hbox.getChildren().indexOf(myVBox.getParent()), id);
+                server.send("/app/update-in-board", server.getBoardById(id));
                 //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
                 event.setDropCompleted(true);
                 event.consume();
+                server.send("app/update-in-board",server.getBoardById(id));
             }
         });
     }
@@ -451,7 +453,7 @@ public class BoardOverviewCtrl implements Initializable {
                     (long) hbox.getChildren().
                             indexOf(((AnchorPane) event.getGestureSource()).
                                     getParent().getParent())+1,id);
-
+            server.send("/app/update-in-board", server.getBoardById(id));
             System.out.println(server.deleteCardFromCardApi(cardId));
 
             vBox.getChildren().remove(event.getGestureSource());
@@ -664,6 +666,7 @@ public class BoardOverviewCtrl implements Initializable {
             Platform.runLater(() -> columnsRefresh());
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+            Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
         });
     }
 
