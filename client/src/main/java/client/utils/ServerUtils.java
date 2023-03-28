@@ -18,7 +18,6 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
-import java.text.CollationKey;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
@@ -88,6 +87,11 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
+    /**
+     * Delete a card from api/cards
+     * @param cardId Id of the card that will be deleted
+     * @return Response of the server/request
+     */
     public Response deleteCardFromCardApi(Long cardId) {
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -532,6 +536,11 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
+    /**
+     * A ,ethod to delete the column from api/columns
+     * @param columnId Id of the column that will be deleted
+     * @return Response of the server/request
+     */
     public Response deleteColumnFromApi(int columnId)
     {
         return ClientBuilder.newClient(new ClientConfig())
