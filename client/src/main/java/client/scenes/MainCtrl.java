@@ -128,8 +128,8 @@ public class MainCtrl {
      * A method to switch the scene from boardOverView to the CarView
      */
     public void showCardView() {
+        cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
-
         primaryStage.setScene(cardView);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
