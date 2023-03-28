@@ -236,6 +236,7 @@ public class MainCtrl {
      */
     public void setHasAdminRole(boolean hasAdminRole) {
         this.hasAdminRole = hasAdminRole;
+    }
 
     /**
      * changes the scene to board customization
