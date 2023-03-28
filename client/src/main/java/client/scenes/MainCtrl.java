@@ -40,11 +40,8 @@ public class MainCtrl {
      * @param clientConnect an injection of the ClientConnect scene and controller
      * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
-<<<<<<< HEAD
      * @param boardCustomization on injection of the boardCustomization scene and controller
-=======
      * @param tagView an injection of the CardView scene and controller
->>>>>>> tagsupport1
      * @throws Exception an exception that may be thrown
      */
 
@@ -96,6 +93,10 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
         boardCustomizationCtrl.setBoardText(text);
+        System.out.println(text);
+
+        boardOverviewCtrl.socketsCall();
+
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
