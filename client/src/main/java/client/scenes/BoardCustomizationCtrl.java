@@ -70,6 +70,7 @@ public class BoardCustomizationCtrl implements Initializable {
         if(blue!=-1 && green!=-1 && red!=-1) {
             server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
         }
+        server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
         mainCtrl.showBoardOverview(text, blue, green, red);
     }
 
