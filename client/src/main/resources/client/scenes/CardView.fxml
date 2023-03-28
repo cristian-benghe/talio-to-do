@@ -12,13 +12,13 @@
 
 <AnchorPane prefHeight="473.0" prefWidth="516.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardViewCtrl"> <!-- not forget to add fx:controller="client.scenes.CardView" -->
    <children>
-      <Label layoutX="60.0" layoutY="13.0" prefHeight="35.0" prefWidth="198.0" text="Title of the card">
+      <Label fx:id="titleLabel" layoutX="60.0" layoutY="13.0" prefHeight="35.0" prefWidth="198.0" text="Title of the card">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
       <Button id="cardViewBack" layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#getBackCard" text="&lt;-" />
-      <TextArea layoutX="14.0" layoutY="78.0" prefHeight="115.0" prefWidth="488.0" promptText="Add a description...">
+      <TextArea fx:id="longDescription" layoutX="14.0" layoutY="78.0" prefHeight="115.0" prefWidth="488.0" promptText="Add a description...">
          <font>
             <Font size="14.0" />
          </font>

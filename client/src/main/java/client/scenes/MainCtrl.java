@@ -1,5 +1,6 @@
 package client.scenes;
 
+import commons.Card;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -133,12 +134,15 @@ public class MainCtrl {
 
     /**
      * A method to switch the scene from boardOverView to the CarView
+     * @param card the card instance that will be inspected
      */
-    public void showCardView() {
+    public void showCardView(Card card) {
+
         cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
+        cardViewCtrl.setCard(card);
         primaryStage.setScene(cardView);
-        clientConnectCtrl.refresh();
+        cardViewCtrl.refresh();
         primaryStage.centerOnScreen();
     }
     /**
