@@ -321,11 +321,16 @@ public class BoardOverviewCtrl implements Initializable {
     public void setLabelAction(Label label) {
         label.setOnMouseClicked(event -> {
             //TODO, identify the card. Added a temporary sample card instance
-            mainCtrl.showCardView(
-                    new Card("Sample Card",
-                            "A very longgggg description",
-                            new ArrayList<Task>(),
-                            null));
+            ArrayList<Task> taskList = new ArrayList<Task>();
+            Card card = new Card("Sample Card",
+                    "A very longgggg description",
+                    taskList,
+                    null);
+            taskList.add(new Task(card, "First task", true));
+            taskList.add(new Task(card, "Second task", false));
+
+            card.setId(1L);
+            mainCtrl.showCardView(card);
         });
     }
 
