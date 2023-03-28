@@ -86,6 +86,35 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
+    private Column updateCardDragDrop(Board board,int cardId,Card card,Long columnId,Long boardId)
+    {
+        Column column = board.getColumns().get(Math.toIntExact(columnId));
+        board.getColumns().set(Math.toIntExact(columnId),column);
+        column =  board.getColumns().get(Math.toIntExact(columnId));
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + ( column.getId()))
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * A method to delete a card with server from database
+     * @param board board to be used
+     * @param cardId card to be deleted
+     * @param columnId column that should be updated
+     * @param boardId boardid
+     * @return Column
+     */
+    public Column deleteCardServer(Board board, Long cardId, Long columnId, Long boardId){
+        Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
+        Card card = column.getCards().get(Math.toIntExact(cardId) - 2);
+        column.getCards().remove(card);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + column.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
     /**
      * update the card title
      *
@@ -102,6 +131,35 @@ public class ServerUtils {
         //updateColumn(Math.toIntExact(column.getId()), column);
         updateCardInColumn(Math.toIntExact(cardid), card, columnID, boardId);
     }
+
+    /**
+     * A method to update the database when card is drag and dropped
+     * @param cardid cardId that is drag and dropped
+     * @param columnID Id of the column that card dragged from
+     * @param newColumnId  Id of the column that the card is dropped
+     * @param boardId boardid
+     */
+    public void cardDragDropUpdate(Long cardid, Long columnID, Long newColumnId, Long boardId) {
+        Board board = getBoardById(boardId);
+        Column column = board.getColumns().get((int) (columnID - 0));
+        Card card = column.getCards().get(Math.toIntExact(cardid) - 2);
+        Column newcolumn = board.getColumns().get((int) (newColumnId - 0));
+        newcolumn.getCards().add(card);
+        board.getColumns().set((int) (newColumnId - 0),newcolumn);
+
+//        column.getCards().remove(card);
+//        board.getColumns().set((int) (columnID - 0),column);
+        //deletion on server needed.
+        deleteCardServer(board,cardid, columnID+1, boardId);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        board = getBoardById(boardId);
+        newcolumn = board.getColumns().get((int) (newColumnId - 0));
+        newcolumn.getCards().add(card);
+        board.getColumns().set((int) (newColumnId - 0),newcolumn);
+        updateCardDragDrop(board,Math.toIntExact(cardid), card, newColumnId, boardId);
+        System.out.println(getBoardById(boardId).getColumns().get(1).getCards());
+    }
+
 
     /**
      * A method to Add card to column (serverside)

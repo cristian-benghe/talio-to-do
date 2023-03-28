@@ -355,6 +355,13 @@ public class BoardOverviewCtrl implements Initializable {
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
+                server.cardDragDropUpdate(
+                        Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                                getChildrenUnmodifiable().indexOf((AnchorPane)event.
+                                        getGestureSource())),
+                        (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
+                                getParent().getParent()),
+                        (long) hbox.getChildren().indexOf(myVBox.getParent()), id);
                 //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
@@ -420,6 +427,13 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             // gesture source to pass dragged item
+            server.deleteCardServer(server.getBoardById(id),
+                    Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                            getChildrenUnmodifiable().
+                            indexOf((AnchorPane)event.getGestureSource())),
+                    (long) hbox.getChildren().
+                            indexOf(((AnchorPane) event.getGestureSource()).
+                                    getParent().getParent())+1,id);
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
