@@ -7,6 +7,7 @@ public class CardViewCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private String text;
     @FXML
     private Button cardViewBack;
 
@@ -27,6 +28,14 @@ public class CardViewCtrl {
     @FXML
     private void getBackCard()
     {
-        mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
+        System.out.println(text);
+        mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
+    }
+
+    /**
+     * @param text taken from the board overview and set back when returning to the board
+     */
+    public void setText(String text){
+        this.text=text;
     }
 }

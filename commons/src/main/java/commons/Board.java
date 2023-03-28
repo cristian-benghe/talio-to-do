@@ -33,7 +33,7 @@ public class Board {
         this.title = title;
         this.columns = columns;
         this.tags=tags;
-        this.setColor((double) 0, (double) 0, (double) 0);
+        this.setColor((double) 1, (double) 1, (double) 1);
     }
 
     /**

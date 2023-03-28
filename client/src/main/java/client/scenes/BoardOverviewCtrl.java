@@ -37,6 +37,7 @@ import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
     private Long nrCol = Long.valueOf(0);
+    private String title;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -92,7 +93,7 @@ public class BoardOverviewCtrl implements Initializable {
      * This changes the scene to the Board Overview
      */
     public void showOverview() {
-        mainCtrl.showBoardOverview("", (double) 0, (double) 0, (double) 0);
+        mainCtrl.showBoardOverview("", (double) 255, (double) 255, (double) 255);
     }
 
 
@@ -103,6 +104,7 @@ public class BoardOverviewCtrl implements Initializable {
      * @param red value of red in rgb
      */
     public void setBoardTitle(String idd, Double blue, Double green, Double red) {
+        this.title=idd;
         Long nr = Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
@@ -435,6 +437,7 @@ public class BoardOverviewCtrl implements Initializable {
      * refreshed the boardOverview scene so that it updates the columns
      */
     public void columnsRefresh() {
+        hbox.getChildren().clear();
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
@@ -613,5 +616,12 @@ public class BoardOverviewCtrl implements Initializable {
         int g = (int) Math.round(color.getGreen() * 255);
         int b = (int) Math.round(color.getBlue() * 255);
         return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+    /**
+     * @return title of the board as it appears in the main overview
+     */
+    public String getTitle() {
+        return title;
     }
 }
