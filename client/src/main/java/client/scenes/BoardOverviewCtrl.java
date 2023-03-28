@@ -406,7 +406,8 @@ public class BoardOverviewCtrl implements Initializable {
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
-            server.deleteColumn(colInd, id);
+            //server.deleteColumn(colInd, id);
+            server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd,id)));
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -427,13 +428,17 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             // gesture source to pass dragged item
-            server.deleteCardServer(server.getBoardById(id),
+
+            Long cardId = server.deleteCardServer(server.getBoardById(id),
                     Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
                             getChildrenUnmodifiable().
                             indexOf((AnchorPane)event.getGestureSource())),
                     (long) hbox.getChildren().
                             indexOf(((AnchorPane) event.getGestureSource()).
                                     getParent().getParent())+1,id);
+
+            System.out.println(server.deleteCardFromCardApi(cardId));
+
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();

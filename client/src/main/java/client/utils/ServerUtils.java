@@ -18,6 +18,7 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
+import java.text.CollationKey;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
@@ -27,6 +28,7 @@ import commons.Board;
 import commons.Card;
 import commons.Column;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -86,6 +88,14 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
+    public Response deleteCardFromCardApi(Long cardId) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+    }
+
     private Column updateCardDragDrop(Board board,int cardId,Card card,Long columnId,Long boardId)
     {
         Column column = board.getColumns().get(Math.toIntExact(columnId));
@@ -105,14 +115,15 @@ public class ServerUtils {
      * @param boardId boardid
      * @return Column
      */
-    public Column deleteCardServer(Board board, Long cardId, Long columnId, Long boardId){
+    public Long deleteCardServer(Board board, Long cardId, Long columnId, Long boardId){
         Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
         Card card = column.getCards().get(Math.toIntExact(cardId) - 2);
         column.getCards().remove(card);
-        return ClientBuilder.newClient(new ClientConfig())
+        ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/columns/" + column.getId())
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+        return card.getId();
     }
 
     /**
@@ -521,19 +532,30 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
+    public Response deleteColumnFromApi(int columnId)
+    {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+    }
+
     /**
      * @param colInd  the index of the the deleted column
      * @param boardId the id of the board the column is in
      * @return the updated board
      */
-    public Board deleteColumn(int colInd, Long boardId) {
+    public Long deleteColumn(int colInd, Long boardId) {
         Board board = getBoardById(boardId);
+        Column column = board.getColumns().get(colInd);
+        Long tmpId = column.getId();
         board.updateColIndex(colInd);
         board.deleteColumn(colInd);
-        return ClientBuilder.newClient(new ClientConfig())
+        ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+        return tmpId;
     }
     /**
      * Adds a new column to a board.
