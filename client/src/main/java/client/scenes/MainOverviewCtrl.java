@@ -204,7 +204,7 @@ public class MainOverviewCtrl implements Initializable {
             return;
         }
         String text = existsBoard(nr);
-        mainCtrl.showBoardOverview(text + " -- " + nr);
+        mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
 
 
         //TODO Retrieve boards through key input or name input
@@ -278,7 +278,7 @@ public class MainOverviewCtrl implements Initializable {
         }
 
         // Navigate to the board view for the selected board
-        mainCtrl.showBoardOverview(selectedBoardStr);
+        mainCtrl.showBoardOverview(selectedBoardStr, (double) 1, (double) 1, (double) 1);
     }
 
     /**
@@ -314,7 +314,6 @@ public class MainOverviewCtrl implements Initializable {
         });
 
         server.registerForMessages("/topic/update-board", Board.class, board -> {
-            Board toBeChanged = null;
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());

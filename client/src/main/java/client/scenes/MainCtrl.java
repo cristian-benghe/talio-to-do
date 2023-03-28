@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.awt.*;
+
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -24,9 +26,13 @@ public class MainCtrl {
 
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
+    private BoardCustomizationCtrl boardCustomizationCtrl;
 
     private boolean isAdmin=false;
 
+    private Scene boardCustomization;
+    private TagViewCtrl tagViewCtrl;
+    private Scene tagView;
     private boolean shownMainOverviewOneTime = false;
     private String adminPassword;
     private boolean hasAdminRole;
@@ -39,6 +45,8 @@ public class MainCtrl {
      * @param clientConnect an injection of the ClientConnect scene and controller
      * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
+     * @param boardCustomization on injection of the boardCustomization scene and controller
+     * @param tagView an injection of the CardView scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -47,11 +55,14 @@ public class MainCtrl {
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
-                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
+                           Pair<CardViewCtrl, Parent> cardView,
+                           Pair<BoardCustomizationCtrl, Parent> boardCustomization,
+                           Pair<TagViewCtrl, Parent> tagView) throws Exception {
 
 
         this.isAdmin = false;
         this.primaryStage = primaryStage;
+        
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -63,6 +74,10 @@ public class MainCtrl {
 
         this.cardViewCtrl = cardView.getKey();
         this.cardView = new Scene(cardView.getValue());
+        this.boardCustomizationCtrl=boardCustomization.getKey();
+        this.boardCustomization=new Scene(boardCustomization.getValue());
+        this.tagViewCtrl = tagView.getKey();
+        this.tagView = new Scene(tagView.getValue());
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -77,17 +92,21 @@ public class MainCtrl {
 
 
     /**
-     * The method changes the scene to the BoardOverview
-     * @param text the name of the selected board
+     * @param text the title of the board, to get the id
+     * @param blue from rgb
+     * @param green from rgb
+     * @param red from rgb
      */
-    public void showBoardOverview(String text) {
+    public void showBoardOverview(String text, Double blue, Double green, Double red) {
+        boardCustomizationCtrl.setBoardText(text);
         System.out.println(text);
 
+        boardOverviewCtrl.socketsCall();
 
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoardTitle(text);
+        boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
     /**
@@ -123,18 +142,22 @@ public class MainCtrl {
      * A method to switch the scene from boardOverView to the CarView
      */
     public void showCardView() {
+        cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
-
         primaryStage.setScene(cardView);
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
     }
+    /**
+     * A method to switch the scene to the TagView
+     */
+    public void showTagView() {
+        primaryStage.setTitle("Talio - TagView");
 
-
-
-
-
-
+        primaryStage.setScene(tagView);
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+    }
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
@@ -158,6 +181,7 @@ public class MainCtrl {
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
+        boardCustomizationCtrl.setConnection(address);
     }
 
     /**
@@ -212,5 +236,20 @@ public class MainCtrl {
      */
     public void setHasAdminRole(boolean hasAdminRole) {
         this.hasAdminRole = hasAdminRole;
+
+    /**
+     * changes the scene to board customization
+     */
+    public void showBoardCustomization() {
+        primaryStage.setTitle("Board Customization");
+        primaryStage.setScene(boardCustomization);
+    }
+
+    /**
+     * @return the id of the board
+     */
+    public Long getBoardId() {
+        System.out.println(boardOverviewCtrl.getId());
+        return boardOverviewCtrl.getId();
     }
 }

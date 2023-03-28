@@ -23,10 +23,12 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import commons.Tag;
 import commons.Board;
 import commons.Card;
 import commons.Column;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
@@ -87,6 +89,49 @@ public class ServerUtils {
     }
 
     /**
+     * Delete a card from api/cards
+     * @param cardId Id of the card that will be deleted
+     * @return Response of the server/request
+     */
+    public Response deleteCardFromCardApi(Long cardId) {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+    }
+
+    private Column updateCardDragDrop(Board board,int cardId,Card card,Long columnId,Long boardId)
+    {
+        Column column = board.getColumns().get(Math.toIntExact(columnId));
+        board.getColumns().set(Math.toIntExact(columnId),column);
+        column =  board.getColumns().get(Math.toIntExact(columnId));
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + ( column.getId()))
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+    /**
+     * A method to delete a card with server from database
+     * @param board board to be used
+     * @param cardId card to be deleted
+     * @param columnId column that should be updated
+     * @param boardId boardid
+     * @return Column
+     */
+    public Long deleteCardServer(Board board, Long cardId, Long columnId, Long boardId){
+        Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
+        Card card = column.getCards().get(Math.toIntExact(cardId) - 2);
+        column.getCards().remove(card);
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + column.getId())
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+        return card.getId();
+    }
+
+    /**
      * update the card title
      *
      * @param cardid   cardid to be updated
@@ -102,6 +147,35 @@ public class ServerUtils {
         //updateColumn(Math.toIntExact(column.getId()), column);
         updateCardInColumn(Math.toIntExact(cardid), card, columnID, boardId);
     }
+
+    /**
+     * A method to update the database when card is drag and dropped
+     * @param cardid cardId that is drag and dropped
+     * @param columnID Id of the column that card dragged from
+     * @param newColumnId  Id of the column that the card is dropped
+     * @param boardId boardid
+     */
+    public void cardDragDropUpdate(Long cardid, Long columnID, Long newColumnId, Long boardId) {
+        Board board = getBoardById(boardId);
+        Column column = board.getColumns().get((int) (columnID - 0));
+        Card card = column.getCards().get(Math.toIntExact(cardid) - 2);
+        Column newcolumn = board.getColumns().get((int) (newColumnId - 0));
+        newcolumn.getCards().add(card);
+        board.getColumns().set((int) (newColumnId - 0),newcolumn);
+
+//        column.getCards().remove(card);
+//        board.getColumns().set((int) (columnID - 0),column);
+        //deletion on server needed.
+        deleteCardServer(board,cardid, columnID+1, boardId);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        board = getBoardById(boardId);
+        newcolumn = board.getColumns().get((int) (newColumnId - 0));
+        newcolumn.getCards().add(card);
+        board.getColumns().set((int) (newColumnId - 0),newcolumn);
+        updateCardDragDrop(board,Math.toIntExact(cardid), card, newColumnId, boardId);
+        System.out.println(getBoardById(boardId).getColumns().get(1).getCards());
+    }
+
 
     /**
      * A method to Add card to column (serverside)
@@ -464,14 +538,110 @@ public class ServerUtils {
     }
 
     /**
+     * A ,ethod to delete the column from api/columns
+     * @param columnId Id of the column that will be deleted
+     * @return Response of the server/request
+     */
+    public Response deleteColumnFromApi(int columnId)
+    {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .delete();
+    }
+
+    /**
      * @param colInd  the index of the the deleted column
      * @param boardId the id of the board the column is in
      * @return the updated board
      */
-    public Board deleteColumn(int colInd, Long boardId) {
+    public Long deleteColumn(int colInd, Long boardId) {
         Board board = getBoardById(boardId);
+        Column column = board.getColumns().get(colInd);
+        Long tmpId = column.getId();
         board.updateColIndex(colInd);
         board.deleteColumn(colInd);
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+        return tmpId;
+    }
+
+    /**
+<<<<<<< HEAD
+     * @param blue the rgb value of blue
+     * @param green the rgb value of green
+     * @param red the rgb value of red
+     * @param boardId the id of the board
+     * @return an updated board with the new color
+     */
+    public Board updateBoardColor(Double blue, Double green, Double red, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColor(red, green, blue);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
+     * @param id the id of the tag in the db
+     * @param newTag added tag in the board
+     * @param i index of the tag in the board
+     * @return the updated board
+     */
+    public Board addTagToBoard(Long id, Tag newTag, int i) {
+        Board board = getBoardById(id);
+        newTag.setIDinBoard(i);
+        board.addTag(newTag);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + id)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+
+    /**
+     * @param tagID = id of the tag in the board
+     * @param text     = the new title of the tag
+     * @param boardId  = the id of the board
+     */
+    public void updateTagTitle(int tagID, String text, Long boardId) {
+        Board board = getBoardById(boardId);
+        Tag tag = board.getTags().get(tagID - 1);
+        tag.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateTagInBoard(tagID, tag, boardId);
+    }
+
+    private Board updateTagInBoard(int tagID, Tag tag, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.setTag(tagID - 1, tag);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    private Tag updateTag(int tagID, Tag tag) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + tagID)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+    }
+
+    /**
+     * @param tagInd  the index of the the deleted tag
+     * @param boardId the id of the board the tag is in
+     * @return the updated board
+     */
+    public Board deleteTag(int tagInd, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.updateColIndex(tagInd);
+        board.deleteColumn(tagInd);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)

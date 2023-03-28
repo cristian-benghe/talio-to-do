@@ -8,6 +8,8 @@ import java.util.Set;
 @Entity
 public class Tag {
 
+    private int idInBoard=-1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long tagID;
@@ -39,6 +41,20 @@ public class Tag {
         this.tagID = tagID;
         this.title = title;
         this.cards = cards;
+    }
+
+    /**
+     * @return id of a tag in a board
+     */
+    public int getIDinBoard() {
+        return idInBoard;
+    }
+
+    /**
+     * @param idInBoard = set the boardid when adding a tag
+     */
+    public void setIDinBoard(int idInBoard) {
+        this.idInBoard = idInBoard;
     }
 
     /**

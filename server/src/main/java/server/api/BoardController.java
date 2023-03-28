@@ -29,8 +29,6 @@ import java.util.Random;
 
 @RestController
 public class BoardController {
-
-    private final Random random; //TODO: delete + adapt tests
     private final BoardService boardservice;
 
     /**
@@ -39,7 +37,6 @@ public class BoardController {
      * @param random
      */
     public BoardController(Random random, BoardService boardservice) {
-        this.random = random;
         this.boardservice = boardservice;
     }
 
@@ -155,6 +152,21 @@ public class BoardController {
     @SendTo("/topic/update-board")
     public Board addMessageUpdate(Board board) {
         update(board.getId(), board);
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-in-board") and deletes
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-in-board" endpoint.
+     * It is used for refreshing BoardOverview
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-in-board") // app/update-in-board
+    @SendTo("/topic/update-in-board")
+    public Board addMessageUpdateInBoard(Board board) {
         return board;
     }
 }

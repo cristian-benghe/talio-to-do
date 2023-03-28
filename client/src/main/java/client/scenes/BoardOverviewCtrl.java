@@ -3,10 +3,11 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import commons.Column;
 import commons.Card;
+import commons.Column;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -26,6 +27,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.paint.Color;
+
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ import java.util.ResourceBundle;
 
 public class BoardOverviewCtrl implements Initializable {
     private Long nrCol = Long.valueOf(0);
+    private String title;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -90,19 +94,23 @@ public class BoardOverviewCtrl implements Initializable {
      * This changes the scene to the Board Overview
      */
     public void showOverview() {
-        mainCtrl.showBoardOverview("");
+        mainCtrl.showBoardOverview("", (double) 255, (double) 255, (double) 255);
     }
 
+
     /**
-     * Sets the title and ID of the board.
-     *
-     * @param idd - the id of the new board
+     * @param idd the id of the board
+     * @param blue value of blue in rgb
+     * @param green value of green in rgb
+     * @param red value of red in rgb
      */
-    public void setBoardTitle(String idd) {
+    public void setBoardTitle(String idd, Double blue, Double green, Double red) {
+        this.title=idd;
         Long nr = Long.parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
         columnsRefresh();
+        setColors(blue, green, red);
 //        addOneColumn("To do");
 //        addOneColumn("Doing");
 //        addOneColumn("Done");
@@ -133,8 +141,8 @@ public class BoardOverviewCtrl implements Initializable {
         board.setTitle(boardTitle.getText());
         System.out.println(board.toStringShort());
         //server.send("/app/delete-board", board.getId());
+        server.send("/app/update-in-board", board);
         server.send("/app/update-board", board);
-
     }
 
     /**
@@ -189,10 +197,12 @@ public class BoardOverviewCtrl implements Initializable {
         setVBoxDragDrop(button, vBox);
         button.setAlignment(Pos.BOTTOM_CENTER);
         vBox.getChildren().addAll(columnLabel, textField, button);
+        server.send("/app/update-in-board", server.getBoardById(id));
     }
 
     private void updateColTitle(int i, String text) {
         server.updateColTitle(i, text, id);
+        server.send("/app/update-in-board", server.getBoardById(id));
     }
 
     /**
@@ -272,10 +282,13 @@ public class BoardOverviewCtrl implements Initializable {
                                 .getChildren().indexOf(anchorPane1) - 1,
                             columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).
-                                getChildren().get(1)).getChildren().get(0)).getText(), id);});
+                                getChildren().get(1)).getChildren().get(0)).getText(), id);
+                        server.send("/app/update-in-board", server.getBoardById(id));
+                    });
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
+            server.send("/app/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -288,13 +301,14 @@ public class BoardOverviewCtrl implements Initializable {
      * @param columnid    id of the specific column
      */
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
-        ((TextField)((HBox)((VBox) anchorPane1.getChildren().get(0)).getChildren().
+        ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
                 get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
                     server.updateCardTitle((long) vBox.getChildren().
                             indexOf(anchorPane1) - 1, columnid,
-                        ((TextField)((HBox)((VBox) anchorPane1
+                        ((TextField) ((HBox) ((VBox) anchorPane1
                             .getChildren().get(0)).getChildren().get(1)).
                             getChildren().get(0)).getText(), id);
+                    server.send("/app/update-in-board", server.getBoardById(id));
                 });
     }
 
@@ -355,11 +369,20 @@ public class BoardOverviewCtrl implements Initializable {
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
+                server.cardDragDropUpdate(
+                        Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                                getChildrenUnmodifiable().indexOf((AnchorPane)event.
+                                        getGestureSource())),
+                        (long) hbox.getChildren().indexOf(((AnchorPane) event.getGestureSource()).
+                                getParent().getParent()),
+                        (long) hbox.getChildren().indexOf(myVBox.getParent()), id);
+                server.send("/app/update-in-board", server.getBoardById(id));
                 //gesture source to pass dragged item
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
                 myVBox.getChildren().add(button);
                 event.setDropCompleted(true);
                 event.consume();
+                server.send("app/update-in-board",server.getBoardById(id));
             }
         });
     }
@@ -399,10 +422,12 @@ public class BoardOverviewCtrl implements Initializable {
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
-            server.deleteColumn(colInd, id);
+            //server.deleteColumn(colInd, id);
+            server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd,id)));
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
+            server.send("/app/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -420,6 +445,17 @@ public class BoardOverviewCtrl implements Initializable {
         //deletion of the dragged item
         anchorPane.getChildren().get(3).setOnDragDropped(event -> {
             // gesture source to pass dragged item
+
+            Long cardId = server.deleteCardServer(server.getBoardById(id),
+                    Long.valueOf(((AnchorPane) event.getGestureSource()).getParent().
+                            getChildrenUnmodifiable().
+                            indexOf((AnchorPane)event.getGestureSource())),
+                    (long) hbox.getChildren().
+                            indexOf(((AnchorPane) event.getGestureSource()).
+                                    getParent().getParent())+1,id);
+            server.send("/app/update-in-board", server.getBoardById(id));
+            System.out.println(server.deleteCardFromCardApi(cardId));
+
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -446,8 +482,6 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.setMargin(textField, new Insets(2));
 
             anchorPaneVBox.getChildren().add(vBox);
-            //to set the functionality of the drag and drop of the new column.
-            // Only for deletion not to replace!
             setColumnDragDrop(anchorPaneVBox);
             hbox.getChildren().add(anchorPaneVBox);
             textField.setOnKeyTyped(e ->
@@ -472,7 +506,6 @@ public class BoardOverviewCtrl implements Initializable {
 
             }
             vBox.getChildren().add(button);
-
         }
     }
 
@@ -581,6 +614,60 @@ public class BoardOverviewCtrl implements Initializable {
         ClipboardContent content = new ClipboardContent();
         content.putString(String.valueOf(id));
         clipboard.setContent(content);
+    }
+
+    /**
+     * changes scene to board customization
+     */
+    public void goToSettings(){
+        mainCtrl.showBoardCustomization();
+    }
+
+    /**
+     * @param blue the rgb value of blue set from the database
+     * @param green the rgb value of green set from the database
+     * @param red the rgb value of red set from the database
+     */
+    public void setColors(Double blue, Double green, Double red) {
+        Board board=server.getBoardById(id);
+        Color color = Color.color(board.getRed(), board.getGreen(), board.getBlue());
+
+        // Set the background color of the AnchorPane to the RGB color value
+        anchorPane.setStyle("-fx-background-color: " + toRgbCode(color) + ";");
+    }
+
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+    /**
+     * @return title of the board as it appears in the main overview
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Method to be called one time for the websockets to
+     * start. (when boardOverview is shown)
+     */
+    public void socketsCall() {
+        server.registerForMessages("/topic/update-in-board", Board.class, board -> {
+            System.out.println("asadasdasd");
+            if (Objects.equals(board.getId(), id))
+                System.out.println("asadasdasd");
+            Platform.runLater(() -> columnsRefresh());
+//            Platform.runLater(() ->
+//                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+            Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
+        });
     }
 
 }
