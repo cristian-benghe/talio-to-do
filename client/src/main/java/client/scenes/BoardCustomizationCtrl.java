@@ -13,9 +13,9 @@ public class BoardCustomizationCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private Double blue;
-    private Double green;
-    private Double red;
+    private Double blue= Double.valueOf(-1);
+    private Double green= Double.valueOf(-1);
+    private Double red= Double.valueOf(-1);
     private String text;
     @FXML
     private ColorPicker colorPicker;
@@ -67,7 +67,9 @@ public class BoardCustomizationCtrl implements Initializable {
      */
     public void save(){
         System.out.println(blue+" "+green+" "+red+" "+ mainCtrl.getBoardId());
-        server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
+        if(blue!=-1 && green!=-1 && red!=-1) {
+            server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
+        }
         mainCtrl.showBoardOverview(text, blue, green, red);
     }
 
