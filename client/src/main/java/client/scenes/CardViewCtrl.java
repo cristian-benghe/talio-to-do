@@ -38,4 +38,10 @@ public class CardViewCtrl {
     public void setText(String text){
         this.text=text;
     }
+
+    @FXML
+    private void getTagView()
+    {
+        mainCtrl.showTagView();
+    }
 }

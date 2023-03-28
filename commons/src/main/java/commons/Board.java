@@ -110,6 +110,26 @@ public class Board {
      * Set method for the title
      * @param title the new title to set
      */
+
+    /**
+     * @param newTag to add to a borad
+     */
+    public void addTag(Tag newTag) {
+        tags.add(newTag);
+    }
+
+    /**
+     * @param tagID = the id of the tag in a board
+     * @param tag = set a tag with a new title
+     */
+    public void setTag(int tagID, Tag tag) {
+        tags.set(tagID, tag);
+    }
+
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -206,6 +226,7 @@ public class Board {
     }
 
     /**
+<<<<<<< HEAD
      * @param red from rgb
      * @param green from rgb
      * @param blue from rgb
@@ -234,5 +255,21 @@ public class Board {
      */
     public Double getBlue() {
         return blue;
+    }
+
+    /**
+     * @param tagInd the id of the tag
+     */
+    public void deleteTag(int tagInd) {
+        tags.remove(tagInd);
+    }
+
+    /**
+     * @param tagInd the updated id of the tag that shift to the left
+     */
+    public void updateTagIndex(int tagInd) {
+        for(int i=tagInd;i<tags.size();i++){
+            tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
+        }
     }
 }

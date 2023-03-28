@@ -23,6 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
+import commons.Tag;
 import commons.Board;
 import commons.Card;
 import commons.Column;
@@ -479,6 +480,7 @@ public class ServerUtils {
     }
 
     /**
+<<<<<<< HEAD
      * @param blue the rgb value of blue
      * @param green the rgb value of green
      * @param red the rgb value of red
@@ -488,7 +490,69 @@ public class ServerUtils {
     public Board updateBoardColor(Double blue, Double green, Double red, Long boardId) {
         Board board=getBoardById(boardId);
         board.setColor(red, green, blue);
-        
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
+     * @param id the id of the tag in the db
+     * @param newTag added tag in the board
+     * @param i index of the tag in the board
+     * @return the updated board
+     */
+    public Board addTagToBoard(Long id, Tag newTag, int i) {
+        Board board = getBoardById(id);
+        newTag.setIDinBoard(i);
+        board.addTag(newTag);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + id)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+
+    /**
+     * @param tagID = id of the tag in the board
+     * @param text     = the new title of the tag
+     * @param boardId  = the id of the board
+     */
+    public void updateTagTitle(int tagID, String text, Long boardId) {
+        Board board = getBoardById(boardId);
+        Tag tag = board.getTags().get(tagID - 1);
+        tag.setTitle(text);
+        //updateColumn(Math.toIntExact(column.getId()), column);
+        updateTagInBoard(tagID, tag, boardId);
+    }
+
+    private Board updateTagInBoard(int tagID, Tag tag, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.setTag(tagID - 1, tag);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    private Tag updateTag(int tagID, Tag tag) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + tagID)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+    }
+
+    /**
+     * @param tagInd  the index of the the deleted tag
+     * @param boardId the id of the board the tag is in
+     * @return the updated board
+     */
+    public Board deleteTag(int tagInd, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.updateColIndex(tagInd);
+        board.deleteColumn(tagInd);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
