@@ -191,6 +191,7 @@ public class BoardOverviewCtrl implements Initializable {
         textField.setOnKeyTyped(e ->
         {
             updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+            server.send("/app/update-labels-in-board", server.getBoardById(id));
         });
 
         Button button = createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
@@ -681,7 +682,6 @@ public class BoardOverviewCtrl implements Initializable {
         });
 
         server.registerForMessages("/topic/update-labels-in-board", Board.class, board -> {
-            System.out.println("fortza steaua");
             if (Objects.equals(board.getId(), id)){
                 try {
                     Thread.sleep(5000);
