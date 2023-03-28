@@ -155,6 +155,15 @@ public class BoardController {
         return board;
     }
 
+    /**
+     * Receives a message with the specified mapping ("/update-in-board") and deletes
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-in-board" endpoint.
+     * It is used for refreshing BoardOverview
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
     @MessageMapping("/update-in-board") // app/update-in-board
     @SendTo("/topic/update-in-board")
     public Board addMessageUpdateInBoard(Board board) {
