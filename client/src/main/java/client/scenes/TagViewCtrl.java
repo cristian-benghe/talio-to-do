@@ -75,6 +75,9 @@ public class TagViewCtrl {
 
     }
 
+    /**
+     * @param address of the server
+     */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }

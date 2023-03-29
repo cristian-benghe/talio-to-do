@@ -46,6 +46,10 @@ public class CardViewCtrl {
     private void getTagView() throws IOException {
         mainCtrl.showTagView();
     }
+
+    /**
+     * @param address of the server
+     */
     public void setConnection(String address) {
         server.setServerAddress(address);
     }
