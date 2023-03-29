@@ -187,6 +187,8 @@ public class MainCtrl {
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
         boardCustomizationCtrl.setConnection(address);
+        cardViewCtrl.setConnection(address);
+        tagViewCtrl.setConnection(address);
     }
 
 

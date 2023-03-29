@@ -60,6 +60,7 @@ public class TagViewCtrl {
      * @throws IOException
      */
     public void refreshtaglist() throws IOException {
+        tagList.getChildren().clear();
         for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/scenes/TagTemplate.fxml"));
@@ -74,4 +75,7 @@ public class TagViewCtrl {
 
     }
 
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }
