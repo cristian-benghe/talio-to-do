@@ -399,6 +399,7 @@ public class ServerUtils {
      * @return The deserialized Board object
      */
     public Board getBoardById(long boardId) {
+        System.out.println(boardId);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
                 .path("api/boards/" + boardId)
@@ -622,14 +623,12 @@ public class ServerUtils {
     }
 
     /**
-     * @param id the id of the tag in the db
+     * @param id     the id of the tag in the db
      * @param newTag added tag in the board
-     * @param i index of the tag in the board
      * @return the updated board
      */
-    public Board addTagToBoard(Long id, Tag newTag, int i) {
+    public Board addTagToBoard(Long id, Tag newTag) {
         Board board = getBoardById(id);
-        newTag.setIDinBoard(i);
         board.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())

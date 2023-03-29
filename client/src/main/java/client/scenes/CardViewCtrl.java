@@ -3,6 +3,9 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
+import java.io.IOException;
+
 public class CardViewCtrl {
 
     private final ServerUtils server;
@@ -40,8 +43,7 @@ public class CardViewCtrl {
     }
 
     @FXML
-    private void getTagView()
-    {
+    private void getTagView() throws IOException {
         mainCtrl.showTagView();
     }
 }
