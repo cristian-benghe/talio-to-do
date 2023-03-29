@@ -119,6 +119,11 @@ public class MainOverviewCtrl implements Initializable {
 
         //Set the items of the list element as the ObservableList.
         boardsListElement.setItems(content);
+
+        /**
+         * Lambda expression that adds delete board button
+         * for each line in the Main Overview list view
+         */
         boardsListElement.setCellFactory(lv -> new ListCell<String>() {
             @Override
             public void updateItem(String item, boolean empty) {
@@ -128,16 +133,21 @@ public class MainOverviewCtrl implements Initializable {
                 } else{
                     if (mainCtrl.isHasAdminRole()) {
                         Button deleteButton = new Button("Delete");
+                        // This lambda expression deletes the row (board) from the list view
                         deleteButton.setOnAction(event -> {
                             // Call a function to remove the board from the server.
                             server.deleteBoard(Long.parseLong(item.split("--")[1].trim()));
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
                         });
+                        // this line makes the delete button active in the client application
                         setGraphic(deleteButton);
+                        // this line adjusts the size of the button based on the layout of the row
                         deleteButton.setManaged(true);
+                        // this line makes the deleteBoard viewable
                         deleteButton.setVisible(true);
                     }else{
+                        // this line makes the delete button inactive in the client application
                         setGraphic(null);
                     }
                 }
