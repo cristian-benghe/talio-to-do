@@ -44,6 +44,15 @@ public class Tag {
     }
 
     /**
+     * @param title of the tag
+     * @param cards that are associated to a tag
+     */
+    public Tag(String title, Set<Card>cards){
+        this.title=title;
+        this.cards=cards;
+    }
+
+    /**
      * @return id of a tag in a board
      */
     public int getIDinBoard() {
