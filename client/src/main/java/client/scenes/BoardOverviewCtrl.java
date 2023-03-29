@@ -168,6 +168,19 @@ public class BoardOverviewCtrl implements Initializable {
                 event.consume();
             }
         });
+
+        myhbox.setOnDragDropped(event -> {
+            Board board1 = server.getBoardById(id);
+            int columnSize = board1.getColumns().size();
+            if(event.getX() > columnSize*150)
+            {
+                rightColumnDrop((VBox) ((AnchorPane)
+                        hbox.getChildren().get(columnSize-1)).getChildren().get(0),event);
+                event.setDropCompleted(true);
+                event.consume();
+                columnsRefresh();
+            }
+        });
     }
 
     /**
@@ -481,47 +494,164 @@ public class BoardOverviewCtrl implements Initializable {
         card.setOnDragDetected(event -> {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString("DeletionCard");
-            dragboard.setContent(clipboardContent);
-            event.consume();
-            cardBin(vBox);
+            clipboardContent.putString("DeletionCard"); dragboard.setContent(clipboardContent);
+            event.consume();cardBin(vBox);
         });
 
         card.setOnDragOver(event -> {
             if (event.getDragboard().getString().
                     equals("DeletionCard") && !card.equals(event.getGestureSource())
-                    && ((AnchorPane) event.getGestureSource()).getParent().equals(vBox)) {
+            ) {  // && ((AnchorPane) event.getGestureSource()).getParent().equals(vBox)
                 event.acceptTransferModes(TransferMode.MOVE);
-            }
-            event.consume();
+            } event.consume();
         });
 
         card.setOnDragDropped(event -> {
 
+            if(!((AnchorPane) event.getGestureSource()).getParent().equals(vBox))
+            {
+                directDragDrop(card,vBox,event);
+                event.setDropCompleted(true); event.consume();
+            }
             //bottom side
-            if (event.getY() >= 40) {
-                if ((vBox.getChildren().indexOf(event.getGestureSource()) - 2) -
-                        (vBox.getChildren().indexOf(card) - 2) == 1) {
-                    event.setDropCompleted(true);
-                    event.consume();
-                } else {
-                    lowerCardDrop(card,vBox,event);
-                    event.setDropCompleted(true);
-                    event.consume();
-                }
-            } //upperside
             else {
-                if ((vBox.getChildren().indexOf(card) - 2) -
-                        (vBox.getChildren().indexOf(event.getGestureSource()) - 2) == 1) {
-                    event.setDropCompleted(true);
-                    event.consume();
-                } else {
-                    upperCardDrop(card,vBox,event);
-                    event.setDropCompleted(true);
-                    event.consume();
+                if (event.getY() >= 40) {
+                    if ((vBox.getChildren().indexOf(event.getGestureSource()) - 2) -
+                            (vBox.getChildren().indexOf(card) - 2) == 1) {
+                        event.setDropCompleted(true);
+                        event.consume();
+                    } else {
+                        lowerCardDrop(card, vBox, event);
+                        event.setDropCompleted(true); event.consume();
+                    }
+                } //upperside
+                else {
+                    if ((vBox.getChildren().indexOf(card) - 2) -
+                            (vBox.getChildren().indexOf(event.getGestureSource()) - 2) == 1) {
+                        event.setDropCompleted(true);
+                        event.consume();
+                    } else {
+                        upperCardDrop(card, vBox, event);
+                        event.setDropCompleted(true);
+                        event.consume();
+                    }
                 }
             }
         });
+    }
+
+    /**
+     * A method to direct drag and drop of the card
+     * @param card A card that is dragged
+     * @param vBox target vbox of the event
+     * @param event DragEvent handler
+     */
+    public void directDragDrop(AnchorPane card, VBox vBox, DragEvent event)
+    {
+        if (event.getY() >= 40)
+        {
+            directLower(card,vBox,event);
+        }
+        else {
+            directUpper(card,vBox,event);
+        }
+    }
+
+    /**
+     * A method for lower part of the card drop
+     * @param card A card that is dragged
+     * @param vBox target vbox of the event
+     * @param event DragEvent handler
+     */
+    public void directLower(AnchorPane card, VBox vBox, DragEvent event)
+    {
+        int indexColumnSource = hbox.getChildren()
+                .indexOf(((AnchorPane)event.getGestureSource()).getParent().getParent());
+        int indexColumnTarget = hbox.getChildren().indexOf(vBox.getParent());
+        Board board1 = server.getBoardById(id);
+        Column columnTarget = board1.getColumns()
+                .get(indexColumnTarget);
+        Column columnSource = board1.getColumns().get(indexColumnSource);
+        Column columnTmp = new Column();
+        columnTmp = columnSource.copyCards(columnSource,columnTmp);
+        int indexCardTarget = vBox.getChildren().indexOf(card) - 2;
+        int indexCardSource = ((AnchorPane) event.getGestureSource())
+                .getParent().getChildrenUnmodifiable().indexOf(event.getGestureSource())-2;
+        Card sourceCard = columnSource.getCards().get(indexCardSource);
+
+
+
+        columnSource.getCards().clear();
+        for(int i = 0; i < columnTmp.getCards().size(); i++)
+        {
+            if(i != indexCardSource )
+            {
+                columnSource.getCards().add(columnTmp.getCards().get(i));
+            }
+        }
+        server.updateCardArrangement(indexColumnSource, columnSource, id);
+//        columnsRefresh();
+        columnTmp = new Column();
+        columnTmp = columnTarget.copyCards(columnTarget,columnTmp);
+        columnTarget.getCards().clear();
+        for(int i = 0; i < columnTmp.getCards().size(); i++)
+        {
+            columnTarget.getCards().add(columnTmp.getCards().get(i));
+            if(i == indexCardTarget)
+            {
+                columnTarget.getCards().add(sourceCard);
+            }
+        }
+        server.updateCardArrangement(indexColumnTarget, columnTarget, id);
+        columnsRefresh();
+    }
+    /**
+     * A method for upper part of the card drop
+     * @param card A card that is dragged
+     * @param vBox target vbox of the event
+     * @param event DragEvent handler
+     */
+    public void directUpper(AnchorPane card, VBox vBox, DragEvent event)
+    {
+        int indexColumnSource = hbox.getChildren()
+                .indexOf(((AnchorPane)event.getGestureSource()).getParent().getParent());
+        int indexColumnTarget = hbox.getChildren().indexOf(vBox.getParent());
+        Board board1 = server.getBoardById(id);
+        Column columnTarget = board1.getColumns()
+                .get(indexColumnTarget);
+        Column columnSource = board1.getColumns().get(indexColumnSource);
+        Column columnTmp = new Column();
+        columnTmp = columnSource.copyCards(columnSource,columnTmp);
+        int indexCardTarget = vBox.getChildren().indexOf(card) - 2;
+        int indexCardSource = ((AnchorPane) event.getGestureSource())
+                .getParent().getChildrenUnmodifiable().indexOf(event.getGestureSource())-2;
+        Card sourceCard = columnSource.getCards().get(indexCardSource);
+
+        columnSource.getCards().clear();
+        for(int i = 0; i < columnTmp.getCards().size(); i++)
+        {
+            if(i != indexCardSource )
+            {
+                columnSource.getCards().add(columnTmp.getCards().get(i));
+            }
+        }
+        server.updateCardArrangement(indexColumnSource, columnSource, id);
+        columnTmp = new Column();
+        columnTmp = columnTarget.copyCards(columnTarget,columnTmp);
+        columnTarget.getCards().clear();
+        for(int i = -1; i < columnTmp.getCards().size(); i++)
+        {
+            if(i != -1) {
+                columnTarget.getCards().add(columnTmp.getCards().get(i));
+            }
+
+            if(i+1 == indexCardTarget)
+            {
+                columnTarget.getCards().add(sourceCard);
+            }
+        }
+        server.updateCardArrangement(indexColumnTarget, columnTarget, id);
+        columnsRefresh();
     }
 
     /**
@@ -698,6 +828,7 @@ public class BoardOverviewCtrl implements Initializable {
             }
             vBox.getChildren().add(button);
         }
+        setHBoxDrop(hbox);
     }
 
     /**
