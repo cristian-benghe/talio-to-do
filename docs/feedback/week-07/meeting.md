@@ -15,7 +15,7 @@ Mark: Excellent
 Feedback: Uploaded on time, had all necessary elements, was detailed enough.
 
 
-#### Performance of the *Previous* Minute Taker (Halid)
+#### Performance of the *Previous* Minute Taker (Yair)
 
 Mark: Excellent
 
