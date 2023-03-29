@@ -166,6 +166,18 @@ public class Board {
         this.tags = tags;
     }
 
+    /**
+     * A needed method to updateColumnArrangement
+     * @param boardSource
+     * @param boardTmp
+     * @return A board with copied columns
+     */
+    public Board copyBoard(Board boardSource, Board boardTmp)
+    {
+        boardTmp.columns = new ArrayList<>(boardSource.getColumns());
+        return boardTmp;
+    }
+
 
     /**
      * The method creates a shortened human-friendly String representation of the object.
