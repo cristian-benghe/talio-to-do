@@ -29,4 +29,24 @@ public class Config {
     public Random getRandom() {
         return new Random();
     }
+
+    /**
+     * Method which generates a random password of 7 characters
+     * which consist of uppercase letters and numbers
+     * @return - the generated password
+     */
+    @Bean
+    public String generatePassword() {
+        int passwordLength = 7;
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        StringBuilder password = new StringBuilder();
+
+        Random random = new Random();
+        for (int i = 0; i < passwordLength; i++) {
+            int randomIndex = random.nextInt(characters.length());
+            password.append(characters.charAt(randomIndex));
+        }
+        System.out.println(password.toString());
+        return password.toString();
+    }
 }
