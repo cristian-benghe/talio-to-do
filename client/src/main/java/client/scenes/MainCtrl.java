@@ -62,7 +62,7 @@ public class MainCtrl {
 
         this.isAdmin = false;
         this.primaryStage = primaryStage;
-        
+
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -185,24 +185,6 @@ public class MainCtrl {
     }
 
     /**
-     * gets the value of the isAdmin
-     *
-     * @return the value of the isAdmin
-     */
-    public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    /**
-     * Sets the value of isAdmin
-     *
-     * @param admin - the value of the isAdmin
-     */
-    public void setAdmin(boolean admin) {
-        this.isAdmin = admin;
-    }
-
-    /**
      * gets the value of the AdminPassword
      *
      * @return the value of the AdminPassword
@@ -250,7 +232,6 @@ public class MainCtrl {
      * @return the id of the board
      */
     public Long getBoardId() {
-        System.out.println(boardOverviewCtrl.getId());
         return boardOverviewCtrl.getId();
     }
 }

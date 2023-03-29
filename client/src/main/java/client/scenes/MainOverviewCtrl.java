@@ -8,9 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.List;
@@ -45,6 +43,8 @@ public class MainOverviewCtrl implements Initializable {
     private Label emptyBoardListMsg;
     @FXML
     private Label labelMessage;
+    @FXML
+    private Button deleteBoard;
 
     /**
      * Constructs a new instance of the MainOverviewCtrl class with the
@@ -119,6 +119,31 @@ public class MainOverviewCtrl implements Initializable {
 
         //Set the items of the list element as the ObservableList.
         boardsListElement.setItems(content);
+        boardsListElement.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else{
+                    if (mainCtrl.isHasAdminRole()) {
+                        Button deleteButton = new Button("Delete");
+                        deleteButton.setOnAction(event -> {
+                            // Call a function to remove the board from the server.
+                            server.deleteBoard(Long.parseLong(item.split("--")[1].trim()));
+                            // Remove the item from the list view.
+                            getListView().getItems().remove(item);
+                        });
+                        setGraphic(deleteButton);
+                        deleteButton.setManaged(true);
+                        deleteButton.setVisible(true);
+                    }else{
+                        setGraphic(null);
+                    }
+                }
+                setText(item);
+            }
+        });
     }
 
 

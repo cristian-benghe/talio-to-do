@@ -154,8 +154,6 @@ public class ClientConnectCtrl implements Initializable {
         mainCtrl.createConnection(serverAddress);
         //Switch the scene to the main overview
         mainCtrl.showMainOverview();
-        mainCtrl.setHasAdminRole(false);
-
     }
     /**
      * Method which generates a random password of 7 characters
