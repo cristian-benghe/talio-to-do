@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
+import commons.Task;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
@@ -343,7 +344,21 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setLabelAction(Label label) {
         label.setOnMouseClicked(event -> {
-            mainCtrl.showCardView();
+            //TODO, identify the card. Added a temporary sample card instance
+            ArrayList<Task> taskList = new ArrayList<Task>();
+            Card card = new Card("Sample Card",
+                    "A very longgggg description",
+                    taskList,
+                    null);
+            Task task1 = new Task(card, "First task", true);
+            Task task2 = new Task(card, "Second task", false);
+            task1.setID(1);
+            task2.setID(2);
+            taskList.add(task1);
+            taskList.add(task2);
+
+            card.setId(1L);
+            mainCtrl.showCardView(card);
         });
     }
 
@@ -834,6 +849,7 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
+     * The method initializes this instance.
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
      * @param resources The resources used to localize the root object, or {@code null} if

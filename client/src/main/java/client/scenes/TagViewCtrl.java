@@ -39,7 +39,7 @@ public class TagViewCtrl {
     @FXML
     private void gettoCard()
     {
-        mainCtrl.showCardView();
+        mainCtrl.showCardView(null);
     }
     @FXML
     private void createTag() throws IOException {
