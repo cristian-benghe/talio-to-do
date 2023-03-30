@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class MainCtrl {
 
@@ -33,6 +34,9 @@ public class MainCtrl {
     private Scene boardCustomization;
     private TagViewCtrl tagViewCtrl;
     private Scene tagView;
+
+    //private TagTemplateCtrl tagTemplateCtrl;
+    //private Scene tagTemplate;
     private boolean shownMainOverviewOneTime = false;
     private String adminPassword;
     private boolean hasAdminRole;
@@ -78,6 +82,8 @@ public class MainCtrl {
         this.boardCustomization=new Scene(boardCustomization.getValue());
         this.tagViewCtrl = tagView.getKey();
         this.tagView = new Scene(tagView.getValue());
+
+
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -150,13 +156,19 @@ public class MainCtrl {
     /**
      * A method to switch the scene to the TagView
      */
-    public void showTagView() {
+    public void showTagView() throws IOException {
         primaryStage.setTitle("Talio - TagView");
-
         primaryStage.setScene(tagView);
+        tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
+
     }
+
+    /**
+     * A method to switch the scene to the TagView
+     */
+
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
@@ -181,6 +193,8 @@ public class MainCtrl {
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
         boardCustomizationCtrl.setConnection(address);
+        cardViewCtrl.setConnection(address);
+        tagViewCtrl.setConnection(address);
     }
 
     /**

@@ -314,18 +314,18 @@ public class ServerUtils {
      * to the to-do list. The column parameter should contain all necessary
      * information about the new column
      *
-     * @param column The column to add to the list.
+     * @param tag The column to add to the list.
      * @return returns a Column object, which is the server's representation
      * of the newly created column. The response body from the server is
      * deserialized into a Column object using the Jackson JSON library,
      * and this object is returned to the caller of the addColumn method
      */
-    public Column addColumn(Column column) {
+    public Tag addTag(Tag tag) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/columns") //
+                .target(server).path("api/tags") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(column, APPLICATION_JSON), Column.class);
+                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
     }
 
     /**
@@ -396,12 +396,25 @@ public class ServerUtils {
     }
 
     /**
+     * @param tagId id of the tag in db
+     */
+    public void deleteTag(long tagId) {
+        ClientBuilder.newClient(new ClientConfig()) // creates a new client
+                .target(server) // sets the target server for the request
+                .path("api/tags/" + tagId) // specifies the API endpoint to delete the board
+                .request() // creates a new request object
+                .delete(); // sends the HTTP DELETE request and returns the response,
+        // but the code does not handle the response explicitly
+    }
+
+    /**
      * Retrieves using an HTTP GET request a board with a certain id
      *
      * @param boardId the id of the board we are looking for
      * @return The deserialized Board object
      */
     public Board getBoardById(long boardId) {
+        System.out.println(boardId);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
                 .path("api/boards/" + boardId)
@@ -625,12 +638,10 @@ public class ServerUtils {
     /**
      * @param id     the id of the tag in the db
      * @param newTag added tag in the board
-     * @param i      index of the tag in the board
      * @return the updated board
      */
-    public Board addTagToBoard(Long id, Tag newTag, int i) {
+    public Board addTagToBoard(Long id, Tag newTag) {
         Board board = getBoardById(id);
-        newTag.setIDinBoard(i);
         board.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -674,10 +685,10 @@ public class ServerUtils {
      * @param boardId the id of the board the tag is in
      * @return the updated board
      */
-    public Board deleteTag(int tagInd, Long boardId) {
+    public Board deleteTag(Long tagInd, Long boardId) {
         Board board = getBoardById(boardId);
-        board.updateColIndex(tagInd);
-        board.deleteColumn(tagInd);
+        board.updateColIndex(Math.toIntExact(tagInd));
+        board.deleteColumn(Math.toIntExact(tagInd));
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
