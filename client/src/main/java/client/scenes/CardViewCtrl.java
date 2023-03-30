@@ -3,6 +3,8 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Card;
 import commons.Task;
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -10,12 +12,16 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,8 +33,6 @@ public class CardViewCtrl implements Initializable {
     private Card card;
     private String text;
     @FXML
-    private Button cardViewBack;
-    @FXML
     private Label titleLabel;
     @FXML
     private TextArea longDescription;
@@ -39,7 +43,17 @@ public class CardViewCtrl implements Initializable {
 
     //Drag-and-drop markers list
     private Separator closestMarker;
-    private boolean isTaskedDragged;
+    private boolean isTaskDragged;
+    private boolean isDraggedOverBin;
+
+    @FXML
+    private ImageView binImage;
+
+    //Scale Transition for BinImage contraction and expansion
+    private ScaleTransition binContraction;
+    private ScaleTransition binExpansion;
+
+
 
     /**
      * Initialize the controller and the scene
@@ -65,8 +79,28 @@ public class CardViewCtrl implements Initializable {
         card = null;
 
         //Initialize the dragged task flag
-        isTaskedDragged = false;
+        isTaskDragged = false;
+        isDraggedOverBin = false;
 
+        //Set the expansion and contraction animations
+        binExpansion = new ScaleTransition();
+        binExpansion.setDuration(Duration.millis(800));
+        binExpansion.setNode(binImage);
+        binExpansion.setInterpolator(Interpolator.EASE_IN);
+
+        binExpansion.setToX(2);
+        binExpansion.setToY(2);
+
+        binContraction = new ScaleTransition();
+        binContraction.setDuration(Duration.millis(800));
+        binContraction.setNode(binImage);
+        binContraction.setInterpolator(Interpolator.EASE_IN);
+
+        binContraction.setToX(1);
+        binContraction.setToY(1);
+
+        binImage.setImage(new Image("BinImage.png"));
+        setDragForBin(binImage);
     }
 
     /**
@@ -220,59 +254,55 @@ public class CardViewCtrl implements Initializable {
      * and its representing HBox.
      *
      * @param task the given task
-     * @param taskBox the represnting HBox of the given task
+     * @param taskBox the representing HBox of the given task
      */
     private void setTaskDraggable(Task task, HBox taskBox){
         taskBox.setOnDragDetected(event -> {
 
             //Raise the dragged flag
-            isTaskedDragged = true;
+            isTaskDragged = true;
 
             //Reset the current closest marker by considering
             //the closest of the two adjacent separators
             int taskIndex = taskList.getChildren().indexOf(taskBox);
-
             changeClosestMarker ((Separator) taskList.getChildren().get(taskIndex+1));
-
             //Add a dragged visual to the taskBox separator
             Separator sideSeparator = (Separator) taskBox.getChildren().get(0);
             sideSeparator.setStyle("-fx-background-color: gray");
-
+            //Use the corresponding task ID as the transferred content
             Dragboard dragboard = taskBox.startDragAndDrop(TransferMode.ANY);
             ClipboardContent clipboardContent = new ClipboardContent();
-
-            //Use the corresponding task ID as the transferred content
             clipboardContent.putString(""+task.getID());
             dragboard.setContent(clipboardContent);
             event.consume();
         });
         taskBox.setOnDragDone(event -> {
-            //Do the task rearrangement
-            int taskIndex = taskList.getChildren().indexOf(taskBox);
-            int markerIndex = taskList.getChildren().indexOf(closestMarker);
 
-            if(taskIndex + 1 != markerIndex) {
-                taskList.getChildren().remove(taskIndex + 1);
+            //Check for task deletion
+            if (!isDraggedOverBin) {
+                //Do the task rearrangement
+                int taskIndex = taskList.getChildren().indexOf(taskBox);
+                int markerIndex = taskList.getChildren().indexOf(closestMarker);
+                if (taskIndex + 1 != markerIndex) {
+                    Node temp = deleteTaskFromList(taskBox);
+                    markerIndex = taskList.getChildren().indexOf(closestMarker);
 
-                Node temp = taskList.getChildren().remove(taskIndex);
-                markerIndex = taskList.getChildren().indexOf(closestMarker);
-
-                taskList.getChildren().add(markerIndex + 1, temp);
-                taskList.getChildren().add(markerIndex + 2, createTaskDropMarker());
+                    taskList.getChildren().add(markerIndex + 1, temp);
+                    taskList.getChildren().add(markerIndex + 2, createTaskDropMarker());
+                }
+                //Remove the dragged visual to the taskBox separator
+                Separator sideSeparator = (Separator) taskBox.getChildren().get(0);
+                sideSeparator.setStyle("-fx-background-color: null");
+                //Reset the closest marker
+                changeClosestMarker(null);
+                //Lower the drag task flag
+                isTaskDragged = false;
+            } else {
+                isDraggedOverBin = false;
             }
-
-            //Remove the dragged visual to the taskBox separator
-            Separator sideSeparator = (Separator) taskBox.getChildren().get(0);
-            sideSeparator.setStyle("-fx-background-color: null");
-
-            //Reset the closest marker
-            changeClosestMarker(null);
-            //Lower the drag task flag
-            isTaskedDragged = false;
             event.consume();
         });
     }
-
 
     /**
      * Sets the drag-and-drop event handlers for the given
@@ -302,28 +332,124 @@ public class CardViewCtrl implements Initializable {
     private void changeClosestMarker(Separator newMarker){
 
         //Check whether a task is currently dragged.
-        if(!isTaskedDragged){
+        if(!isTaskDragged){
             return;
         }
 
         //Restore the previous closest marker if it exists
         if(closestMarker != null) {
             //Change the marker's visuals
-            closestMarker.setStyle("-fx-background-color: white;" +
+            closestMarker.setStyle("-fx-background-color: null;" +
                     "-fx-pref-height: 6");
         }
 
-        //Store the marker
-        closestMarker = newMarker;
+        if(!isDraggedOverBin) {
+            //Store the marker
+            closestMarker = newMarker;
 
-        //Add a visual marking to the new closest marker if it exists
-        if(closestMarker != null) {
-            //Change the marker's visuals
-            closestMarker.setStyle("-fx-background-color: cyan;" +
-                    "-fx-pref-height: 6");
+
+            //Add a visual marking to the new closest marker if it exists
+            if (closestMarker != null) {
+                //Change the marker's visuals
+                closestMarker.setStyle("-fx-background-color: cyan;" +
+                        "-fx-pref-height: 6");
+            }
         }
     }
 
+    /**
+     * This method begins the bin expansion animation for the drag-and-drop dragOver Event
+     * for the bin image.
+     */
+    public void expandBin() {
+        binContraction.stop();
+        binExpansion.stop();
+        binExpansion.play();
+    }
+
+    /**
+     * This method begins the bin contraction animation for the drag-and-drop dragOver Event
+     *      * for the bin image.
+     */
+    public void contractBin() {
+        binContraction.stop();
+        binExpansion.stop();
+        binContraction.play();
+    }
+
+    /**
+     * Sets the drag-and-drop event handlers for the binImage delete functionalities for
+     * tasks.
+     * @param bin the binImage instance that will be assigned the event handlers
+     */
+    public void setDragForBin(Node bin){
+        bin.setOnDragOver(event -> {
+            if(event.getGestureSource() != bin
+                    && event.getDragboard().hasString()){
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+        bin.setOnDragDropped(event -> {
+            if(event.getGestureSource() != bin
+                    && event.getDragboard().hasString()){
+                contractBin();
+                if(isTaskDragged){
+                    isTaskDragged = false;
+
+                    //Determine the ID of the task to be deleted
+                    Dragboard dragboard = event.getDragboard();
+                    long id = Long.parseLong((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
+                    //TODO: use the ID to delete the task in the DB.
+                    //Remove the task from the Card's task list
+                    card.getTaskList().removeIf(task -> task.getID()==id);
+                    //Remove the task from the task list.
+                    deleteTaskFromList((HBox) event.getGestureSource());
+                }
+            }
+            event.consume();
+        });
+
+        bin.setOnDragEntered(event -> {
+            if(event.getGestureSource() != bin
+                    && event.getDragboard().hasString()){
+                if(isTaskDragged) {
+                    expandBin();
+                    isDraggedOverBin = true;
+                    changeClosestMarker(null);
+                }
+            }
+            event.consume();
+        });
+        bin.setOnDragExited(event -> {
+            if(event.getGestureSource() != bin
+                    && event.getDragboard().hasString()){
+                if(isTaskDragged) {
+                    contractBin();
+                    isDraggedOverBin = false; changeClosestMarker(closestMarker);
+                }
+            }
+            event.consume();
+        });
+    }
+
+    /**
+     * Deletes a given task HBox and a consecutive separator marker from the
+     * task list VBox. Returns the deleted task HBox.
+     * @param task the task HBox to be deleted
+     * @return the deleted task HBox
+     */
+    public HBox deleteTaskFromList(HBox task){
+
+        if(card.getTaskList().isEmpty()){
+            displayTasks();
+            return task;
+        }
+
+        int index = taskList.getChildren().indexOf(task);
+        taskList.getChildren().remove(index+1);
+        return (HBox) taskList.getChildren().remove(index);
+    }
     /**
      * Resets and displays the available tags of the current card
      * instance in the scene.
@@ -332,4 +458,7 @@ public class CardViewCtrl implements Initializable {
 
 
     }
+
+
+
 }

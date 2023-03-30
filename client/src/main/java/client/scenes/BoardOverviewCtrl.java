@@ -348,8 +348,12 @@ public class BoardOverviewCtrl implements Initializable {
                     "A very longgggg description",
                     taskList,
                     null);
-            taskList.add(new Task(card, "First task", true));
-            taskList.add(new Task(card, "Second task", false));
+            Task task1 = new Task(card, "First task", true);
+            Task task2 = new Task(card, "Second task", false);
+            task1.setID(1);
+            task2.setID(2);
+            taskList.add(task1);
+            taskList.add(task2);
 
             card.setId(1L);
             mainCtrl.showCardView(card);
