@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -27,8 +28,11 @@ public class MainOverviewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
 
 
-    //The list of available boards in the server
+    //The list of available boards in the server (for admin)
     private List<Board> availableBoards;
+
+    //The list of available boards for the user
+    private List<Board> availableUserBoards;
 
     //Scene elements
     @FXML
@@ -112,9 +116,20 @@ public class MainOverviewCtrl implements Initializable {
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
 
-        for (Board board : availableBoards) {
-            //The shortened String representation solely includes the title and the id of the Board.
-            content.add(board.toStringShort());
+        if (mainCtrl.isHasAdminRole())
+            for (Board board : availableBoards) {
+                //The shortened String representation
+                // solely includes the title and the id of the Board.
+                content.add(board.toStringShort());
+            }
+        else {
+            if(availableUserBoards == null)
+                availableUserBoards = new ArrayList<>();
+            for (Board board : availableUserBoards) {
+                //The shortened String representation solely
+                // includes the title and the id of the Board.
+                content.add(board.toStringShort());
+            }
         }
 
         //Set the items of the list element as the ObservableList.
@@ -130,7 +145,7 @@ public class MainOverviewCtrl implements Initializable {
                 super.updateItem(item, empty);
                 if (empty) {
                     setGraphic(null);
-                } else{
+                } else {
                     if (mainCtrl.isHasAdminRole()) {
                         Button deleteButton = new Button("Delete");
                         // This lambda expression deletes the row (board) from the list view
@@ -146,9 +161,28 @@ public class MainOverviewCtrl implements Initializable {
                         deleteButton.setManaged(true);
                         // this line makes the deleteBoard viewable
                         deleteButton.setVisible(true);
-                    }else{
-                        // this line makes the delete button inactive in the client application
-                        setGraphic(null);
+                    } else {
+                        Button removeButton = new Button("Remove");
+                        // This lambda expression removes the row (board) from the list view
+                        removeButton.setOnAction(event -> {
+                            // Call a function to remove the board from the server.
+                            Board toBeRemoved = null;
+                            for(Board b : availableUserBoards)
+                                if(Objects.equals(b.getId(),
+                                        Long.parseLong(item.split("--")[1].trim()))) {
+                                    toBeRemoved = b;
+                                }
+                            availableUserBoards.remove(toBeRemoved);
+
+                            // Remove the item from the list view.
+                            getListView().getItems().remove(item);
+                        });
+                        // this line makes the remove button active in the client application
+                        setGraphic(removeButton);
+                        // this line adjusts the size of the button based on the layout of the row
+                        removeButton.setManaged(true);
+                        // this line makes the removeBoard viewable
+                        removeButton.setVisible(true);
                     }
                 }
                 setText(item);
@@ -239,8 +273,9 @@ public class MainOverviewCtrl implements Initializable {
             return;
         }
         String text = existsBoard(nr);
+        if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
+        availableUserBoards.add(server.getBoardById(nr));
         mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
-
 
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
