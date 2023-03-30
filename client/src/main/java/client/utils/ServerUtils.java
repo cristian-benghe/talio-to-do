@@ -392,6 +392,9 @@ public class ServerUtils {
         // but the code does not handle the response explicitly
     }
 
+    /**
+     * @param tagId id of the tag in db
+     */
     public void deleteTag(long tagId) {
         ClientBuilder.newClient(new ClientConfig()) // creates a new client
                 .target(server) // sets the target server for the request
@@ -681,10 +684,10 @@ public class ServerUtils {
      * @param boardId the id of the board the tag is in
      * @return the updated board
      */
-    public Board deleteTag(int tagInd, Long boardId) {
+    public Board deleteTag(Long tagInd, Long boardId) {
         Board board = getBoardById(boardId);
-        board.updateColIndex(tagInd);
-        board.deleteColumn(tagInd);
+        board.updateColIndex(Math.toIntExact(tagInd));
+        board.deleteColumn(Math.toIntExact(tagInd));
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)

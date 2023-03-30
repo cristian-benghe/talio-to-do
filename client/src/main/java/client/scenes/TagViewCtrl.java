@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.Tag;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -47,16 +48,17 @@ public class TagViewCtrl {
         TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
         loader.setController(controller);
         Node node = loader.load();
+        controller.setConnection(server.getServer());
+        controller.setBoardId(mainCtrl.getBoardId());
         tagList.getChildren().add(node);
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
         Tag tag = new Tag("New tag", null);
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
-        controller.setTagId(tag.getTagID());
-        System.out.println(tag.getTagID());
-
-
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        int ind=board.getTags().size()-1;
+        controller.setTagId(board.getTags().get(ind).getTagID());
     }
 
 
