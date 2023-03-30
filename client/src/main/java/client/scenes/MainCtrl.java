@@ -28,10 +28,15 @@ public class MainCtrl {
     private Scene cardView;
     private BoardCustomizationCtrl boardCustomizationCtrl;
 
+    private boolean isAdmin=false;
+
     private Scene boardCustomization;
     private TagViewCtrl tagViewCtrl;
     private Scene tagView;
     private boolean shownMainOverviewOneTime = false;
+    private String adminPassword;
+    private boolean hasAdminRole;
+
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -55,8 +60,9 @@ public class MainCtrl {
                            Pair<TagViewCtrl, Parent> tagView) throws Exception {
 
 
+        this.isAdmin = false;
         this.primaryStage = primaryStage;
-        
+
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -177,6 +183,41 @@ public class MainCtrl {
         boardCustomizationCtrl.setConnection(address);
     }
 
+    /**
+     * gets the value of the AdminPassword
+     *
+     * @return the value of the AdminPassword
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    /**
+     * Sets the value of AdminPassword
+     *
+     * @param adminPassword - the value of the AdminPassword
+     */
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
+    /**
+     * gets the value of the hasAdminRole
+     *
+     * @return the value of the hasAdminRole
+     */
+    public boolean isHasAdminRole() {
+        return hasAdminRole;
+    }
+
+    /**
+     * Sets the value of hasAdminRole
+     *
+     * @param hasAdminRole - the value of the hasAdminRole
+     */
+    public void setHasAdminRole(boolean hasAdminRole) {
+        this.hasAdminRole = hasAdminRole;
+    }
 
     /**
      * changes the scene to board customization
@@ -190,7 +231,6 @@ public class MainCtrl {
      * @return the id of the board
      */
     public Long getBoardId() {
-        System.out.println(boardOverviewCtrl.getId());
         return boardOverviewCtrl.getId();
     }
 }

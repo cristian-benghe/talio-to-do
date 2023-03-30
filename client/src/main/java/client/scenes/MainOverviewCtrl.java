@@ -8,11 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -29,8 +28,11 @@ public class MainOverviewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
 
 
-    //The list of available boards in the server
+    //The list of available boards in the server (for admin)
     private List<Board> availableBoards;
+
+    //The list of available boards for the user
+    private List<Board> availableUserBoards;
 
     //Scene elements
     @FXML
@@ -45,6 +47,8 @@ public class MainOverviewCtrl implements Initializable {
     private Label emptyBoardListMsg;
     @FXML
     private Label labelMessage;
+    @FXML
+    private Button deleteBoard;
 
     /**
      * Constructs a new instance of the MainOverviewCtrl class with the
@@ -100,7 +104,6 @@ public class MainOverviewCtrl implements Initializable {
 
         //Update the BoardsConstraintText Label
         updateBoardsText();
-
         //Check that there are boards in the list
         if (availableBoards == null || availableBoards.isEmpty()) {
             emptyBoardListMsg.setVisible(true);
@@ -112,13 +115,82 @@ public class MainOverviewCtrl implements Initializable {
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
 
-        for (Board board : availableBoards) {
-            //The shortened String representation solely includes the title and the id of the Board.
-            content.add(board.toStringShort());
+        if (mainCtrl.isHasAdminRole())
+            for (Board board : availableBoards) {
+                //The shortened String representation
+                // solely includes the title and the id of the Board.
+                content.add(board.toStringShort());
+            }
+        else {
+            if (availableUserBoards == null)
+                availableUserBoards = new ArrayList<>();
+            for (Board board : availableUserBoards) {
+                //The shortened String representation solely
+                // includes the title and the id of the Board.
+                content.add(board.toStringShort());
+            }
         }
-
         //Set the items of the list element as the ObservableList.
         boardsListElement.setItems(content);
+
+        /**
+         * Lambda expression that adds delete board button
+         * for each line in the Main Overview list view
+         */
+        boardsListElement.setCellFactory(lv -> new ListCell<String>() {
+            @Override
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    if (mainCtrl.isHasAdminRole()) {
+                        Button deleteButton = new Button("Delete");
+                        // This lambda expression deletes the row (board) from the list view
+                        deleteButton.setOnAction(event -> {
+                            // Call a function to remove the board from the server.
+                            server.deleteBoard(Long.parseLong(item.split("--")[1].trim()));
+
+                            // Remove the item from the list view.
+                            getListView().getItems().remove(item);
+                            updateBoardsText();
+                        });
+                        // this line makes the delete button active in the client application
+                        setGraphic(deleteButton);
+                        // this line adjusts the size of the button based on the layout of the row
+                        deleteButton.setManaged(true);
+                        // this line makes the deleteBoard viewable
+                        deleteButton.setVisible(true);
+                        updateBoardsText();
+                    } else {
+                        Button removeButton = new Button("Remove");
+                        // This lambda expression removes the row (board) from the list view
+                        removeButton.setOnAction(event -> {
+                            // Call a function to remove the board from the server.
+                            Board toBeRemoved = null;
+                            for (Board b : availableUserBoards)
+                                if (Objects.equals(b.getId(),
+                                        Long.parseLong(item.split("--")[1].trim()))) {
+                                    toBeRemoved = b;
+                                }
+                            availableUserBoards.remove(toBeRemoved);
+                            updateBoardsText();
+
+                            // Remove the item from the list view.
+                            getListView().getItems().remove(item);
+                        });
+                        updateBoardsText();
+                        // this line makes the remove button active in the client application
+                        setGraphic(removeButton);
+                        // this line adjusts the size of the button based on the layout of the row
+                        removeButton.setManaged(true);
+                        // this line makes the removeBoard viewable
+                        removeButton.setVisible(true);
+                    }
+                }
+                setText(item);
+            }
+        });
     }
 
 
@@ -173,8 +245,12 @@ public class MainOverviewCtrl implements Initializable {
         }
 
         //Display the number of available boards
-        boardsText.setText(availableBoards.size() + " Available Boards");
+        if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
+        if (mainCtrl.isHasAdminRole())
+            boardsText.setText(boardsListElement.getItems().size() + " Available Boards");
+        else
+            boardsText.setText(availableUserBoards.size() + " Available Boards");
     }
 
     /**
@@ -204,8 +280,9 @@ public class MainOverviewCtrl implements Initializable {
             return;
         }
         String text = existsBoard(nr);
+        if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
+        availableUserBoards.add(server.getBoardById(nr));
         mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
-
 
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
@@ -245,7 +322,6 @@ public class MainOverviewCtrl implements Initializable {
         System.out.println("\n\n\n" + board.getId() + "\n\n\n");
 
         server.send("/app/boards", board);
-
         //Post the new board to the server
         //TODO Fix the POST method for board!
 
@@ -304,12 +380,19 @@ public class MainOverviewCtrl implements Initializable {
             Board toBeDeleted = null;
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), id)) toBeDeleted = b;
-            if (toBeDeleted != null) availableBoards.remove(toBeDeleted);
+            if (toBeDeleted != null) {
+                System.out.println(availableBoards+" "+availableUserBoards);
+                availableBoards.remove(toBeDeleted);
+                availableUserBoards.remove(toBeDeleted);
+            }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
             Platform.runLater(() -> refreshOverview());
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
+            if(!mainCtrl.isHasAdminRole()) {
+                availableUserBoards.add(board);
+            }
             Platform.runLater(() -> refreshOverview());
         });
 
