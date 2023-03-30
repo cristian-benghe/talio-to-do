@@ -135,8 +135,8 @@ public class BoardOverviewCtrl implements Initializable {
         board.setTitle(boardTitle.getText());
         System.out.println(board.toStringShort());
         //server.send("/app/delete-board", board.getId());
-        server.send("/app/update-in-board", board);
         server.send("/app/update-board", board);
+        server.send("/app/update-title-in-board", board);
     }
 
     /**
@@ -214,6 +214,7 @@ public class BoardOverviewCtrl implements Initializable {
         textField.setOnKeyTyped(e ->
         {
             updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+            server.send("/app/update-labels-in-board", server.getBoardById(id));
         });
 
         Button button = createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
@@ -225,7 +226,7 @@ public class BoardOverviewCtrl implements Initializable {
 
     private void updateColTitle(int i, String text) {
         server.updateColTitle(i, text, id);
-        server.send("/app/update-in-board", server.getBoardById(id));
+        server.send("/app/update-labels-in-board", server.getBoardById(id));
     }
 
     /**
@@ -306,7 +307,8 @@ public class BoardOverviewCtrl implements Initializable {
                             columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).
                                 getChildren().get(1)).getChildren().get(0)).getText(), id);
-                        server.send("/app/update-in-board", server.getBoardById(id));});
+                        server.send("/app/update-labels-in-board", server.getBoardById(id));
+                    });
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
             vBox.getChildren().add(button);
@@ -982,14 +984,44 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void socketsCall() {
         server.registerForMessages("/topic/update-in-board", Board.class, board -> {
-            System.out.println("asadasdasd");
             if (Objects.equals(board.getId(), id))
-                System.out.println("asadasdasd");
-            Platform.runLater(() -> columnsRefresh());
+                Platform.runLater(() -> columnsRefresh());
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
             Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
         });
+        server.registerForMessages("/topic/update-title-in-board", Board.class, board -> {
+            if (Objects.equals(board.getId(), id)){
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Platform.runLater(() -> refreshTitle());
+            }
+//            Platform.runLater(() ->
+//                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+            Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
+        });
+
+        server.registerForMessages("/topic/update-labels-in-board", Board.class, board -> {
+            if (Objects.equals(board.getId(), id)){
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Platform.runLater(() -> columnsRefresh());
+            }
+//            Platform.runLater(() ->
+//                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
+            Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
+        });
+    }
+
+    private void refreshTitle() {
+        Board board1 = server.getBoardById(id);
+        boardTitle.setText(board1.getTitle());
     }
 
 }
