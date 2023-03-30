@@ -30,7 +30,8 @@ public class SomeController {
             int randomIndex = random.nextInt(characters.length());
             password.append(characters.charAt(randomIndex));
         }
-        System.out.println("\n\n\u001B[33m The password for the admin is -> " + password.toString() + "\u001B[0m\n\n");
+        System.out.println("\n\n\u001B[33m The password for the admin is -> " + password.toString()
+                + "\u001B[0m\n\n");
         this.password = password.toString();
     }
 
