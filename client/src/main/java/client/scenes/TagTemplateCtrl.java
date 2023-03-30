@@ -79,6 +79,7 @@ public class TagTemplateCtrl {
         AnchorPane parent = (AnchorPane) tagNode.getParent();
         int index = parent.getChildren().indexOf(tagNode);
         parent.getChildren().remove(index);
+        server.deleteTag(tagId);
     }
 //   public void deleteTag(){
 //        server.deleteTag(tagId);

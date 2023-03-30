@@ -641,7 +641,7 @@ public class ServerUtils {
         board.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/{id}" + id)
+                .target(server).path("api/boards/" + id)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }

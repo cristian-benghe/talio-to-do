@@ -45,7 +45,6 @@ public class TagViewCtrl {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/client/scenes/TagTemplate.fxml"));
         TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
-
         loader.setController(controller);
         Node node = loader.load();
         tagList.getChildren().add(node);
@@ -55,6 +54,7 @@ public class TagViewCtrl {
         Tag tag = new Tag("New tag", null);
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
         controller.setTagId(tag.getTagID());
+        System.out.println(tag.getTagID());
 
 
     }
