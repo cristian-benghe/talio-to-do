@@ -104,7 +104,6 @@ public class MainOverviewCtrl implements Initializable {
 
         //Update the BoardsConstraintText Label
         updateBoardsText();
-
         //Check that there are boards in the list
         if (availableBoards == null || availableBoards.isEmpty()) {
             emptyBoardListMsg.setVisible(true);
@@ -131,7 +130,6 @@ public class MainOverviewCtrl implements Initializable {
                 content.add(board.toStringShort());
             }
         }
-
         //Set the items of the list element as the ObservableList.
         boardsListElement.setItems(content);
 
@@ -324,7 +322,6 @@ public class MainOverviewCtrl implements Initializable {
         System.out.println("\n\n\n" + board.getId() + "\n\n\n");
 
         server.send("/app/boards", board);
-
         //Post the new board to the server
         //TODO Fix the POST method for board!
 
@@ -383,12 +380,19 @@ public class MainOverviewCtrl implements Initializable {
             Board toBeDeleted = null;
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), id)) toBeDeleted = b;
-            if (toBeDeleted != null) availableBoards.remove(toBeDeleted);
+            if (toBeDeleted != null) {
+                System.out.println(availableBoards+" "+availableUserBoards);
+                availableBoards.remove(toBeDeleted);
+                availableUserBoards.remove(toBeDeleted);
+            }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
             Platform.runLater(() -> refreshOverview());
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
+            if(!mainCtrl.isHasAdminRole()) {
+                availableUserBoards.add(board);
+            }
             Platform.runLater(() -> refreshOverview());
         });
 
