@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Config {
+
     /**
      * @return a new instance of a number generator
      */
@@ -29,4 +30,6 @@ public class Config {
     public Random getRandom() {
         return new Random();
     }
+
+
 }
