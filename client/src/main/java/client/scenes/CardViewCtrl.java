@@ -25,6 +25,7 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.io.IOException;
 
 public class CardViewCtrl implements Initializable {
 
@@ -124,8 +125,7 @@ public class CardViewCtrl implements Initializable {
      * Changes the Scene to the TagView Scene
      */
     @FXML
-    private void getTagView()
-    {
+    private void getTagView() throws IOException {
         mainCtrl.showTagView();
     }
 
@@ -460,5 +460,10 @@ public class CardViewCtrl implements Initializable {
     }
 
 
-
+    /**
+     * @param address of the server
+     */
+    public void setConnection(String address) {
+        server.setServerAddress(address);
+    }
 }

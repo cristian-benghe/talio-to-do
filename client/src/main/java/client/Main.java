@@ -67,6 +67,7 @@ public class Main extends Application {
         var tagView = FXML.load(TagViewCtrl.class,
                 "client", "scenes", "TagView.fxml");
 
+
         mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
                 clientCtrl, popUpStage, cardView, boardCustomization, tagView);
 
