@@ -105,7 +105,7 @@ public class MainOverviewCtrl implements Initializable {
         //Update the BoardsConstraintText Label
         updateBoardsText();
         //Check that there are boards in the list
-        if (availableBoards == null || availableBoards.isEmpty()) {
+        if (availableUserBoards == null || availableUserBoards.isEmpty()) {
             emptyBoardListMsg.setVisible(true);
             boardsListElement.setItems(null);
             return;
@@ -174,10 +174,7 @@ public class MainOverviewCtrl implements Initializable {
                                     toBeRemoved = b;
                                 }
                             availableUserBoards.remove(toBeRemoved);
-                            updateBoardsText();
-
-                            // Remove the item from the list view.
-                            getListView().getItems().remove(item);
+                            updateBoardsList();
                         });
                         updateBoardsText();
                         // this line makes the remove button active in the client application
