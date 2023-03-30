@@ -16,8 +16,6 @@ import javafx.util.Duration;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 public class ClientConnectCtrl implements Initializable {
@@ -100,9 +98,11 @@ public class ClientConnectCtrl implements Initializable {
      */
     public void connect(){
 
+        //Get the server address
+        String serverAddress = serverAddressField.getText();
+
         //Check that the password entered is correct
         if(adminCheckbox.isSelected() && !isValidAdminPassword(password.getText()))  {
-
             errorPassword.setText("The password is incorrect!");
             errorPassword.setTextFill(Color.RED);
 
@@ -111,8 +111,6 @@ public class ClientConnectCtrl implements Initializable {
             return;
         }
 
-        //Get the server address
-        String serverAddress = serverAddressField.getText();
 
         //Check that the address is not blank
         if (serverAddress.isBlank()) {
@@ -148,7 +146,6 @@ public class ClientConnectCtrl implements Initializable {
         //Handle the admin login
         //By this point, the password is correct if the admin login option was selected.
         mainCtrl.setHasAdminRole(adminCheckbox.isSelected());
-
         // Set the server address in the ServerUtils class
         server.setServerAddress(serverAddress);
         mainCtrl.createConnection(serverAddress);
@@ -165,8 +162,8 @@ public class ClientConnectCtrl implements Initializable {
     public boolean isValidAdminPassword(String password){
         if (password == null)
             return false;
-
-        return Objects.equals(password, mainCtrl.getAdminPassword());
+        server.sendPassword(password);
+        return server.checkPassword();
     }
 
     /**

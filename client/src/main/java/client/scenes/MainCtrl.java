@@ -129,7 +129,6 @@ public class MainCtrl {
      * This method changes the scene to the ClientConnectScene.
      */
     public void showClientConnect() {
-//        this.adminPassword = clientConnectCtrl.generatePassword(); // TODO: Get request for password
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
