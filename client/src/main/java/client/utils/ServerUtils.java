@@ -311,18 +311,18 @@ public class ServerUtils {
      * to the to-do list. The column parameter should contain all necessary
      * information about the new column
      *
-     * @param column The column to add to the list.
+     * @param tag The column to add to the list.
      * @return returns a Column object, which is the server's representation
      * of the newly created column. The response body from the server is
      * deserialized into a Column object using the Jackson JSON library,
      * and this object is returned to the caller of the addColumn method
      */
-    public Column addColumn(Column column) {
+    public Tag addTag(Tag tag) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/columns") //
+                .target(server).path("api/tags") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(column, APPLICATION_JSON), Column.class);
+                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
     }
 
     /**
@@ -387,6 +387,15 @@ public class ServerUtils {
         ClientBuilder.newClient(new ClientConfig()) // creates a new client
                 .target(server) // sets the target server for the request
                 .path("api/boards/" + boardId) // specifies the API endpoint to delete the board
+                .request() // creates a new request object
+                .delete(); // sends the HTTP DELETE request and returns the response,
+        // but the code does not handle the response explicitly
+    }
+
+    public void deleteTag(long tagId) {
+        ClientBuilder.newClient(new ClientConfig()) // creates a new client
+                .target(server) // sets the target server for the request
+                .path("api/tags/" + tagId) // specifies the API endpoint to delete the board
                 .request() // creates a new request object
                 .delete(); // sends the HTTP DELETE request and returns the response,
         // but the code does not handle the response explicitly
@@ -632,7 +641,7 @@ public class ServerUtils {
         board.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + id)
+                .target(server).path("api/boards/{id}" + id)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }

@@ -56,10 +56,10 @@ public class TagController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Tag> add(@RequestBody Tag tag) {
 
-        if (isNullOrEmpty(tag.getTitle())){
-
-            return ResponseEntity.badRequest().build();
-        }
+//        if (isNullOrEmpty(tag.getTitle())){
+//
+//            return ResponseEntity.badRequest().build();
+//        }
 
         Tag saved = tagservice.add(tag);
         return ResponseEntity.ok(saved);
