@@ -24,7 +24,7 @@
       </TextArea>
       <ScrollPane layoutX="14.0" layoutY="225.0" prefHeight="155.0" prefWidth="488.0">
          <content>
-            <VBox fx:id="taskList" prefHeight="200.0" prefWidth="472.0" />
+            <VBox fx:id="taskList" prefHeight="149.0" prefWidth="472.0" />
          </content>
       </ScrollPane>
       <Label layoutX="14.0" layoutY="198.0" prefHeight="27.0" prefWidth="63.0" text="Tasks">
