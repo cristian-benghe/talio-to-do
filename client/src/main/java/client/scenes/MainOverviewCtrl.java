@@ -123,7 +123,7 @@ public class MainOverviewCtrl implements Initializable {
                 content.add(board.toStringShort());
             }
         else {
-            if(availableUserBoards == null)
+            if (availableUserBoards == null)
                 availableUserBoards = new ArrayList<>();
             for (Board board : availableUserBoards) {
                 //The shortened String representation solely
@@ -167,8 +167,8 @@ public class MainOverviewCtrl implements Initializable {
                         removeButton.setOnAction(event -> {
                             // Call a function to remove the board from the server.
                             Board toBeRemoved = null;
-                            for(Board b : availableUserBoards)
-                                if(Objects.equals(b.getId(),
+                            for (Board b : availableUserBoards)
+                                if (Objects.equals(b.getId(),
                                         Long.parseLong(item.split("--")[1].trim()))) {
                                     toBeRemoved = b;
                                 }
@@ -242,8 +242,12 @@ public class MainOverviewCtrl implements Initializable {
         }
 
         //Display the number of available boards
-        boardsText.setText(availableBoards.size() + " Available Boards");
+        if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
+        if (mainCtrl.isHasAdminRole())
+            boardsText.setText(availableBoards.size() + " Available Boards");
+        else
+            boardsText.setText(availableUserBoards.size() + " Available Boards");
     }
 
     /**
@@ -273,7 +277,7 @@ public class MainOverviewCtrl implements Initializable {
             return;
         }
         String text = existsBoard(nr);
-        if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
+        if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
         availableUserBoards.add(server.getBoardById(nr));
         mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
 
