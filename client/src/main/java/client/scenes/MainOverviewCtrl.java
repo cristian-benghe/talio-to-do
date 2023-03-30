@@ -152,8 +152,10 @@ public class MainOverviewCtrl implements Initializable {
                         deleteButton.setOnAction(event -> {
                             // Call a function to remove the board from the server.
                             server.deleteBoard(Long.parseLong(item.split("--")[1].trim()));
+
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
+                            updateBoardsText();
                         });
                         // this line makes the delete button active in the client application
                         setGraphic(deleteButton);
@@ -161,6 +163,7 @@ public class MainOverviewCtrl implements Initializable {
                         deleteButton.setManaged(true);
                         // this line makes the deleteBoard viewable
                         deleteButton.setVisible(true);
+                        updateBoardsText();
                     } else {
                         Button removeButton = new Button("Remove");
                         // This lambda expression removes the row (board) from the list view
@@ -173,10 +176,12 @@ public class MainOverviewCtrl implements Initializable {
                                     toBeRemoved = b;
                                 }
                             availableUserBoards.remove(toBeRemoved);
+                            updateBoardsText();
 
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
                         });
+                        updateBoardsText();
                         // this line makes the remove button active in the client application
                         setGraphic(removeButton);
                         // this line adjusts the size of the button based on the layout of the row
@@ -245,7 +250,7 @@ public class MainOverviewCtrl implements Initializable {
         if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
         if (mainCtrl.isHasAdminRole())
-            boardsText.setText(availableBoards.size() + " Available Boards");
+            boardsText.setText(boardsListElement.getItems().size() + " Available Boards");
         else
             boardsText.setText(availableUserBoards.size() + " Available Boards");
     }
