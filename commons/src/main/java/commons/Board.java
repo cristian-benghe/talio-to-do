@@ -284,4 +284,11 @@ public class Board {
             tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
         }
     }
+
+    /**
+     * @param i the id of the tag to be removed in the board
+     */
+    public void removeTag(int i) {
+        tags.remove(i);
+    }
 }

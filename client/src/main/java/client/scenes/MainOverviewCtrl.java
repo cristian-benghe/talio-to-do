@@ -319,7 +319,7 @@ public class MainOverviewCtrl implements Initializable {
 
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
-        System.out.println("\n\n\n" + board.getId() + "\n\n\n");
+        //System.out.println("\n\n\n" + board.getId() + "\n\n\n");
 
         server.send("/app/boards", board);
         //Post the new board to the server
@@ -381,7 +381,7 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), id)) toBeDeleted = b;
             if (toBeDeleted != null) {
-                System.out.println(availableBoards+" "+availableUserBoards);
+               // System.out.println(availableBoards+" "+availableUserBoards);
                 availableBoards.remove(toBeDeleted);
                 availableUserBoards.remove(toBeDeleted);
             }

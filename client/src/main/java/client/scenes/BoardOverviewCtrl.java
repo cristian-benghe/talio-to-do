@@ -133,7 +133,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         Board board = server.getBoardById(this.id);
         board.setTitle(boardTitle.getText());
-        System.out.println(board.toStringShort());
+        //System.out.println(board.toStringShort());
         //server.send("/app/delete-board", board.getId());
         server.send("/app/update-board", board);
         server.send("/app/update-title-in-board", board);
@@ -777,7 +777,7 @@ public class BoardOverviewCtrl implements Initializable {
                             indexOf(((AnchorPane) event.getGestureSource()).
                                     getParent().getParent()) + 1, id);
             server.send("/app/update-in-board", server.getBoardById(id));
-            System.out.println(server.deleteCardFromCardApi(cardId));
+           // System.out.println(server.deleteCardFromCardApi(cardId));
 
             vBox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);

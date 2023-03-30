@@ -105,7 +105,7 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
         boardCustomizationCtrl.setBoardText(text);
-        System.out.println(text);
+       // System.out.println(text);
 
         boardOverviewCtrl.socketsCall();
 
@@ -189,6 +189,7 @@ public class MainCtrl {
      * @param address the address of the server
      */
     public void createConnection(String address){
+        //sets the connection of all controllers with the server
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
@@ -246,5 +247,12 @@ public class MainCtrl {
      */
     public Long getBoardId() {
         return boardOverviewCtrl.getId();
+    }
+
+    /**
+     * @return the tagviewctrl to access the refresh method in tagview when deleting a templatetag
+     */
+    public TagViewCtrl getTagViewCtrl() {
+        return tagViewCtrl;
     }
 }
