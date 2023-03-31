@@ -166,6 +166,18 @@ public class Board {
         this.tags = tags;
     }
 
+    /**
+     * A needed method to updateColumnArrangement
+     * @param boardSource
+     * @param boardTmp
+     * @return A board with copied columns
+     */
+    public Board copyBoard(Board boardSource, Board boardTmp)
+    {
+        boardTmp.columns = new ArrayList<>(boardSource.getColumns());
+        return boardTmp;
+    }
+
 
     /**
      * The method creates a shortened human-friendly String representation of the object.
@@ -271,5 +283,12 @@ public class Board {
         for(int i=tagInd;i<tags.size();i++){
             tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
         }
+    }
+
+    /**
+     * @param i the id of the tag to be removed in the board
+     */
+    public void removeTag(int i) {
+        tags.remove(i);
     }
 }

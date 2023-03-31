@@ -20,9 +20,9 @@ public class Tag {
     private Set<Card> cards = new HashSet<>();
 
     // this joins the Tag and the Board tables together
-    @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+//    @ManyToOne
+//    @JoinColumn(name = "board_id")
+//    private Board board;
 
 
     /**
@@ -37,8 +37,18 @@ public class Tag {
      * @param title - the name of the tag
      * @param cards - the set of Cards associated with the tag
      */
-    public Tag(long tagID, String title, Set<Card> cards) {
+    public Tag(long tagID, String title, Set<Card> cards){
         this.tagID = tagID;
+        this.title = title;
+        this.cards = cards;
+    }
+    /**
+     * Constructs a new Tag object with the specified id and title.
+
+     * @param title - the name of the tag
+     * @param cards - the set of Cards associated with the tag
+     */
+    public Tag(String title, Set<Card> cards) {
         this.title = title;
         this.cards = cards;
     }
