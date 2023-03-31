@@ -685,10 +685,14 @@ public class ServerUtils {
      * @param boardId the id of the board the tag is in
      * @return the updated board
      */
-    public Board deleteTag(Long tagInd, Long boardId) {
+    public Board deleteTagFromBoard(Long tagInd, Long boardId) {
         Board board = getBoardById(boardId);
-        board.updateColIndex(Math.toIntExact(tagInd));
-        board.deleteColumn(Math.toIntExact(tagInd));
+        for(int i=0;i<board.getTags().size();i++){
+            if(board.getTags().get(i).getTagID()==tagInd){
+                board.removeTag(i);
+                break;
+            }
+        }
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)

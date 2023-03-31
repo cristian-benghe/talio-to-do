@@ -13,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 
 
-
 public class TagViewCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -49,16 +48,22 @@ public class TagViewCtrl {
         loader.setController(controller);
         Node node = loader.load();
         controller.setConnection(server.getServer());
+        //sets connection of every card to the server so you can delete tags
         controller.setBoardId(mainCtrl.getBoardId());
+        //sets the board id for deletion of tag from board
         tagList.getChildren().add(node);
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
         Tag tag = new Tag("New tag", null);
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
+        //add tag to database
         Board board=server.getBoardById(mainCtrl.getBoardId());
         int ind=board.getTags().size()-1;
-        controller.setTagId(board.getTags().get(ind).getTagID());
+        //the last tag in the board which was last added
+        Long id= board.getTags().get(ind).getTagID();
+        //the id of the tag in the database
+        controller.setTagId(id);  //set the tagid
     }
 
 
@@ -68,12 +73,17 @@ public class TagViewCtrl {
      */
     public void refreshtaglist() throws IOException {
         tagList.getChildren().clear();
+        //clears the tags displayed in the scene to update them from the database
         for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/scenes/TagTemplate.fxml"));
             TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
             loader.setController(controller);
+            controller.setTagId(c.getTagID());
             Node node = loader.load();
+            controller.setTitleOfTag(c.getTitle()); //set title of the tag from the database
+            controller.setConnection(server.getServer());
+            controller.setBoardId(mainCtrl.getBoardId());
             tagList.getChildren().add(node);
             int index = tagList.getChildren().indexOf(node);
             AnchorPane.setTopAnchor(node, index * 50.0);
