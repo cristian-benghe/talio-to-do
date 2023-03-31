@@ -42,15 +42,14 @@ public class Tag {
         this.title = title;
         this.cards = cards;
     }
-    /**
-     * Constructs a new Tag object with the specified id and title.
 
-     * @param title - the name of the tag
-     * @param cards - the set of Cards associated with the tag
+    /**
+     * @param title of the tag
+     * @param cards that are associated to a tag
      */
-    public Tag(String title, Set<Card> cards) {
-        this.title = title;
-        this.cards = cards;
+    public Tag(String title, Set<Card>cards){
+        this.title=title;
+        this.cards=cards;
     }
 
     /**
