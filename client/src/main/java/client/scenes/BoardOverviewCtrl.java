@@ -181,6 +181,7 @@ public class BoardOverviewCtrl implements Initializable {
                 event.consume();
                 columnsRefresh();
             }
+            server.send("/topic/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -559,6 +560,7 @@ public class BoardOverviewCtrl implements Initializable {
                         event.consume();
                     } else {
                         lowerCardDrop(card, vBox, event);
+                        server.send("/app/update-in-board", server.getBoardById(id));
                         event.setDropCompleted(true); event.consume();
 
 
@@ -571,8 +573,8 @@ public class BoardOverviewCtrl implements Initializable {
                         event.consume();
                     } else {
                         upperCardDrop(card, vBox, event);
-                        event.setDropCompleted(true);
-                        event.consume();
+                        server.send("/app/update-in-board", server.getBoardById(id));
+                        event.setDropCompleted(true);event.consume();
                     }
                 }
             }
