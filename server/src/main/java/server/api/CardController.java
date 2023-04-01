@@ -154,6 +154,14 @@ public class CardController {
         }
 
     }
+    @PutMapping(path={"/updateTaskList","/updateTaskList/"})
+    public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id, @RequestBody List<Task> taskList) {
+        try {
+            return ResponseEntity.ok(cardservice.updateTaskList(id, taskList));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
 }

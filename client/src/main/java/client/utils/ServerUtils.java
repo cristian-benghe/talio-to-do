@@ -778,5 +778,15 @@ public class ServerUtils {
                 .post(Entity.entity(task, APPLICATION_JSON),Card.class);
     }
 
+    public Card updateTaskList(long cardID, List<Task> taskList){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/cards/updateTaskList")
+                .queryParam("id",cardID)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
+    }
+
 
 }

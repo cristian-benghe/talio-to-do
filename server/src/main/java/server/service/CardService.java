@@ -90,5 +90,18 @@ public class CardService {
 
         return repo.save(card);
     }
+
+    public Card updateTaskList(long id, List<Task> taskList){
+
+        Optional<Card> optCard = this.getById(id);
+        if(optCard.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+
+        Card card = optCard.get();
+        card.setTaskList(taskList);
+
+        return repo.save(card);
+    }
 }
 

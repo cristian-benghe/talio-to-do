@@ -24,6 +24,8 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.io.IOException;
 
@@ -180,6 +182,9 @@ public class CardViewCtrl implements Initializable {
         emptyTaskList.setDisable(true);
 
 
+        //Sort the tasks by position
+        sortTasksByPosition();
+
         //Create the pane for each task
         for (Task task : card.getTaskList()) {
 
@@ -239,8 +244,8 @@ public class CardViewCtrl implements Initializable {
         taskRoot.getChildren().add(completeBox);
 
         //Create the title label for the task
-        Label titleLabel = new Label();
-        titleLabel.setText(task.getTitle());
+        TextField titleLabel = new TextField();
+        titleLabel.setText(""+task.getID());
         titleLabel.setFont(new Font(18d));
         titleLabel.setPadding(new Insets(0, 0, 0, 10));
 
@@ -287,18 +292,33 @@ public class CardViewCtrl implements Initializable {
                 //Do the task rearrangement
                 int taskIndex = taskList.getChildren().indexOf(taskBox);
                 int markerIndex = taskList.getChildren().indexOf(closestMarker);
+
+
                 if (taskIndex + 1 != markerIndex) {
+
+                    //Swap the list positions
+                    addTaskBeforeInList((taskIndex-1)/2,markerIndex/2);
+
                     Node temp = deleteTaskFromList(taskBox);
                     markerIndex = taskList.getChildren().indexOf(closestMarker);
 
                     taskList.getChildren().add(markerIndex + 1, temp);
                     taskList.getChildren().add(markerIndex + 2, createTaskDropMarker());
                 }
+
+
+
+
+
                 //Remove the dragged visual to the taskBox separator
                 Separator sideSeparator = (Separator) taskBox.getChildren().get(0);
                 sideSeparator.setStyle("-fx-background-color: null");
+
+
                 //Reset the closest marker
                 changeClosestMarker(null);
+
+
                 //Lower the drag task flag
                 isTaskDragged = false;
             } else {
@@ -462,7 +482,7 @@ public class CardViewCtrl implements Initializable {
 
     public void addNewTask() {
 
-        Task task = new Task(null, "New task!", false);
+        Task task = new Task(card.getTaskList().size(), "New task!", false);
 
         card = server.addTask(card.getId(), task);
         refresh();
@@ -478,11 +498,40 @@ public class CardViewCtrl implements Initializable {
 
     }
 
-
     /**
      * @param address of the server
      */
     public void setConnection(String address) {
         server.setServerAddress(address);
+    }
+
+    public void addTaskBeforeInList(int current, int before){
+
+        for(Task task : card.getTaskList()){
+            if(task.getPosition() == current){
+                if(current < before){
+                    task.setPosition(before-1);
+                }else {
+                    task.setPosition(before);
+                }
+            }
+            else if(task.getPosition() >= before && task.getPosition() < current){
+                task.setPosition(task.getPosition()+1);
+            }
+            else if(task.getPosition() < before && task.getPosition() > current){
+                task.setPosition(task.getPosition()-1);
+            }
+
+        }
+        sortTasksByPosition();
+        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+    }
+    public void sortTasksByPosition(){
+        List<Task> sortedList = card.getTaskList();
+        System.out.println(card.getTaskList().toString());
+        sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ? 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
+        card.setTaskList(sortedList);
+        System.out.println(card.getTaskList().toString());
+
     }
 }

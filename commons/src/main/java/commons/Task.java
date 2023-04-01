@@ -1,6 +1,7 @@
 package commons;
 
 import javax.persistence.*;
+import javax.swing.text.Position;
 import java.util.Objects;
 
 @Entity
@@ -12,9 +13,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long taskId;
 
-    @ManyToOne
-    @JoinColumn(name = "card_id")
-    private Card card;
+    private int position;
 
     private String title;
     private boolean status;
@@ -31,19 +30,19 @@ public class Task {
      */
     public Task(Task task) {
         this.taskId = task.getID();
-        this.card = task.getCard();
+        this.position = task.getPosition();
         this.title = task.getTitle();
         this.status = task.getStatus();
     }
 
     /**
      * A constructor for the task class that initializes a newly created instance
-     * @param card  The card that the task corresponds to.
+     * @param position  The position of the task in the task list
      * @param title The title of the task.
      * @param status    The completion status of the task.
      */
-    public Task(Card card, String title, boolean status){
-        this.card = card;
+    public Task(int position, String title, boolean status){
+        this.position = position;
         this.title = title;
         this.status = status;
     }
@@ -51,13 +50,13 @@ public class Task {
     /**
      * A constructor for the task class that initializes a newly created instance
      * @param taskId The identifier of the task.
-     * @param card  The card that the task corresponds to.
+     * @param position  The position of the task in the task list
      * @param title The title of the task.
      * @param status    The completion status of the task.
      */
-    public Task(long taskId, Card card, String title, boolean status){
+    public Task(long taskId, int position, String title, boolean status){
         this.taskId = taskId;
-        this.card = card;
+        this.position = position;
         this.title = title;
         this.status = status;
     }
@@ -85,10 +84,11 @@ public class Task {
      * A getter for the card attribute.
      * @return The Card pointer to which this task instance corresponds.
      */
-    public Card getCard() {
-        return card;
+    public int getPosition() {
+        return position;
     }
 
+    public void setPosition(int position){this.position = position;}
 
     /**
      * A getter for the title attribute.
@@ -148,7 +148,7 @@ public class Task {
 
         return getID() == task.getID()
                 && getStatus() == task.getStatus()
-                && getCard().equals(task.getCard())
+                && getPosition() == task.getPosition()
                 && getTitle().equals(task.getTitle());
     }
 
@@ -159,7 +159,7 @@ public class Task {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getID(), getCard(), getTitle(), getStatus());
+        return Objects.hash(getID(), getPosition(), getTitle(), getStatus());
     }
 
 
@@ -172,7 +172,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "task_id=" + taskId +
-                ", card_id=" + card.getId() +
+                ", position=" + position +
                 ", title='" + title + '\'' +
                 ", isComplete=" + status +
                 '}';
