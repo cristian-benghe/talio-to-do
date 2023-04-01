@@ -93,7 +93,7 @@ public class TaskService {
         //Change the title of the instance
         Task task = optTask.get();
         task.setTitle(newTask.getTitle());
-        task.setStatus(newTask.isComplete());
+        task.setStatus(newTask.getStatus());
 
         //Save the instance to the repository
         repo.save(task);

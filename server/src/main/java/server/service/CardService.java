@@ -1,4 +1,5 @@
 package server.service;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,6 +83,9 @@ public class CardService {
         }
 
         Card card = optCard.get();
+        if(card.getTaskList()==null){
+            card.setTaskList(new ArrayList<Task>());
+        }
         card.getTaskList().add(task);
 
         return repo.save(card);

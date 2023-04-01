@@ -57,7 +57,7 @@ class TaskTest {
 
     @Test
     public void getStatusPositiveTest(){
-        assertFalse(t.isComplete());
+        assertFalse(t.getStatus());
     }
 
     @Test

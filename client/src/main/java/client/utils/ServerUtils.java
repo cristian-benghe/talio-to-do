@@ -768,7 +768,15 @@ public class ServerUtils {
                 .delete(boolean.class);
     }
 
-    //public Task addTask(Task task){}
+    public Card addTask(long cardId, Task task){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/cards/addTask")
+                .queryParam("id",cardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(task, APPLICATION_JSON),Card.class);
+    }
 
 
 }

@@ -55,10 +55,10 @@ public class CardViewCtrl implements Initializable {
     private ScaleTransition binExpansion;
 
 
-
     /**
      * Initialize the controller and the scene
-     * @param server server parameter
+     *
+     * @param server   server parameter
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
@@ -69,6 +69,7 @@ public class CardViewCtrl implements Initializable {
 
     /**
      * The method initializes this instance.
+     *
      * @param location  The location used to resolve relative paths for the root object, or
      *                  {@code null} if the location is not known.
      * @param resources The resources used to localize the root object, or {@code null} if
@@ -108,8 +109,7 @@ public class CardViewCtrl implements Initializable {
      * To get back to the boardOverview
      */
     @FXML
-    private void getBackCard()
-    {
+    private void getBackCard() {
         System.out.println(text);
         mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
@@ -117,8 +117,8 @@ public class CardViewCtrl implements Initializable {
     /**
      * @param text taken from the board overview and set back when returning to the board
      */
-    public void setText(String text){
-        this.text=text;
+    public void setText(String text) {
+        this.text = text;
     }
 
     /**
@@ -131,16 +131,19 @@ public class CardViewCtrl implements Initializable {
 
     /**
      * Sets the card that the CardView scene currently inspects
+     *
      * @param card the new Card instance to be inspected
      */
-    public void setCard(Card card){this.card=card;}
+    public void setCard(Card card) {
+        this.card = card;
+    }
 
 
     /**
      * Refreshes all the modifiable visual elements in the card scene
      * in accordance with the current card instance.
      */
-    public void refresh(){
+    public void refresh() {
 
         //Reset the title label
         titleLabel.setText(card.getTitle());
@@ -158,13 +161,13 @@ public class CardViewCtrl implements Initializable {
      * Resets and displays the available tasks of the current card
      * instance in the scene.
      */
-    public void displayTasks(){
+    public void displayTasks() {
 
         //Clear the task list
         taskList.getChildren().clear();
 
         //Check if the task list is empty
-        if(card.getTaskList() == null || card.getTaskList().isEmpty()){
+        if (card.getTaskList() == null || card.getTaskList().isEmpty()) {
 
             //Enable and show the foreground empty message
             emptyTaskList.setVisible(true);
@@ -178,7 +181,7 @@ public class CardViewCtrl implements Initializable {
 
 
         //Create the pane for each task
-        for(Task task : card.getTaskList()){
+        for (Task task : card.getTaskList()) {
 
             //Add a separator marker
             taskList.getChildren().add(createTaskDropMarker());
@@ -195,9 +198,10 @@ public class CardViewCtrl implements Initializable {
      * Create and customizes the separator marker that can be used in
      * the task list. The marker is already set with the relevant
      * drag-and-drop event handlers.
+     *
      * @return a newly created task list marker separator
      */
-    private Separator createTaskDropMarker(){
+    private Separator createTaskDropMarker() {
         //Add a separator marker
         Separator marker = new Separator();
         marker.setPrefHeight(6);
@@ -211,39 +215,39 @@ public class CardViewCtrl implements Initializable {
      * task that can be used in the task list. The HBox is
      * already set with the relevant drag-and-drop
      * event handlers.
+     *
      * @param task the task that this HBox will represent
      * @return the newly created HBox representing the given task
      */
-    private HBox createTaskBox(Task task){
+    private HBox createTaskBox(Task task) {
 
         //Create the main pane for the task
         HBox taskRoot = new HBox();
-        taskRoot.setPrefSize(488,20);
+        taskRoot.setPrefSize(488, 20);
         taskRoot.setPadding(new Insets(10));
         taskRoot.setAlignment(Pos.CENTER_LEFT);
 
         //Create the draggable vertical separator for the task
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);
-        separator.setPadding(new Insets(0,3,0,3));
+        separator.setPadding(new Insets(0, 3, 0, 3));
         taskRoot.getChildren().add(separator);
 
         //Create the checkbox for the task
         CheckBox completeBox = new CheckBox();
-        completeBox.setSelected(task.isComplete());
+        completeBox.setSelected(task.getStatus());
         taskRoot.getChildren().add(completeBox);
 
         //Create the title label for the task
         Label titleLabel = new Label();
         titleLabel.setText(task.getTitle());
         titleLabel.setFont(new Font(18d));
-        titleLabel.setPadding(new Insets(0,0,0,10));
+        titleLabel.setPadding(new Insets(0, 0, 0, 10));
 
         //Add drag detection
-        setTaskDraggable(task,taskRoot);
+        setTaskDraggable(task, taskRoot);
 
         taskRoot.getChildren().add(titleLabel);
-
 
 
         return taskRoot;
@@ -253,10 +257,10 @@ public class CardViewCtrl implements Initializable {
      * Sets the drag-and-drop event handlers for a particular task
      * and its representing HBox.
      *
-     * @param task the given task
+     * @param task    the given task
      * @param taskBox the representing HBox of the given task
      */
-    private void setTaskDraggable(Task task, HBox taskBox){
+    private void setTaskDraggable(Task task, HBox taskBox) {
         taskBox.setOnDragDetected(event -> {
 
             //Raise the dragged flag
@@ -265,14 +269,14 @@ public class CardViewCtrl implements Initializable {
             //Reset the current closest marker by considering
             //the closest of the two adjacent separators
             int taskIndex = taskList.getChildren().indexOf(taskBox);
-            changeClosestMarker ((Separator) taskList.getChildren().get(taskIndex+1));
+            changeClosestMarker((Separator) taskList.getChildren().get(taskIndex + 1));
             //Add a dragged visual to the taskBox separator
             Separator sideSeparator = (Separator) taskBox.getChildren().get(0);
             sideSeparator.setStyle("-fx-background-color: gray");
             //Use the corresponding task ID as the transferred content
             Dragboard dragboard = taskBox.startDragAndDrop(TransferMode.ANY);
             ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString(""+task.getID());
+            clipboardContent.putString("" + task.getID());
             dragboard.setContent(clipboardContent);
             event.consume();
         });
@@ -307,15 +311,16 @@ public class CardViewCtrl implements Initializable {
     /**
      * Sets the drag-and-drop event handlers for the given
      * task list marker separator.
+     *
      * @param marker the given marker separator
      */
-    private void setMarkerFeedback(Separator marker){
+    private void setMarkerFeedback(Separator marker) {
 
-        marker.setOnDragEntered(event ->{
+        marker.setOnDragEntered(event -> {
 
             //Check that the ClipBoard has String content
-            if(event.getGestureSource() != marker
-                    && event.getDragboard().hasString()){
+            if (event.getGestureSource() != marker
+                    && event.getDragboard().hasString()) {
 
                 changeClosestMarker(marker);
             }
@@ -327,23 +332,24 @@ public class CardViewCtrl implements Initializable {
     /**
      * Updates the current closest marker separator. Update only occurs
      * if the isTaskDragged flag is raised.
+     *
      * @param newMarker the new marker separator
      */
-    private void changeClosestMarker(Separator newMarker){
+    private void changeClosestMarker(Separator newMarker) {
 
         //Check whether a task is currently dragged.
-        if(!isTaskDragged){
+        if (!isTaskDragged) {
             return;
         }
 
         //Restore the previous closest marker if it exists
-        if(closestMarker != null) {
+        if (closestMarker != null) {
             //Change the marker's visuals
             closestMarker.setStyle("-fx-background-color: null;" +
                     "-fx-pref-height: 6");
         }
 
-        if(!isDraggedOverBin) {
+        if (!isDraggedOverBin) {
             //Store the marker
             closestMarker = newMarker;
 
@@ -369,7 +375,7 @@ public class CardViewCtrl implements Initializable {
 
     /**
      * This method begins the bin contraction animation for the drag-and-drop dragOver Event
-     *      * for the bin image.
+     * * for the bin image.
      */
     public void contractBin() {
         binContraction.stop();
@@ -380,21 +386,22 @@ public class CardViewCtrl implements Initializable {
     /**
      * Sets the drag-and-drop event handlers for the binImage delete functionalities for
      * tasks.
+     *
      * @param bin the binImage instance that will be assigned the event handlers
      */
-    public void setDragForBin(Node bin){
+    public void setDragForBin(Node bin) {
         bin.setOnDragOver(event -> {
-            if(event.getGestureSource() != bin
-                    && event.getDragboard().hasString()){
+            if (event.getGestureSource() != bin
+                    && event.getDragboard().hasString()) {
                 event.acceptTransferModes(TransferMode.MOVE);
             }
             event.consume();
         });
         bin.setOnDragDropped(event -> {
-            if(event.getGestureSource() != bin
-                    && event.getDragboard().hasString()){
+            if (event.getGestureSource() != bin
+                    && event.getDragboard().hasString()) {
                 contractBin();
-                if(isTaskDragged){
+                if (isTaskDragged) {
                     isTaskDragged = false;
 
                     //Determine the ID of the task to be deleted
@@ -402,7 +409,7 @@ public class CardViewCtrl implements Initializable {
                     long id = Long.parseLong((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
                     //TODO: use the ID to delete the task in the DB.
                     //Remove the task from the Card's task list
-                    card.getTaskList().removeIf(task -> task.getID()==id);
+                    card.getTaskList().removeIf(task -> task.getID() == id);
                     //Remove the task from the task list.
                     deleteTaskFromList((HBox) event.getGestureSource());
                 }
@@ -411,9 +418,9 @@ public class CardViewCtrl implements Initializable {
         });
 
         bin.setOnDragEntered(event -> {
-            if(event.getGestureSource() != bin
-                    && event.getDragboard().hasString()){
-                if(isTaskDragged) {
+            if (event.getGestureSource() != bin
+                    && event.getDragboard().hasString()) {
+                if (isTaskDragged) {
                     expandBin();
                     isDraggedOverBin = true;
                     changeClosestMarker(null);
@@ -422,11 +429,12 @@ public class CardViewCtrl implements Initializable {
             event.consume();
         });
         bin.setOnDragExited(event -> {
-            if(event.getGestureSource() != bin
-                    && event.getDragboard().hasString()){
-                if(isTaskDragged) {
+            if (event.getGestureSource() != bin
+                    && event.getDragboard().hasString()) {
+                if (isTaskDragged) {
                     contractBin();
-                    isDraggedOverBin = false; changeClosestMarker(closestMarker);
+                    isDraggedOverBin = false;
+                    changeClosestMarker(closestMarker);
                 }
             }
             event.consume();
@@ -436,25 +444,36 @@ public class CardViewCtrl implements Initializable {
     /**
      * Deletes a given task HBox and a consecutive separator marker from the
      * task list VBox. Returns the deleted task HBox.
+     *
      * @param task the task HBox to be deleted
      * @return the deleted task HBox
      */
-    public HBox deleteTaskFromList(HBox task){
+    public HBox deleteTaskFromList(HBox task) {
 
-        if(card.getTaskList().isEmpty()){
+        if (card.getTaskList().isEmpty()) {
             displayTasks();
             return task;
         }
 
         int index = taskList.getChildren().indexOf(task);
-        taskList.getChildren().remove(index+1);
+        taskList.getChildren().remove(index + 1);
         return (HBox) taskList.getChildren().remove(index);
     }
+
+    public void addNewTask() {
+
+        Task task = new Task(null, "New task!", false);
+
+        card = server.addTask(card.getId(), task);
+        refresh();
+
+    }
+
     /**
      * Resets and displays the available tags of the current card
      * instance in the scene.
      */
-    public void displayTags(){
+    public void displayTags() {
 
 
     }

@@ -361,16 +361,11 @@ public class BoardOverviewCtrl implements Initializable {
                                             .getParent() //Scroll
                                     );
 
-            System.out.println(columnIndex);
-            System.out.println(cardIndex);
-
             Board board = server.getBoardById(id);
             Column column = board.getColumns().stream()
                     .filter(column1 -> column1.getIDinBoard() == columnIndex)
                     .findFirst().get();
             Card card = column.getCards().get(cardIndex);
-
-            System.out.println(card);
 
 
             mainCtrl.showCardView(card);

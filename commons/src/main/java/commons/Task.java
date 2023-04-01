@@ -33,7 +33,7 @@ public class Task {
         this.taskId = task.getID();
         this.card = task.getCard();
         this.title = task.getTitle();
-        this.status = task.isComplete();
+        this.status = task.getStatus();
     }
 
     /**
@@ -112,7 +112,7 @@ public class Task {
      * A getter for the status attribute
      * @return Returns true if and only if the task is marked complete.
      */
-    public boolean isComplete() {
+    public boolean getStatus() {
         return status;
     }
 
@@ -147,7 +147,7 @@ public class Task {
         Task task = (Task) o;
 
         return getID() == task.getID()
-                && isComplete() == task.isComplete()
+                && getStatus() == task.getStatus()
                 && getCard().equals(task.getCard())
                 && getTitle().equals(task.getTitle());
     }
@@ -159,7 +159,7 @@ public class Task {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getID(), getCard(), getTitle(), isComplete());
+        return Objects.hash(getID(), getCard(), getTitle(), getStatus());
     }
 
 
