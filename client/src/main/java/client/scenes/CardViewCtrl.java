@@ -14,10 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DataFormat;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -139,7 +136,6 @@ public class CardViewCtrl implements Initializable {
         this.card = card;
     }
 
-
     /**
      * Refreshes all the modifiable visual elements in the card scene
      * in accordance with the current card instance.
@@ -243,18 +239,82 @@ public class CardViewCtrl implements Initializable {
         taskRoot.getChildren().add(completeBox);
 
         //Create the title label for the task
-        TextField titleLabel = new TextField();
-        titleLabel.setText(""+task.getID());
-        titleLabel.setFont(new Font(18d));
-        titleLabel.setPadding(new Insets(0, 0, 0, 10));
+        TextField titleField = new TextField();
+        titleField.setText(""+task.getTitle());
+        titleField.setFont(new Font(18d));
+        titleField.setPadding(new Insets(0, 0, 0, 10));
+        recordTitleOnChange(titleField);
+        taskRoot.getChildren().add(titleField);
+
+        //Create a new edit mode image
+        ImageView editImage = new ImageView();
+        editImage.setImage(new Image("EditMode.png"));
+        editImage.setFitHeight(18d);
+        editImage.setFitWidth(18d);
+        taskRoot.setPadding(new Insets(5));
+        editImage.setVisible(false);
+        taskRoot.getChildren().add(editImage);
 
         //Add drag detection
         setTaskDraggable(task, taskRoot);
 
-        taskRoot.getChildren().add(titleLabel);
+
 
 
         return taskRoot;
+    }
+
+    private void recordTitleOnChange(TextField field){
+
+        field.setOnKeyTyped(event -> {
+
+
+            int taskIndex = field.getParent().getParent()
+                    .getChildrenUnmodifiable().indexOf(
+                            field.getParent()
+                    );
+            taskIndex = (taskIndex-1)/2;
+
+            field.getParent().getChildrenUnmodifiable().get(3).setVisible(
+                    !field.getText().equals(card.getTaskList().get(taskIndex).getTitle()));
+
+            event.consume();
+        });
+
+        field.setOnMouseClicked(event -> {
+            if(event.getTarget() != field){
+
+                int taskIndex = field.getParent().getParent()
+                        .getChildrenUnmodifiable().indexOf(
+                                field.getParent()
+                        );
+                taskIndex = (taskIndex-1)/2;
+
+                if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
+                    field.setText(card.getTaskList().get(taskIndex).getTitle());
+                    event.consume();
+                }
+            }
+
+        });
+
+        field.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+
+                int taskIndex = field.getParent().getParent()
+                        .getChildrenUnmodifiable().indexOf(
+                                field.getParent()
+                        );
+                taskIndex = (taskIndex-1)/2;
+
+
+                if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
+                    card.getTaskList().get(taskIndex).setTitle(field.getText());
+                    event.consume();
+                }
+
+            }
+        });
     }
 
     /**
