@@ -212,10 +212,12 @@ public class BoardOverviewCtrl implements Initializable {
         nrCol++;
         server.addColumnToBoard(id, new Column(("New column" + nrCol),
                 new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox) + 1);
-        textField.setOnKeyTyped(e ->
+        textField.setOnKeyPressed(e ->
         {
-            updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
-            server.send("/app/update-labels-in-board", server.getBoardById(id));
+            if(e.getCode() == KeyCode.ENTER) {
+                updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+                server.send("/app/update-labels-in-board", server.getBoardById(id));
+            }
         });
 
         Button button = createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
@@ -224,7 +226,6 @@ public class BoardOverviewCtrl implements Initializable {
         vBox.getChildren().addAll(columnLabel, textField, button);
         server.send("/app/update-in-board", server.getBoardById(id));
     }
-
     private void updateColTitle(int i, String text) {
         server.updateColTitle(i, text, id);
         server.send("/app/update-labels-in-board", server.getBoardById(id));
@@ -302,13 +303,15 @@ public class BoardOverviewCtrl implements Initializable {
             server.addCardToColumn(id, columnid, mycard,
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
-                    getChildren().get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
-                        server.updateCardTitle((long) vBox
-                                .getChildren().indexOf(anchorPane1) - 1,
-                            columnid, ((TextField) ((HBox) ((VBox) anchorPane1
-                                .getChildren().get(0)).
-                                getChildren().get(1)).getChildren().get(0)).getText(), id);
-                        server.send("/app/update-labels-in-board", server.getBoardById(id));
+                    getChildren().get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+                        if(event1.getCode() == KeyCode.ENTER) {
+                            server.updateCardTitle((long) vBox
+                                            .getChildren().indexOf(anchorPane1) - 1,
+                                    columnid, ((TextField) ((HBox) ((VBox) anchorPane1
+                                            .getChildren().get(0)).
+                                            getChildren().get(1)).getChildren().get(0)).getText(), id);
+                            server.send("/app/update-labels-in-board", server.getBoardById(id));
+                        }
                     });
             vBox.getChildren().remove(button);
             vBox.getChildren().add(anchorPane1);
@@ -327,13 +330,15 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
         ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
-                get(1)).getChildren().get(0)).setOnKeyTyped(event1 -> {
-                    server.updateCardTitle((long) vBox.getChildren().
-                            indexOf(anchorPane1) - 1, columnid,
-                        ((TextField) ((HBox) ((VBox) anchorPane1
-                            .getChildren().get(0)).getChildren().get(1)).
-                            getChildren().get(0)).getText(), id);
-                    server.send("/app/update-in-board", server.getBoardById(id));
+                get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+                    if(event1.getCode() == KeyCode.ENTER) {
+                        server.updateCardTitle((long) vBox.getChildren().
+                                        indexOf(anchorPane1) - 1, columnid,
+                                ((TextField) ((HBox) ((VBox) anchorPane1
+                                        .getChildren().get(0)).getChildren().get(1)).
+                                        getChildren().get(0)).getText(), id);
+                        server.send("/app/update-in-board", server.getBoardById(id));
+                    }
                 });
     }
 
@@ -822,9 +827,11 @@ public class BoardOverviewCtrl implements Initializable {
             anchorPaneVBox.getChildren().add(vBox);
             setColumnDragDrop(anchorPaneVBox);
             hbox.getChildren().add(anchorPaneVBox);
-            textField.setOnKeyTyped(e ->
+            textField.setOnKeyPressed(e ->
             {
+                if(e.getCode() == KeyCode.ENTER){
                 updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+                }
             });
             Button button =
                     createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
@@ -1008,11 +1015,6 @@ public class BoardOverviewCtrl implements Initializable {
         });
         server.registerForMessages("/topic/update-title-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)){
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 Platform.runLater(() -> refreshTitle());
             }
 //            Platform.runLater(() ->
@@ -1022,11 +1024,6 @@ public class BoardOverviewCtrl implements Initializable {
 
         server.registerForMessages("/topic/update-labels-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)){
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
                 Platform.runLater(() -> columnsRefresh());
             }
 //            Platform.runLater(() ->
