@@ -112,7 +112,6 @@ public class CardViewCtrl implements Initializable {
      */
     @FXML
     private void getBackCard() {
-        System.out.println(text);
         mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
 
@@ -281,7 +280,7 @@ public class CardViewCtrl implements Initializable {
             //Use the corresponding task ID as the transferred content
             Dragboard dragboard = taskBox.startDragAndDrop(TransferMode.ANY);
             ClipboardContent clipboardContent = new ClipboardContent();
-            clipboardContent.putString("" + task.getID());
+            clipboardContent.putString("" + task.getPosition());
             dragboard.setContent(clipboardContent);
             event.consume();
         });
@@ -426,10 +425,11 @@ public class CardViewCtrl implements Initializable {
 
                     //Determine the ID of the task to be deleted
                     Dragboard dragboard = event.getDragboard();
-                    long id = Long.parseLong((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
-                    //TODO: use the ID to delete the task in the DB.
+                    int position = Integer.parseInt((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
+
                     //Remove the task from the Card's task list
-                    card.getTaskList().removeIf(task -> task.getID() == id);
+                    deleteCardInList(position);
+
                     //Remove the task from the task list.
                     deleteTaskFromList((HBox) event.getGestureSource());
                 }
@@ -526,9 +526,25 @@ public class CardViewCtrl implements Initializable {
         sortTasksByPosition();
         this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
     }
+
+    public void deleteCardInList(int position){
+
+        //Remove the specified card
+        card.getTaskList().remove(position);
+
+        //Decrement any greater subsequent positions
+        for(Task task : card.getTaskList()){
+            if (task.getPosition() > position){
+                task.setPosition(task.getPosition()-1);
+            }
+        }
+
+        //Make changes persist in the DB
+        sortTasksByPosition();
+        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+    }
     public void sortTasksByPosition(){
         List<Task> sortedList = card.getTaskList();
-        System.out.println(card.getTaskList().toString());
         sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ? 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
         card.setTaskList(sortedList);
         System.out.println(card.getTaskList().toString());
