@@ -454,6 +454,8 @@ public class BoardOverviewCtrl implements Initializable {
                     }
                 }
             }
+            server.send("/app/update-in-board", server.getBoardById(id));
+
         });
     }
 
@@ -530,7 +532,7 @@ public class BoardOverviewCtrl implements Initializable {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent clipboardContent = new ClipboardContent();
             clipboardContent.putString("DeletionCard"); dragboard.setContent(clipboardContent);
-            event.consume();cardBin(vBox);
+            event.consume(); cardBin(vBox);
         });
 
         card.setOnDragOver(event -> {
@@ -574,6 +576,8 @@ public class BoardOverviewCtrl implements Initializable {
                     }
                 }
             }
+            server.send("/app/update-in-board", server.getBoardById(id));
+
         });
     }
 
