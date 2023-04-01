@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane prefHeight="185.0" prefWidth="445.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ColumnPopUp">
+   <children>
+      <Label layoutX="37.0" layoutY="25.0" text="Please input the title of the column">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <TextField layoutX="37.0" layoutY="93.0" prefHeight="35.0" prefWidth="286.0" />
+   </children>
+</AnchorPane>
