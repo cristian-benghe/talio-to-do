@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Optional;
 
 
+import commons.Task;
 import org.springframework.stereotype.Service;
 
 
@@ -10,6 +11,9 @@ import commons.Card;
 
 
 import server.database.CardRepository;
+
+import javax.swing.text.html.Option;
+
 @Service
 public class CardService {
 
@@ -68,6 +72,19 @@ public class CardService {
      */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
+    }
+
+    public Card addTask(long id, Task task){
+
+        Optional<Card> optCard = this.getById(id);
+        if(optCard.isEmpty()){
+            throw new IllegalArgumentException();
+        }
+
+        Card card = optCard.get();
+        card.getTaskList().add(task);
+
+        return repo.save(card);
     }
 }
 

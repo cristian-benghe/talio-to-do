@@ -74,43 +74,26 @@ public class TaskController {
      * a response with HTTP status code 404.
      */
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Task> delete(@PathVariable("id")long id){
-        taskService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Boolean> delete(@PathVariable("id")long id){
+        return ResponseEntity.ok(taskService.delete(id));
     }
 
 
     /**
-     * A PUT request for changing the title field for a particular Task instance,
+     * A PUT request for updating a particular Task instance in the repository,
      * specified by the given id.
-     * @param id the id of the Task instance to be updated
-     * @param title the new title value for the Task instance
+     * @param task The updated Task Instance
      * @return if the Task object is found and updated,
      * it will return a response with HTTP status code 204 or
      * if the Task object is not found, it will return
      * a response with HTTP status code 404.
      */
-    @PutMapping(path={"update/title","update/title/"})
-    public ResponseEntity<Task> updateTitle(@RequestParam long id, @RequestParam String title){
-        taskService.updateTitle(id, title);
+    @PutMapping(path={"update","update/"})
+    public ResponseEntity<Task> updateTitle(@RequestBody Task task){
+        taskService.updateTask(task);
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * A PUT request for changing the status field for a particular Task instance,
-     * specified by the given id.
-     * @param id the id of the Task instance to be updated
-     * @param status the new status value for the Task instance
-     * @return if the Task object is found and updated,
-     *      * it will return a response with HTTP status code 204 or
-     *      * if the Task object is not found, it will return
-     *      * a response with HTTP status code 404.
-     */
-    @PutMapping(path={"update/status","update/status/"})
-    public ResponseEntity<Task> updateStatus(@RequestParam long id, @RequestParam boolean status){
-        taskService.updateStatus(id, status);
-        return ResponseEntity.noContent().build();
-    }
 
 
 }

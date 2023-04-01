@@ -54,8 +54,13 @@ public class TaskService {
      * Deletes the Task object with the specified id.
      * @param id the identifier of the Task object to be deleted
      */
-    public void delete(long id) {
-        repo.deleteById(id);
+    public boolean delete(long id) {
+        try {
+            repo.deleteById(id);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
     }
 
 
@@ -69,18 +74,16 @@ public class TaskService {
     }
 
     /**
-     *  Updates the title field in the Task Repository for the instance with the given
-     *  ID.
-     * @param id the ID of the Task instance
-     * @param title the new title for the Task instance
+     *  Updates the task instance corresponding to the given ID
+     *  in the Task Repository.
      * @return the updated Task instance
      * @throws IllegalArgumentException if the given id is null, or if the Task instance does not
-     * , an IllegalArgumentException will be thrown.
+     * exist, an IllegalArgumentException will be thrown.
      */
-    public Task updateTitle(long id, String title) throws IllegalArgumentException{
+    public Task updateTask(Task newTask) throws IllegalArgumentException{
 
         //Search for the task instance in the repository
-        Optional<Task> optTask = repo.findById(id);
+        Optional<Task> optTask = repo.findById(newTask.getID());
 
         //Determine whether the instance exists
         if(optTask.isEmpty()){
@@ -89,7 +92,8 @@ public class TaskService {
         }
         //Change the title of the instance
         Task task = optTask.get();
-        task.setTitle(title);
+        task.setTitle(newTask.getTitle());
+        task.setStatus(newTask.isComplete());
 
         //Save the instance to the repository
         repo.save(task);
@@ -97,33 +101,6 @@ public class TaskService {
         return task;
     }
 
-    /**
-     * Updates the status field in the Task Repository for the instance with the given
-     * ID.
-     * @param id  the ID of the Task instance
-     * @param status the new status value for the Task instance
-     * @return the updated Task instance
-     * @throws IllegalArgumentException if the given id is null, or if the Task instance does not
-     * an IllegalArgumentException will be thrown.
-     */
-    public Task updateStatus(long id, Boolean status) throws IllegalArgumentException{
 
-        //Search for the task instance in the repository
-        Optional<Task> optTask = repo.findById(id);
-
-        //Determine whether the instance exists
-        if(optTask.isEmpty()){
-            //Otherwise, throw an exception
-            throw new IllegalArgumentException("The task does not exists in the DB.");
-        }
-        //Change the title of the instance
-        Task task = optTask.get();
-        task.setStatus(status);
-
-        //Save the instance to the repository
-        repo.save(task);
-
-        return task;
-    }
 
 }

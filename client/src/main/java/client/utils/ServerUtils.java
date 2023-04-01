@@ -23,10 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import commons.Tag;
-import commons.Board;
-import commons.Card;
-import commons.Column;
+import commons.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
@@ -743,5 +740,35 @@ public class ServerUtils {
                 .get(new GenericType<Boolean>() {
                 });
     }
+
+    public List<Task> getAllTasks(){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/getTask/all")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<List<Task>>(){});
+    }
+
+    public Task getTaskByID(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/getTask/byID")
+                .queryParam("id", id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Task.class);
+    }
+    public boolean deleteTaskByID(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/delete/"+id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .delete(boolean.class);
+    }
+
+    //public Task addTask(Task task){}
+
 
 }
