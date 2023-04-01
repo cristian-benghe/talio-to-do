@@ -309,7 +309,8 @@ public class BoardOverviewCtrl implements Initializable {
                                             .getChildren().indexOf(anchorPane1) - 1,
                                     columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                             .getChildren().get(0)).
-                                            getChildren().get(1)).getChildren().get(0)).getText(), id);
+                                            getChildren().get(1)).getChildren().get(0)).
+                                            getText(), id);
                             server.send("/app/update-labels-in-board", server.getBoardById(id));
                         }
                     });
@@ -830,7 +831,8 @@ public class BoardOverviewCtrl implements Initializable {
             textField.setOnKeyPressed(e ->
             {
                 if(e.getCode() == KeyCode.ENTER){
-                updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
+                    updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1,
+                            textField.getText());
                 }
             });
             Button button =
