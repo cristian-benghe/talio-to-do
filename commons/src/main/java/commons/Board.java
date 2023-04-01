@@ -2,6 +2,7 @@ package commons;
 
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
+    private Double red;
+    private Double green;
+    private Double blue;
 
     @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
@@ -29,6 +33,7 @@ public class Board {
         this.title = title;
         this.columns = columns;
         this.tags=tags;
+        this.setColor((double) 1, (double) 1, (double) 1);
     }
 
     /**
@@ -105,6 +110,26 @@ public class Board {
      * Set method for the title
      * @param title the new title to set
      */
+
+    /**
+     * @param newTag to add to a borad
+     */
+    public void addTag(Tag newTag) {
+        tags.add(newTag);
+    }
+
+    /**
+     * @param tagID = the id of the tag in a board
+     * @param tag = set a tag with a new title
+     */
+    public void setTag(int tagID, Tag tag) {
+        tags.set(tagID, tag);
+    }
+
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
@@ -139,6 +164,18 @@ public class Board {
      */
     public void setTags(List<Tag> tags) {
         this.tags = tags;
+    }
+
+    /**
+     * A needed method to updateColumnArrangement
+     * @param boardSource
+     * @param boardTmp
+     * @return A board with copied columns
+     */
+    public Board copyBoard(Board boardSource, Board boardTmp)
+    {
+        boardTmp.columns = new ArrayList<>(boardSource.getColumns());
+        return boardTmp;
     }
 
 
@@ -200,4 +237,58 @@ public class Board {
         }
     }
 
+    /**
+<<<<<<< HEAD
+     * @param red from rgb
+     * @param green from rgb
+     * @param blue from rgb
+     */
+    public void setColor(Double red, Double green, Double blue){
+        this.red=red;
+        this.green=green;
+        this.blue=blue;
+    }
+
+    /**
+     * @return the red double value in rgb
+     */
+    public Double getRed() {
+        return red;
+    }
+
+    /**
+     * @return the green double value in rgb
+     */
+    public Double getGreen() {
+        return green;
+    }
+    /**
+     * @return the blue double value in rgb
+     */
+    public Double getBlue() {
+        return blue;
+    }
+
+    /**
+     * @param tagInd the id of the tag
+     */
+    public void deleteTag(int tagInd) {
+        tags.remove(tagInd);
+    }
+
+    /**
+     * @param tagInd the updated id of the tag that shift to the left
+     */
+    public void updateTagIndex(int tagInd) {
+        for(int i=tagInd;i<tags.size();i++){
+            tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
+        }
+    }
+
+    /**
+     * @param i the id of the tag to be removed in the board
+     */
+    public void removeTag(int i) {
+        tags.remove(i);
+    }
 }

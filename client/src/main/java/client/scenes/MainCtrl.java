@@ -1,10 +1,14 @@
 package client.scenes;
 
+import commons.Card;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class MainCtrl {
 
@@ -24,8 +28,20 @@ public class MainCtrl {
 
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
+    private BoardCustomizationCtrl boardCustomizationCtrl;
 
+    private boolean isAdmin=false;
+
+    private Scene boardCustomization;
+    private TagViewCtrl tagViewCtrl;
+    private Scene tagView;
+
+    //private TagTemplateCtrl tagTemplateCtrl;
+    //private Scene tagTemplate;
     private boolean shownMainOverviewOneTime = false;
+    private String adminPassword;
+    private boolean hasAdminRole;
+
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -34,6 +50,8 @@ public class MainCtrl {
      * @param clientConnect an injection of the ClientConnect scene and controller
      * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
+     * @param boardCustomization on injection of the boardCustomization scene and controller
+     * @param tagView an injection of the CardView scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -42,10 +60,14 @@ public class MainCtrl {
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
-                           Pair<CardViewCtrl, Parent> cardView) throws Exception {
+                           Pair<CardViewCtrl, Parent> cardView,
+                           Pair<BoardCustomizationCtrl, Parent> boardCustomization,
+                           Pair<TagViewCtrl, Parent> tagView) throws Exception {
 
 
+        this.isAdmin = false;
         this.primaryStage = primaryStage;
+
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -57,6 +79,12 @@ public class MainCtrl {
 
         this.cardViewCtrl = cardView.getKey();
         this.cardView = new Scene(cardView.getValue());
+        this.boardCustomizationCtrl=boardCustomization.getKey();
+        this.boardCustomization=new Scene(boardCustomization.getValue());
+        this.tagViewCtrl = tagView.getKey();
+        this.tagView = new Scene(tagView.getValue());
+
+
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -71,17 +99,21 @@ public class MainCtrl {
 
 
     /**
-     * The method changes the scene to the BoardOverview
-     * @param text the name of the selected board
+     * @param text the title of the board, to get the id
+     * @param blue from rgb
+     * @param green from rgb
+     * @param red from rgb
      */
-    public void showBoardOverview(String text) {
-        System.out.println(text);
+    public void showBoardOverview(String text, Double blue, Double green, Double red) {
+        boardCustomizationCtrl.setBoardText(text);
+       // System.out.println(text);
 
+        boardOverviewCtrl.socketsCall();
 
         primaryStage.setTitle("Talio - Board View");
         primaryStage.setScene(boardOverview);
         primaryStage.centerOnScreen();
-        boardOverviewCtrl.setBoardTitle(text);
+        boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
     /**
@@ -114,19 +146,32 @@ public class MainCtrl {
 
     /**
      * A method to switch the scene from boardOverView to the CarView
+     * @param card the card instance that will be inspected
      */
-    public void showCardView() {
-        primaryStage.setTitle("Talio - CardView");
+    public void showCardView(Card card) {
 
+        cardViewCtrl.setText(boardOverviewCtrl.getTitle());
+        primaryStage.setTitle("Talio - CardView");
+        cardViewCtrl.setCard(card);
         primaryStage.setScene(cardView);
-        clientConnectCtrl.refresh();
+        cardViewCtrl.refresh();
         primaryStage.centerOnScreen();
     }
+    /**
+     * A method to switch the scene to the TagView
+     */
+    public void showTagView() throws IOException {
+        primaryStage.setTitle("Talio - TagView");
+        primaryStage.setScene(tagView);
+        tagViewCtrl.refreshtaglist();
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
 
+    }
 
-
-
-
+    /**
+     * A method to switch the scene to the TagView
+     */
 
 
     /**
@@ -148,10 +193,70 @@ public class MainCtrl {
      * @param address the address of the server
      */
     public void createConnection(String address){
+        //sets the connection of all controllers with the server
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
+        boardCustomizationCtrl.setConnection(address);
+        cardViewCtrl.setConnection(address);
+        tagViewCtrl.setConnection(address);
     }
 
+    /**
+     * gets the value of the AdminPassword
+     *
+     * @return the value of the AdminPassword
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
 
+    /**
+     * Sets the value of AdminPassword
+     *
+     * @param adminPassword - the value of the AdminPassword
+     */
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
+    /**
+     * gets the value of the hasAdminRole
+     *
+     * @return the value of the hasAdminRole
+     */
+    public boolean isHasAdminRole() {
+        return hasAdminRole;
+    }
+
+    /**
+     * Sets the value of hasAdminRole
+     *
+     * @param hasAdminRole - the value of the hasAdminRole
+     */
+    public void setHasAdminRole(boolean hasAdminRole) {
+        this.hasAdminRole = hasAdminRole;
+    }
+
+    /**
+     * changes the scene to board customization
+     */
+    public void showBoardCustomization() {
+        primaryStage.setTitle("Board Customization");
+        primaryStage.setScene(boardCustomization);
+    }
+
+    /**
+     * @return the id of the board
+     */
+    public Long getBoardId() {
+        return boardOverviewCtrl.getId();
+    }
+
+    /**
+     * @return the tagviewctrl to access the refresh method in tagview when deleting a templatetag
+     */
+    public TagViewCtrl getTagViewCtrl() {
+        return tagViewCtrl;
+    }
 }

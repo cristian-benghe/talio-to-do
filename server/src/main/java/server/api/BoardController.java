@@ -29,8 +29,6 @@ import java.util.Random;
 
 @RestController
 public class BoardController {
-
-    private final Random random; //TODO: delete + adapt tests
     private final BoardService boardservice;
 
     /**
@@ -39,7 +37,6 @@ public class BoardController {
      * @param random
      */
     public BoardController(Random random, BoardService boardservice) {
-        this.random = random;
         this.boardservice = boardservice;
     }
 
@@ -144,7 +141,7 @@ public class BoardController {
     }
 
     /**
-     * Receives a message with the specified mapping ("/update-board") and deletes
+     * Receives a message with the specified mapping ("/update-board") and updates
      * a certain board from the system.
      * The method sends the updated board to the "/topic/update-board" endpoint.
      * @param board the Board object to be updated (with the new
@@ -155,6 +152,53 @@ public class BoardController {
     @SendTo("/topic/update-board")
     public Board addMessageUpdate(Board board) {
         update(board.getId(), board);
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-in-board") and updates
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-in-board" endpoint.
+     * It is used for refreshing BoardOverview
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-in-board") // app/update-in-board
+    @SendTo("/topic/update-in-board")
+    public Board addMessageUpdateInBoard(Board board) {
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-title-in-board") and updates
+     * the title from
+     * a certain board from the system.
+     * The method sends the updated board to the "/topic/update-title-in-board" endpoint.
+     * It is used for refreshing BoardOverview
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-title-in-board") // app/update-title-in-board
+    @SendTo("/topic/update-title-in-board")
+    public Board addMessageUpdateTitleInBoard(Board board) {
+        return board;
+    }
+
+    /**
+     * Receives a message with the specified mapping ("/update-labels-in-board") and updates
+     * only if a label has been changed (so it adds some seconds before refreshing)
+     * a certain board from the system.
+     * The method sends the updated board to the "/update-labels-in-board" endpoint.
+     * It is used for refreshing BoardOverview
+     * @param board the Board object to be updated (with the new
+     * title) to the system
+     * @return the Board object that was updated in the system
+     */
+    @MessageMapping("/update-labels-in-board") // app/update-labels-in-board
+    @SendTo("/topic/update-labels-in-board")
+    public Board addMessageUpdateLabelsInBoard(Board board) {
         return board;
     }
 }

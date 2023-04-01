@@ -83,16 +83,9 @@ class ColumnTest {
         assertEquals(column.hashCode(), column1.hashCode());
     }
 
-//    @Test
-//    void testToString() {
-//        String cards1 = "";
-//        for(int i=0; i<cards.size(); i++){
-//            cards1+= cards.get(i).toString();
-//        }
-//        column.setCards(cards);
-//        String answer = "The Column Todo has the ID: null is part of Board" +
-//                " Project and contains the following cards: " + cards1;
-//
-//        assertEquals( column.toString(), answer);
-//    }
+    @Test
+    void testToString() {
+        Column column1 = new Column("Todo", cards );
+        assertEquals(column1.toString(), "The Column Todo has the ID: null and contains the following cards: ");
+    }
 }

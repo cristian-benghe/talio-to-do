@@ -1,23 +1,25 @@
 package server.api;
 
+
 import commons.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import server.database.TagRepository;
+import server.service.TagService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tags")
 public class TagController {
-    private final TagRepository tagRepo;
+    private final TagService tagservice;
 
     /**
-     * Constructs a new TagRepository object.
-     * @param tagRepo - the tag repository
+     * Constructs a new TagService object.
+     * @param tagservice - the tag service
      */
-    public TagController(TagRepository tagRepo) {
-        this.tagRepo = tagRepo;
+    public TagController(TagService tagservice) {
+        this.tagservice = tagservice;
     }
 
     /**
@@ -26,7 +28,7 @@ public class TagController {
      */
     @GetMapping(path = { "", "/" })
     public List<Tag> getAll() {
-        return tagRepo.findAll();
+        return tagservice.getAll();
     }
 
     /**
@@ -36,11 +38,14 @@ public class TagController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Tag> getById(@PathVariable("id") long id) {
-        if (id < 0 || !tagRepo.existsById(id)) {
-            return ResponseEntity.badRequest().build();
+        Optional<Tag> tag = tagservice.getById(id);
+        if (tag.isPresent()) {
+            return ResponseEntity.ok(tag.get());
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(tagRepo.findById(id).get());
     }
+
 
     /**
      * Spring Boot RESTful API controller method that handles a POST request
@@ -51,13 +56,30 @@ public class TagController {
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Tag> add(@RequestBody Tag tag) {
 
-        if (isNullOrEmpty(tag.getTitle())){
+//        if (isNullOrEmpty(tag.getTitle())){
+//
+//            return ResponseEntity.badRequest().build();
+//        }
 
-            return ResponseEntity.badRequest().build();
-        }
-
-        Tag saved = tagRepo.save(tag);
+        Tag saved = tagservice.add(tag);
         return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Deletes the Tag object with the specified id and all cards contained by that column.
+     * @param id the id of the Tag object to delete
+     * @return a response indicating success or failure
+     */
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") long id) {
+        Optional<Tag> existing = tagservice.getById(id);
+        if (existing.isPresent()) {
+            tagservice.delete(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     /**

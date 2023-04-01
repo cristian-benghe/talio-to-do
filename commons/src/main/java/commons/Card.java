@@ -1,10 +1,10 @@
 package commons;
 
 //import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -25,11 +25,9 @@ public class Card {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "card_tag",
-            joinColumns = { @JoinColumn(name = "card_id") },
-            inverseJoinColumns = { @JoinColumn(name = "tag_id") })
-    private Set<Tag> tags = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    private Set<Tag> tags;
+
 
     /**
      * empty constructor

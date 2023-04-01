@@ -57,12 +57,6 @@ class CardTest {
         assertNull(card.getTags());
     }
 
-//    @Test
-//    void testToString() {
-//        Card c1 = new Card("Test Card", "basic description", null, null);
-//        assertEquals("<null>,basic description,<null>,<null>,<null>,Test Card", c1.toString());
-//    }
-
     @Test
     void testEquals() {
         Card c1 = new Card("Test Card", null, null, null);
@@ -89,14 +83,6 @@ class CardTest {
         assertEquals(tags, c.getTags());
     }
 
-//    @Test
-//    void testSetColumn() {
-//        Card c = new Card("Test Card", "basic description", null, null);
-//        Column col = new Column("column1", null);
-//        c.setColumns(col);
-//        assertEquals(col, c.getColumn());
-//    }
-
     @Test
     void testSetTaskList() {
         Card c = new Card("Test Card", "basic description", null, null);
@@ -105,5 +91,45 @@ class CardTest {
         list.add(t1);
         c.setTaskList(list);
         assertEquals(list, c.getTaskList());
+    }
+
+    @Test
+    void getColumnId() {
+        Card c = new Card("Test Card", "basic description", null, null);
+        c.setColumnId(0L);
+        assertEquals(c.getColumnId(), 0L);
+    }
+
+    @Test
+    void setColumnId() {
+        Card c = new Card("Test Card", "basic description", null, null);
+        c.setColumnId(0L);
+        assertEquals(c.getColumnId(), 0L);
+    }
+
+    @Test
+    void getTags() {
+        Card c = new Card("Test Card", "basic description", null, null);
+        Tag tag=new Tag();
+        Set<Tag>list=new HashSet<>();
+        list.add(tag);
+        c.setTags(list);
+        assertEquals(list, c.getTags());
+    }
+
+    @Test
+    void setTags() {
+        Card c = new Card("Test Card", "basic description", null, null);
+        Tag tag=new Tag();
+        Set<Tag>list=new HashSet<>();
+        list.add(tag);
+        c.setTags(list);
+        assertEquals(list, c.getTags());
+    }
+
+    @Test
+    void testToString() {
+        Card c = new Card("Test Card", "basic description", null, null);
+        assertEquals(c.toString(), "-1,basic description,<null>,<null>,<null>,Test Card");
     }
 }

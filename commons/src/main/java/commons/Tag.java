@@ -8,6 +8,8 @@ import java.util.Set;
 @Entity
 public class Tag {
 
+    private int idInBoard=-1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long tagID;
@@ -18,9 +20,9 @@ public class Tag {
     private Set<Card> cards = new HashSet<>();
 
     // this joins the Tag and the Board tables together
-    @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+//    @ManyToOne
+//    @JoinColumn(name = "board_id")
+//    private Board board;
 
 
     /**
@@ -35,10 +37,33 @@ public class Tag {
      * @param title - the name of the tag
      * @param cards - the set of Cards associated with the tag
      */
-    public Tag(long tagID, String title, Set<Card> cards) {
+    public Tag(long tagID, String title, Set<Card> cards){
         this.tagID = tagID;
         this.title = title;
         this.cards = cards;
+    }
+
+    /**
+     * @param title of the tag
+     * @param cards that are associated to a tag
+     */
+    public Tag(String title, Set<Card>cards){
+        this.title=title;
+        this.cards=cards;
+    }
+
+    /**
+     * @return id of a tag in a board
+     */
+    public int getIDinBoard() {
+        return idInBoard;
+    }
+
+    /**
+     * @param idInBoard = set the boardid when adding a tag
+     */
+    public void setIDinBoard(int idInBoard) {
+        this.idInBoard = idInBoard;
     }
 
     /**
