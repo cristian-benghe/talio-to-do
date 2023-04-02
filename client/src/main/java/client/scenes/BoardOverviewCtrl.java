@@ -434,6 +434,13 @@ public class BoardOverviewCtrl implements Initializable {
                 event.consume();
                 server.send("app/update-in-board", server.getBoardById(id));
             }
+            if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                    (((AnchorPane) event.getGestureSource()).getParent().equals(myVBox)))
+            {
+                sameColumnDirectBottomDragDrop(event,button,myVBox);
+                event.setDropCompleted(true);
+                event.consume();
+            }
             if((Objects.equals(event.getDragboard().getString(), "DeletionColumn")))
             {
                 if (event.getX() >= 75) {
@@ -490,6 +497,32 @@ public class BoardOverviewCtrl implements Initializable {
         columnsRefresh();
     }
 
+    /***
+     *
+     * @param event
+     * @param button
+     * @param myVBox
+     */
+    public void sameColumnDirectBottomDragDrop(DragEvent event, Button button, VBox myVBox)
+    {
+        int cardId = ((AnchorPane) event.getGestureSource()).
+            getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
+                    getGestureSource());
+        int columnId = hbox.getChildren().
+                indexOf(myVBox.getParent());
+        myVBox.getChildren().remove(button);
+        myVBox.getChildren().remove((AnchorPane)event.getGestureSource());
+        setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
+        Board board1 = server.getBoardById(id);
+        Column column = board1.getColumns().get(columnId);
+        Card card = column.getCards().get(cardId-2);
+        column.getCards().remove(card);
+        column.getCards().add(card);
+        server.updateCardArrangement(columnId, column, id);
+        server.send("/app/update-in-board", server.getBoardById(id));
+        myVBox.getChildren().add((AnchorPane) event.getGestureSource());
+        myVBox.getChildren().add(button);
+    }
     /**
      * A method to rearrange Column with drag and drop
      * @param vBox vBox that the column is dropped in

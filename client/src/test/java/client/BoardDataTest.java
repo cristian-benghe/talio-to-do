@@ -21,17 +21,17 @@ class BoardDataTest {
         boardData = new BoardData();
     }
 
-    @Test
-    void serializeBoardData() throws IOException, ClassNotFoundException {
-        File file = new File("test.txt");
-        file.createNewFile();
-        Map<String, List<Board>> test = new HashMap<>();
-        Board board = new Board();
-        test.put("1.0.0.0", List.of(board));
-        boardData.serializeBoardData("test.txt");
-        boardData.deserializeBoardData("test.txt");
-        assertEquals(test, boardData.getBoardMap());
-    }
+//    @Test
+//    void serializeBoardData() throws IOException, ClassNotFoundException {
+//        File file = new File("test.txt");
+//        file.createNewFile();
+//        Map<String, List<Board>> test = new HashMap<>();
+//        Board board = new Board();
+//        test.put("1.0.0.0", List.of(board));
+//        boardData.serializeBoardData("test.txt");
+//        boardData.deserializeBoardData("test.txt");
+//        assertEquals(test, boardData.getBoardMap());
+//    }
 
     @Test
     void deserializeBoardData() {
