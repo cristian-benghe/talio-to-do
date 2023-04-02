@@ -282,9 +282,12 @@ public class MainOverviewCtrl implements Initializable {
         }
         String text = existsBoard(nr);
         if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
-        availableUserBoards.add(server.getBoardById(nr));
-        if (!mainCtrl.isHasAdminRole())
+
+        if (!mainCtrl.isHasAdminRole()) {
+            availableUserBoards.add(server.getBoardById(nr));
             refreshWorkspaceFile();
+            server.send("/app/refresh", 10);
+        }
         mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
 
         //TODO Retrieve boards through key input or name input
@@ -357,8 +360,15 @@ public class MainOverviewCtrl implements Initializable {
         if (selectedBoardStr == null) {
             return;
         }
-        if (!mainCtrl.isHasAdminRole())
+
+
+
+        if (!mainCtrl.isHasAdminRole()) {
+
             refreshWorkspaceFile();
+            server.send("/app/refresh", 10);
+            //refreshWorkspaceFile();
+        }
         // Navigate to the board view for the selected board
         mainCtrl.showBoardOverview(selectedBoardStr, (double) 1, (double) 1, (double) 1);
     }
@@ -392,42 +402,42 @@ public class MainOverviewCtrl implements Initializable {
                 availableUserBoards.remove(toBeDeleted);
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
-            Platform.runLater(() -> refreshOverview());
+
             if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> refreshWorkspaceFile());
+                Platform.runLater(() -> loadUserWorkspace());
+            Platform.runLater(() -> refreshOverview());
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
             if (!mainCtrl.isHasAdminRole()) {
                 availableUserBoards.add(board);
             }
-            Platform.runLater(() -> refreshOverview());
             if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> refreshWorkspaceFile());
+                Platform.runLater(() -> loadUserWorkspace());
+            Platform.runLater(() -> refreshOverview());
         });
 
         server.registerForMessages("/topic/update-board", Board.class, board -> {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
-            Platform.runLater(() -> refreshOverview());
             if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> refreshWorkspaceFile());
+                Platform.runLater(() -> loadUserWorkspace());
+            Platform.runLater(() -> refreshOverview());
         });
 
         server.registerForMessages("/topic/refresh", Integer.class, integer -> {
             System.out.println("Hakdi");
-
-            Platform.runLater(() -> loadUserWorkspace());
             if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> refreshWorkspaceFile());
+                Platform.runLater(() -> loadUserWorkspace());
+
             Platform.runLater(() -> refreshOverview());
         });
 
     }
 
     /**
-     * method used for to refresh the file from the availableUserBoards
+     * method used for to refresh the availableUserBoards from the file
      */
     public void loadUserWorkspace() {
 
@@ -464,7 +474,7 @@ public class MainOverviewCtrl implements Initializable {
 
 
     /**
-     * method used for to refresh the availableUserBoards from the file
+     * method used for to refresh the file from the availableUserBoards
      */
     public void refreshWorkspaceFile() {
         BoardData boardData = new BoardData();
