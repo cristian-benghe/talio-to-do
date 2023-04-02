@@ -2,8 +2,6 @@ package server;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,14 +69,14 @@ public class SomeController {
         return ResponseEntity.ok(Objects.equals(inputPasscode, password));
     }
 
-    /**
-     * Used for refreshing availableUserBoards
-     * @param integer random
-     * @return param integer
-     */
-    @MessageMapping("/refresh") // app/refresh
-    @SendTo("/topic/refresh")
-    public Integer addMessageRefresh(Integer integer) {
-        return integer;
-    }
+//    /**
+//     * Used for refreshing availableUserBoards
+//     * @param integer random
+//     * @return param integer
+//     */
+//    @MessageMapping("/refresh") // app/refresh
+//    @SendTo("/topic/refresh")
+//    public Integer addMessageRefresh(Integer integer) {
+//        return integer;
+//    }
 }

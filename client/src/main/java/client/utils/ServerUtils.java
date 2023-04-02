@@ -496,7 +496,7 @@ public class ServerUtils {
      * @param server the URL of the server in String format
      */
     public void setServer(String server) {
-        server = server;
+        this.server = server;
     }
 
     /**
