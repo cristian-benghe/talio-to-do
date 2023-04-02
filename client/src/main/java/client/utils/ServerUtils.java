@@ -24,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import commons.*;
-import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
@@ -742,43 +741,32 @@ public class ServerUtils {
                 });
     }
 
-    public List<Task> getAllTasks(){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/tasks/getTask/all")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Task>>(){});
-    }
 
-    public Task getTaskByID(long id){
+    /**
+     * Adds a new Task to the server, and links it to the
+     * Card instance with the corresponding identifier.
+     * @param cardId the identifier of the Card instance
+     * @param task the newly created Task
+     * @return the newly created Task
+     */
+    public Task addTask(long cardId, Task task){
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
-                .path("api/tasks/getTask/byID")
-                .queryParam("id", id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Task.class);
-    }
-    public boolean deleteTaskByID(long id){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/tasks/delete/"+id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .delete(boolean.class);
-    }
-
-    public Card addTask(long cardId, Task task){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/cards/addTask")
+                .path("api/tasks/addTask/byCard")
                 .queryParam("id",cardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(task, APPLICATION_JSON),Card.class);
+                .post(Entity.entity(task, APPLICATION_JSON),Task.class);
     }
 
+
+    /**
+     * Updates the entirety of the Task List of a particular
+     * Card instance with the given identifier.
+     * @param cardID the identifier the Card list
+     * @param taskList the updated Task List
+     * @return the updated Task List
+     */
     public Card updateTaskList(long cardID, List<Task> taskList){
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
@@ -789,17 +777,41 @@ public class ServerUtils {
                 .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
     }
 
+
+    /**
+     * Persists the changes given by the Task instance
+     * in the server.
+     * @param task the updated Task instance.
+     */
     public void updateTask(Task task){
 
         ClientBuilder.newClient(new ClientConfig())
                 .target(server)
-                .path("api/tasks/updateTask")
+                .path("api/tasks/update")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .put(Entity.entity(task, APPLICATION_JSON));
+                .put(Entity.entity(task, APPLICATION_JSON), Task.class);
 
 
     }
+
+
+    /**
+     * Returns the List of all Task instances that are linked
+     * to the Card, identified by the given identifier.
+     * @param cardId the identifier of the Card instance
+     * @return the List of all linked Task instances
+     */
+    public List<Task> getAllTasksByCardId(long cardId){
+        return ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("api/cards/getTaskList")
+                    .queryParam("id", cardId)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<List<Task>>(){});
+    }
+
 
 
 }

@@ -144,7 +144,14 @@ public class CardController {
     }
 
 
-
+    /**
+     * Handles the POST request for adding a given Task instance to the DB,
+     * and linking it to its corresponding Card instance, identified by the
+     * give n id.
+     * @param id the id of the linked card
+     * @param task the task instance to be added
+     * @return the linked Card instance
+     */
     @PostMapping(path={"/addTask","/addTask/"})
     public ResponseEntity<Card> addTask(@RequestParam("id")long id, @RequestBody Task task){
         try{
@@ -154,8 +161,17 @@ public class CardController {
         }
 
     }
+
+    /**
+     * Handles the PUT request that updates the entirety of the TaskList
+     * field for the Card corresponding to the given identifier.
+     * @param id the identifier of the card
+     * @param taskList the new TaskList
+     * @return the corresponding Card instance
+     */
     @PutMapping(path={"/updateTaskList","/updateTaskList/"})
-    public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id, @RequestBody List<Task> taskList) {
+    public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id,
+                                               @RequestBody List<Task> taskList) {
         try {
             return ResponseEntity.ok(cardservice.updateTaskList(id, taskList));
         } catch (IllegalArgumentException e) {
@@ -164,5 +180,21 @@ public class CardController {
     }
 
 
+    /**
+     * Handles the GET request that returns the Task List of
+     * a particular Card instance, identified by the given
+     * identifier.
+     * @param id the identifier of the Card instance
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path={"/getTaskList","/getTaskList"})
+    public ResponseEntity<List<Task>> getTaskList(@RequestParam("id")long id){
+        try{
+            return ResponseEntity.ok(cardservice.getTaskList(id));
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 }
 

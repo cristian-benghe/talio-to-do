@@ -21,7 +21,6 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import java.net.URL;
-import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.io.IOException;
@@ -134,6 +133,7 @@ public class CardViewCtrl implements Initializable {
      */
     public void setCard(Card card) {
         this.card = card;
+        this.card.setTaskList(server.getAllTasksByCardId(card.getId()));
     }
 
     /**
@@ -437,7 +437,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @param newMarker the new marker separator
      */
-    private void changeClosestMarker(Separator newMarker) {
+    public void changeClosestMarker(Separator newMarker) {
 
         //Check whether a task is currently dragged.
         if (!isTaskDragged) {
@@ -491,7 +491,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @param bin the binImage instance that will be assigned the event handlers
      */
-    public void setDragForBin(Node bin) {
+    private void setDragForBin(Node bin) {
         bin.setOnDragOver(event -> {
             if (event.getGestureSource() != bin
                     && event.getDragboard().hasString()) {
@@ -508,7 +508,8 @@ public class CardViewCtrl implements Initializable {
 
                     //Determine the ID of the task to be deleted
                     Dragboard dragboard = event.getDragboard();
-                    int position = Integer.parseInt((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
+                    int position = Integer.parseInt(
+                            (String) dragboard.getContent(DataFormat.PLAIN_TEXT));
 
                     //Remove the task from the Card's task list
                     deleteCardInList(position);
@@ -551,7 +552,7 @@ public class CardViewCtrl implements Initializable {
      * @param task the task HBox to be deleted
      * @return the deleted task HBox
      */
-    public HBox deleteTaskFromList(HBox task) {
+    private HBox deleteTaskFromList(HBox task) {
 
         if (card.getTaskList().isEmpty()) {
             displayTasks();
@@ -563,11 +564,14 @@ public class CardViewCtrl implements Initializable {
         return (HBox) taskList.getChildren().remove(index);
     }
 
+    /**
+     * Handles the addition of a new Task to the list in both the
+     * UI and in the server.
+     */
     public void addNewTask() {
 
         Task task = new Task(card.getTaskList().size(), "New task!", false);
-
-        card = server.addTask(card.getId(), task);
+        card.getTaskList().add(server.addTask(card.getId(), task));
         refresh();
 
     }
@@ -576,7 +580,7 @@ public class CardViewCtrl implements Initializable {
      * Resets and displays the available tags of the current card
      * instance in the scene.
      */
-    public void displayTags() {
+    private void displayTags() {
 
 
     }
@@ -588,7 +592,7 @@ public class CardViewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
-    public void addTaskBeforeInList(int current, int before){
+    private void addTaskBeforeInList(int current, int before){
 
         for(Task task : card.getTaskList()){
             if(task.getPosition() == current){
@@ -610,27 +614,31 @@ public class CardViewCtrl implements Initializable {
         this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
     }
 
-    public void deleteCardInList(int position){
+    private void deleteCardInList(int position){
 
         //Remove the specified card
         card.getTaskList().remove(position);
 
         //Decrement any greater subsequent positions
-        for(Task task : card.getTaskList()){
-            if (task.getPosition() > position){
-                task.setPosition(task.getPosition()-1);
+        for (Task task : card.getTaskList()) {
+            if (task.getPosition() > position) {
+                task.setPosition(task.getPosition() - 1);
             }
         }
 
         //Make changes persist in the DB
         sortTasksByPosition();
-        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        this.setCard(server.updateTaskList(card.getId(), card.getTaskList()));
+
     }
-    public void sortTasksByPosition(){
+    private void sortTasksByPosition(){
         List<Task> sortedList = card.getTaskList();
-        sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ? 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
+        sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ?
+                1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
         card.setTaskList(sortedList);
         System.out.println(card.getTaskList().toString());
 
     }
+
+
 }
