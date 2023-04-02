@@ -1,8 +1,10 @@
 package client.scenes;
 
+import client.BoardData;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import jakarta.ws.rs.NotFoundException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,11 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class MainOverviewCtrl implements Initializable {
 
@@ -105,13 +105,15 @@ public class MainOverviewCtrl implements Initializable {
         //Update the BoardsConstraintText Label
         updateBoardsText();
         //Check that there are boards in the list
-        if (availableUserBoards == null || availableUserBoards.isEmpty()) {
-            emptyBoardListMsg.setVisible(true);
-            boardsListElement.setItems(null);
-            return;
+        if (!mainCtrl.isHasAdminRole()) {
+            if (availableUserBoards == null || availableUserBoards.isEmpty()) {
+                emptyBoardListMsg.setVisible(true);
+                boardsListElement.setItems(null);
+                return;
+            }
+
         }
         emptyBoardListMsg.setVisible(false);
-
         //Convert all the boards' title&id into an ObservableList
         ObservableList<String> content = FXCollections.observableArrayList();
 
@@ -174,6 +176,8 @@ public class MainOverviewCtrl implements Initializable {
                                     toBeRemoved = b;
                                 }
                             availableUserBoards.remove(toBeRemoved);
+                            refreshWorkspaceFile();
+                            server.send("/app/refresh", 10);
                             updateBoardsList();
                         });
                         updateBoardsText();
@@ -242,7 +246,7 @@ public class MainOverviewCtrl implements Initializable {
         }
 
         //Display the number of available boards
-        if(availableUserBoards == null) availableUserBoards = new ArrayList<>();
+        if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
         if (mainCtrl.isHasAdminRole())
             boardsText.setText(boardsListElement.getItems().size() + " Available Boards");
@@ -279,6 +283,8 @@ public class MainOverviewCtrl implements Initializable {
         String text = existsBoard(nr);
         if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
         availableUserBoards.add(server.getBoardById(nr));
+        if (!mainCtrl.isHasAdminRole())
+            refreshWorkspaceFile();
         mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
 
         //TODO Retrieve boards through key input or name input
@@ -319,13 +325,15 @@ public class MainOverviewCtrl implements Initializable {
         //System.out.println("\n\n\n" + board.getId() + "\n\n\n");
 
         server.send("/app/boards", board);
+        server.send("/app/refresh", 10);
         //Post the new board to the server
         //TODO Fix the POST method for board!
 
 
         //server.addBoard(board);
         refreshOverview(); //to be deleted after websockets implementation
-
+        if (!mainCtrl.isHasAdminRole())
+            refreshWorkspaceFile();
 
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
@@ -349,7 +357,8 @@ public class MainOverviewCtrl implements Initializable {
         if (selectedBoardStr == null) {
             return;
         }
-
+        if (!mainCtrl.isHasAdminRole())
+            refreshWorkspaceFile();
         // Navigate to the board view for the selected board
         mainCtrl.showBoardOverview(selectedBoardStr, (double) 1, (double) 1, (double) 1);
     }
@@ -378,19 +387,23 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), id)) toBeDeleted = b;
             if (toBeDeleted != null) {
-               // System.out.println(availableBoards+" "+availableUserBoards);
+                // System.out.println(availableBoards+" "+availableUserBoards);
                 availableBoards.remove(toBeDeleted);
                 availableUserBoards.remove(toBeDeleted);
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
             Platform.runLater(() -> refreshOverview());
+            if (!mainCtrl.isHasAdminRole())
+                Platform.runLater(() -> refreshWorkspaceFile());
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
-            if(!mainCtrl.isHasAdminRole()) {
+            if (!mainCtrl.isHasAdminRole()) {
                 availableUserBoards.add(board);
             }
             Platform.runLater(() -> refreshOverview());
+            if (!mainCtrl.isHasAdminRole())
+                Platform.runLater(() -> refreshWorkspaceFile());
         });
 
         server.registerForMessages("/topic/update-board", Board.class, board -> {
@@ -398,8 +411,78 @@ public class MainOverviewCtrl implements Initializable {
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
             Platform.runLater(() -> refreshOverview());
+            if (!mainCtrl.isHasAdminRole())
+                Platform.runLater(() -> refreshWorkspaceFile());
         });
 
+        server.registerForMessages("/topic/refresh", Integer.class, integer -> {
+            System.out.println("Hakdi");
+
+            Platform.runLater(() -> loadUserWorkspace());
+            if (!mainCtrl.isHasAdminRole())
+                Platform.runLater(() -> refreshWorkspaceFile());
+            Platform.runLater(() -> refreshOverview());
+        });
+
+    }
+
+    /**
+     * method used for to refresh the file from the availableUserBoards
+     */
+    public void loadUserWorkspace() {
+
+        BoardData boardData = new BoardData();
+
+        try {
+            // Deserialize the map from the file
+            boardData.deserializeBoardData("client//src//main//resources//ClientData.data");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (boardData != null) {
+            // Get the board list for a particular IP address
+            if (boardData.getBoardMap().keySet().contains(server.getServer()))
+                availableUserBoards = boardData.getBoardList(server.getServer());
+            else availableUserBoards = new ArrayList<>();
+        } else {
+            availableUserBoards = new ArrayList<>();
+        }
+
+
+        Iterator<Board> iterator = availableUserBoards.iterator();
+        while (iterator.hasNext()) {
+            Board board = iterator.next();
+            try {
+                server.getBoardById(board.getId());
+            } catch (NotFoundException e) {
+                iterator.remove();
+            }
+        }
+        refreshWorkspaceFile();
+    }
+
+
+    /**
+     * method used for to refresh the availableUserBoards from the file
+     */
+    public void refreshWorkspaceFile() {
+        BoardData boardData = new BoardData();
+
+        try {
+            // Deserialize the map from the file
+            boardData.deserializeBoardData("client//src//main//resources//ClientData.data");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        boardData.getBoardMap().put(server.getServer(), availableUserBoards);
+
+        try {
+            boardData.serializeBoardData("client//src//main//resources//ClientData.data");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

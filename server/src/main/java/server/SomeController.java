@@ -1,7 +1,10 @@
 package server;
 
+import commons.Board;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,5 +70,11 @@ public class SomeController {
     @ResponseBody
     public ResponseEntity<Boolean> getPassword() {
         return ResponseEntity.ok(Objects.equals(inputPasscode, password));
+    }
+
+    @MessageMapping("/refresh") // app/refresh
+    @SendTo("/topic/refresh")
+    public Integer addMessageRefresh(Integer integer) {
+        return integer;
     }
 }

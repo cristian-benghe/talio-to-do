@@ -1,10 +1,11 @@
 package commons;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Task {
+public class Task implements Serializable {
 
 
     //Encapsulated Task Attributes

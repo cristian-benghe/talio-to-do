@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class MainCtrl {
@@ -41,6 +40,7 @@ public class MainCtrl {
     private boolean shownMainOverviewOneTime = false;
     private String adminPassword;
     private boolean hasAdminRole;
+
 
     /**
      * This method initializes this controller instances
@@ -123,6 +123,8 @@ public class MainCtrl {
 
         if(!shownMainOverviewOneTime)
             mainOverviewCtrl.socketsCall();
+        mainOverviewCtrl.loadUserWorkspace();
+
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();

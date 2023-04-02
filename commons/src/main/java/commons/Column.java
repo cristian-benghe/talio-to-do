@@ -2,12 +2,13 @@ package commons;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.List;
 
 @Entity
-public class Column {
+public class Column implements Serializable {
     private int idInBoard=-1;
 
     @Id

@@ -1,12 +1,13 @@
 package commons;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Tag {
+public class Tag implements Serializable {
 
     private int idInBoard=-1;
 
