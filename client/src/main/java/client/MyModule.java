@@ -16,6 +16,7 @@
 package client;
 
 import client.scenes.*;
+import client.utils.ServerUtils;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -35,6 +36,6 @@ public class MyModule implements Module {
         binder.bind(MainOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(DeleteBoardPopUpCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardCustomizationCtrl.class).in(Scopes.SINGLETON);
-        //binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
     }
 }

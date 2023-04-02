@@ -125,7 +125,7 @@ public class CardViewCtrl implements Initializable {
      * Changes the Scene to the TagView Scene
      */
     @FXML
-    private void getTagView() throws IOException {
+    public void getTagView() throws IOException {
         mainCtrl.showTagView();
     }
 
