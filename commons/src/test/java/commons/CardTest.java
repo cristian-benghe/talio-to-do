@@ -87,7 +87,7 @@ class CardTest {
     void testSetTaskList() {
         Card c = new Card("Test Card", "basic description", null, null);
         List<Task> list = new ArrayList<>();
-        Task t1 = new Task(c, "task1", false);
+        Task t1 = new Task(0, "task1", false);
         list.add(t1);
         c.setTaskList(list);
         assertEquals(list, c.getTaskList());

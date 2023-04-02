@@ -54,8 +54,13 @@ public class TaskService {
      * Deletes the Task object with the specified id.
      * @param id the identifier of the Task object to be deleted
      */
-    public void delete(long id) {
-        repo.deleteById(id);
+    public boolean delete(long id) {
+        try {
+            repo.deleteById(id);
+            return true;
+        }catch(Exception e){
+            return false;
+        }
     }
 
 
@@ -67,5 +72,35 @@ public class TaskService {
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
     }
+
+    /**
+     *  Updates the task instance corresponding to the given ID
+     *  in the Task Repository.
+     * @return the updated Task instance
+     * @throws IllegalArgumentException if the given id is null, or if the Task instance does not
+     * exist, an IllegalArgumentException will be thrown.
+     */
+    public Task updateTask(Task newTask) throws IllegalArgumentException{
+
+        //Search for the task instance in the repository
+        Optional<Task> optTask = repo.findById(newTask.getID());
+
+        //Determine whether the instance exists
+        if(optTask.isEmpty()){
+            //Otherwise, throw an exception
+            throw new IllegalArgumentException("The task does not exists in the DB.");
+        }
+        //Change the title of the instance
+        Task task = optTask.get();
+        task.setTitle(newTask.getTitle());
+        task.setStatus(newTask.getStatus());
+
+        //Save the instance to the repository
+        repo.save(task);
+
+        return task;
+    }
+
+
 
 }
