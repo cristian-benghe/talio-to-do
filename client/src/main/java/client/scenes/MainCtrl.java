@@ -41,6 +41,7 @@ public class MainCtrl {
     private boolean shownMainOverviewOneTime = false;
     private String adminPassword;
     private boolean hasAdminRole;
+    private Card card;
 
     /**
      * This method initializes this controller instances
@@ -161,6 +162,7 @@ public class MainCtrl {
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
+        tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
         tagViewCtrl.refreshtaglist();
@@ -168,6 +170,7 @@ public class MainCtrl {
         primaryStage.centerOnScreen();
 
     }
+
 
     /**
      * A method to switch the scene to the TagView
@@ -260,6 +263,18 @@ public class MainCtrl {
         return tagViewCtrl;
     }
     public CardViewCtrl getCardViewCtrl() {
+        return cardViewCtrl;
+    }
+
+    public void setCard(Card card) {
+        this.card=card;
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public CardViewCtrl getcardViewCtrl() {
         return cardViewCtrl;
     }
 }

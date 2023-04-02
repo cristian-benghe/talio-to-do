@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Card;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -15,15 +16,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import client.scenes.CardViewCtrl;
-
 
 public class TagTemplateCtrl implements Initializable {
     private final ServerUtils server;
 
     private final MainCtrl mainCtrl;
-
-    private final CardViewCtrl cardViewCtrl;
     private Long tagId= Long.valueOf(0);
     private Long boardId;
     @FXML
@@ -40,9 +37,7 @@ public class TagTemplateCtrl implements Initializable {
 
     @FXML
     private TextField title;
-
-
-
+    private Card card;
 
 
     @FXML
@@ -62,15 +57,15 @@ public class TagTemplateCtrl implements Initializable {
 
     @FXML
     void setCheckbox() {
-        AnchorPane tagList = cardViewCtrl.getTagList();
-
-        if (checkbox.isSelected()) {
-            TextField tagTitle = new TextField(title.getText());
-            tagTitle.setEditable(false);
-            tagList.getChildren().add(tagTitle);
-        } else {
-            tagList.getChildren().removeIf(node -> node instanceof TextField);
-        }
+//        HBox tagList = mainCtrl.getcardViewCtrl().getTagList();
+//        System.out.println(title.getText());
+//        if (checkbox.isSelected()) {
+//            TextField tagTitle = new TextField(title.getText());
+//            tagList.getChildren().add(tagTitle);
+//        } else {
+//            tagList.getChildren().removeIf(node -> node instanceof TextField);
+//        }
+//        mainCtrl.getcardViewCtrl().setCardViewCtrl(tagList);
     }
 
 
@@ -81,10 +76,9 @@ public class TagTemplateCtrl implements Initializable {
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
-    public TagTemplateCtrl(ServerUtils server, MainCtrl mainCtrl,  CardViewCtrl cardViewCtrl) {
+    public TagTemplateCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.cardViewCtrl = cardViewCtrl;
     }
 
 
@@ -146,6 +140,18 @@ public class TagTemplateCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title.setText("New Tag");
+    }
+
+    public void setCard(Card card) {
+        this.card=card;
+    }
+
+    public String getText() {
+        return title.getText();
+    }
+
+    public boolean getCheckBox() {
+        return checkbox.isSelected();
     }
 //   public void deleteTag(){
 //        server.deleteTag(tagId);

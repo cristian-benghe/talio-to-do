@@ -1,19 +1,13 @@
 package server.service;
+
+import commons.Card;
+import commons.Task;
+import org.springframework.stereotype.Service;
+import server.database.CardRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-
-import commons.Task;
-import org.springframework.stereotype.Service;
-
-
-import commons.Card;
-
-
-import server.database.CardRepository;
-
-import javax.swing.text.html.Option;
 
 @Service
 public class CardService {

@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -42,9 +41,9 @@ public class CardViewCtrl implements Initializable {
     @FXML
     private Label emptyTaskList;
     @FXML
-    private AnchorPane taglist;
+    private HBox taglist;
 
-    public AnchorPane getTagList() {
+    public HBox getTagList() {
         return taglist;
     }
 
@@ -133,6 +132,7 @@ public class CardViewCtrl implements Initializable {
     @FXML
     private void getTagView() throws IOException {
         mainCtrl.showTagView();
+
     }
 
     /**
@@ -154,12 +154,11 @@ public class CardViewCtrl implements Initializable {
         //titleLabel.setText(card.getTitle());
 
         //Reset the long description text area
-        longDescription.setText(card.getDescription());
 
+        longDescription.setText(card.getDescription());
         //Reset the task and tag lists
         displayTasks();
         displayTags();
-
     }
 
     /**
@@ -493,7 +492,8 @@ public class CardViewCtrl implements Initializable {
 
                     //Determine the ID of the task to be deleted
                     Dragboard dragboard = event.getDragboard();
-                    int position = Integer.parseInt((String) dragboard.getContent(DataFormat.PLAIN_TEXT));
+                    int position = Integer.parseInt((String)
+                            dragboard.getContent(DataFormat.PLAIN_TEXT));
 
                     //Remove the task from the Card's task list
                     deleteCardInList(position);
@@ -561,10 +561,10 @@ public class CardViewCtrl implements Initializable {
      * Resets and displays the available tags of the current card
      * instance in the scene.
      */
-    public void displayTags() {
-
-
-    }
+        public void displayTags() {
+           
+        }
+    
 
     /**
      * @param address of the server
@@ -593,6 +593,8 @@ public class CardViewCtrl implements Initializable {
         }
         sortTasksByPosition();
         this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        mainCtrl.setCard(card);
+
     }
 
     public void deleteCardInList(int position){
@@ -610,6 +612,8 @@ public class CardViewCtrl implements Initializable {
         //Make changes persist in the DB
         sortTasksByPosition();
         this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        mainCtrl.setCard(card);
+
     }
     public void sortTasksByPosition(){
         List<Task> sortedList = card.getTaskList();
@@ -617,5 +621,10 @@ public class CardViewCtrl implements Initializable {
         card.setTaskList(sortedList);
         System.out.println(card.getTaskList().toString());
 
+    }
+
+    public void setCardViewCtrl(HBox tagList) {
+        taglist.getChildren().clear();
+        this.taglist.getChildren().addAll(tagList);
     }
 }
