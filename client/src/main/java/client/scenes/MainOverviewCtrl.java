@@ -111,7 +111,6 @@ public class MainOverviewCtrl implements Initializable {
                 boardsListElement.setItems(null);
                 return;
             }
-
         }
         emptyBoardListMsg.setVisible(false);
         //Convert all the boards' title&id into an ObservableList
@@ -327,8 +326,7 @@ public class MainOverviewCtrl implements Initializable {
         Board board = new Board("New Board", null, null);
         //System.out.println("\n\n\n" + board.getId() + "\n\n\n");
 
-        server.send("/app/boards", board);
-        server.send("/app/refresh", 10);
+
         //Post the new board to the server
         //TODO Fix the POST method for board!
 
@@ -337,6 +335,10 @@ public class MainOverviewCtrl implements Initializable {
         refreshOverview(); //to be deleted after websockets implementation
         if (!mainCtrl.isHasAdminRole())
             refreshWorkspaceFile();
+
+        server.send("/app/boards", board);
+
+        server.send("/app/refresh", 10);
 
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
@@ -362,7 +364,6 @@ public class MainOverviewCtrl implements Initializable {
         }
 
 
-
         if (!mainCtrl.isHasAdminRole()) {
 
             refreshWorkspaceFile();
@@ -371,6 +372,7 @@ public class MainOverviewCtrl implements Initializable {
         }
         // Navigate to the board view for the selected board
         mainCtrl.showBoardOverview(selectedBoardStr, (double) 1, (double) 1, (double) 1);
+
     }
 
     /**
@@ -403,17 +405,14 @@ public class MainOverviewCtrl implements Initializable {
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
 
-            if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> loadUserWorkspace());
             Platform.runLater(() -> refreshOverview());
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
             if (!mainCtrl.isHasAdminRole()) {
+                if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
                 availableUserBoards.add(board);
             }
-            if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> loadUserWorkspace());
             Platform.runLater(() -> refreshOverview());
         });
 
@@ -421,16 +420,6 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
-            if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> loadUserWorkspace());
-            Platform.runLater(() -> refreshOverview());
-        });
-
-        server.registerForMessages("/topic/refresh", Integer.class, integer -> {
-            System.out.println("Hakdi");
-            if (!mainCtrl.isHasAdminRole())
-                Platform.runLater(() -> loadUserWorkspace());
-
             Platform.runLater(() -> refreshOverview());
         });
 
@@ -452,7 +441,7 @@ public class MainOverviewCtrl implements Initializable {
 
         if (boardData != null) {
             // Get the board list for a particular IP address
-            if (boardData.getBoardMap().keySet().contains(server.getServer()))
+            if (boardData.getBoardMap().containsKey(server.getServer()))
                 availableUserBoards = boardData.getBoardList(server.getServer());
             else availableUserBoards = new ArrayList<>();
         } else {
@@ -460,13 +449,23 @@ public class MainOverviewCtrl implements Initializable {
         }
 
 
-        Iterator<Board> iterator = availableUserBoards.iterator();
-        while (iterator.hasNext()) {
-            Board board = iterator.next();
+        if (availableUserBoards.size() == 1) {
             try {
-                server.getBoardById(board.getId());
-            } catch (NotFoundException e) {
-                iterator.remove();
+                server.getBoardById(availableUserBoards.get(0).getId());
+            } catch (NotFoundException e){
+                availableUserBoards = new ArrayList<>();
+            }
+
+        } else {
+
+            Iterator<Board> iterator = availableUserBoards.iterator();
+            while (iterator.hasNext()) {
+                Board board = iterator.next();
+                try {
+                    server.getBoardById(board.getId());
+                } catch (NotFoundException e) {
+                    iterator.remove();
+                }
             }
         }
         refreshWorkspaceFile();

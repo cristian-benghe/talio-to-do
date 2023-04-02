@@ -100,7 +100,7 @@ public class ClientConnectCtrl implements Initializable {
 
         //Get the server address
         String serverAddress = serverAddressField.getText();
-
+        server.setServer(serverAddress);
         //Check that the password entered is correct
         if (adminCheckbox.isSelected() && !isValidAdminPassword(password.getText())) {
             errorPassword.setText("The password is incorrect!");
