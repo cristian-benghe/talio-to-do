@@ -23,10 +23,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import commons.Tag;
-import commons.Board;
-import commons.Card;
-import commons.Column;
+import commons.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
@@ -46,8 +43,8 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 @Component
 public class ServerUtils {
 
-    private String server = "ws://localhost:8080/websocket";
-    private StompSession session = connect("ws://localhost:8080/websocket");
+    private String server;
+    private StompSession session;
 
 
     /**
@@ -90,6 +87,7 @@ public class ServerUtils {
 
     /**
      * Delete a card from api/cards
+     *
      * @param cardId Id of the card that will be deleted
      * @return Response of the server/request
      */
@@ -101,26 +99,42 @@ public class ServerUtils {
                 .delete();
     }
 
-    private Column updateCardDragDrop(Board board,int cardId,Card card,Long columnId,Long boardId)
-    {
+    private Column updateCardDragDrop(Board board, int cardId,
+                                      Card card, Long columnId, Long boardId) {
         Column column = board.getColumns().get(Math.toIntExact(columnId));
-        board.getColumns().set(Math.toIntExact(columnId),column);
-        column =  board.getColumns().get(Math.toIntExact(columnId));
+        board.getColumns().set(Math.toIntExact(columnId), column);
+        column = board.getColumns().get(Math.toIntExact(columnId));
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/columns/" + ( column.getId()))
+                .target(server).path("api/columns/" + (column.getId()))
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
     /**
+     * A method to change card arrangement
+     * @param columnID An id of hte column that will changed
+     * @param column the object ofcolumn
+     * @param boardId the boardId
+     */
+    public void updateCardArrangement(int columnID, Column column, Long boardId) {
+        Board board = getBoardById(boardId);
+        board.setColumn(columnID, column);
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
      * A method to delete a card with server from database
-     * @param board board to be used
-     * @param cardId card to be deleted
+     *
+     * @param board    board to be used
+     * @param cardId   card to be deleted
      * @param columnId column that should be updated
-     * @param boardId boardid
+     * @param boardId  boardid
      * @return Column
      */
-    public Long deleteCardServer(Board board, Long cardId, Long columnId, Long boardId){
+    public Long deleteCardServer(Board board, Long cardId, Long columnId, Long boardId) {
         Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
         Card card = column.getCards().get(Math.toIntExact(cardId) - 2);
         column.getCards().remove(card);
@@ -150,10 +164,11 @@ public class ServerUtils {
 
     /**
      * A method to update the database when card is drag and dropped
-     * @param cardid cardId that is drag and dropped
-     * @param columnID Id of the column that card dragged from
-     * @param newColumnId  Id of the column that the card is dropped
-     * @param boardId boardid
+     *
+     * @param cardid      cardId that is drag and dropped
+     * @param columnID    Id of the column that card dragged from
+     * @param newColumnId Id of the column that the card is dropped
+     * @param boardId     boardid
      */
     public void cardDragDropUpdate(Long cardid, Long columnID, Long newColumnId, Long boardId) {
         Board board = getBoardById(boardId);
@@ -161,18 +176,18 @@ public class ServerUtils {
         Card card = column.getCards().get(Math.toIntExact(cardid) - 2);
         Column newcolumn = board.getColumns().get((int) (newColumnId - 0));
         newcolumn.getCards().add(card);
-        board.getColumns().set((int) (newColumnId - 0),newcolumn);
+        board.getColumns().set((int) (newColumnId - 0), newcolumn);
 
 //        column.getCards().remove(card);
 //        board.getColumns().set((int) (columnID - 0),column);
         //deletion on server needed.
-        deleteCardServer(board,cardid, columnID+1, boardId);
+        deleteCardServer(board, cardid, columnID + 1, boardId);
         //updateColumn(Math.toIntExact(column.getId()), column);
         board = getBoardById(boardId);
         newcolumn = board.getColumns().get((int) (newColumnId - 0));
         newcolumn.getCards().add(card);
-        board.getColumns().set((int) (newColumnId - 0),newcolumn);
-        updateCardDragDrop(board,Math.toIntExact(cardid), card, newColumnId, boardId);
+        board.getColumns().set((int) (newColumnId - 0), newcolumn);
+        updateCardDragDrop(board, Math.toIntExact(cardid), card, newColumnId, boardId);
         System.out.println(getBoardById(boardId).getColumns().get(1).getCards());
     }
 
@@ -296,18 +311,18 @@ public class ServerUtils {
      * to the to-do list. The column parameter should contain all necessary
      * information about the new column
      *
-     * @param column The column to add to the list.
+     * @param tag The column to add to the list.
      * @return returns a Column object, which is the server's representation
      * of the newly created column. The response body from the server is
      * deserialized into a Column object using the Jackson JSON library,
      * and this object is returned to the caller of the addColumn method
      */
-    public Column addColumn(Column column) {
+    public Tag addTag(Tag tag) {
         return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/columns") //
+                .target(server).path("api/tags") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(column, APPLICATION_JSON), Column.class);
+                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
     }
 
     /**
@@ -378,12 +393,25 @@ public class ServerUtils {
     }
 
     /**
+     * @param tagId id of the tag in db
+     */
+    public void deleteTag(long tagId) {
+        ClientBuilder.newClient(new ClientConfig()) // creates a new client
+                .target(server) // sets the target server for the request
+                .path("api/tags/" + tagId) // specifies the API endpoint to delete the board
+                .request() // creates a new request object
+                .delete(); // sends the HTTP DELETE request and returns the response,
+        // but the code does not handle the response explicitly
+    }
+
+    /**
      * Retrieves using an HTTP GET request a board with a certain id
      *
      * @param boardId the id of the board we are looking for
      * @return The deserialized Board object
      */
     public Board getBoardById(long boardId) {
+        System.out.println(boardId);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
                 .path("api/boards/" + boardId)
@@ -391,7 +419,6 @@ public class ServerUtils {
                 .accept(MediaType.APPLICATION_JSON)
                 .get(Board.class);
     }
-
 
 
     /**
@@ -469,7 +496,7 @@ public class ServerUtils {
      * @param server the URL of the server in String format
      */
     public void setServer(String server) {
-        server = server;
+        this.server = server;
     }
 
     /**
@@ -521,7 +548,14 @@ public class ServerUtils {
         updateColumnInBoard(columnID, column, boardId);
     }
 
-    private Board updateColumnInBoard(int columnID, Column column, Long boardId) {
+    /**
+     * A method to update the column in board
+     * @param columnID An id of the column that will be updated
+     * @param column The column object
+     * @param boardId id of the board
+     * @return Board object
+     */
+    public Board updateColumnInBoard(int columnID, Column column, Long boardId) {
         Board board = getBoardById(boardId);
         board.setColumn(columnID - 1, column);
         return ClientBuilder.newClient(new ClientConfig())
@@ -538,12 +572,25 @@ public class ServerUtils {
     }
 
     /**
+     * A method to update the board after the column rearrangement
+     * @param board board that will be updated
+     * @param boardId id of the board
+     */
+    public void updateBoard(Board board, int boardId)
+    {
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
      * A ,ethod to delete the column from api/columns
+     *
      * @param columnId Id of the column that will be deleted
      * @return Response of the server/request
      */
-    public Response deleteColumnFromApi(int columnId)
-    {
+    public Response deleteColumnFromApi(int columnId) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/columns/" + columnId)
                 .request(MediaType.APPLICATION_JSON)
@@ -569,15 +616,14 @@ public class ServerUtils {
     }
 
     /**
-<<<<<<< HEAD
-     * @param blue the rgb value of blue
-     * @param green the rgb value of green
-     * @param red the rgb value of red
+     * @param blue    the rgb value of blue
+     * @param green   the rgb value of green
+     * @param red     the rgb value of red
      * @param boardId the id of the board
      * @return an updated board with the new color
      */
     public Board updateBoardColor(Double blue, Double green, Double red, Long boardId) {
-        Board board=getBoardById(boardId);
+        Board board = getBoardById(boardId);
         board.setColor(red, green, blue);
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -587,14 +633,12 @@ public class ServerUtils {
     }
 
     /**
-     * @param id the id of the tag in the db
+     * @param id     the id of the tag in the db
      * @param newTag added tag in the board
-     * @param i index of the tag in the board
      * @return the updated board
      */
-    public Board addTagToBoard(Long id, Tag newTag, int i) {
+    public Board addTagToBoard(Long id, Tag newTag) {
         Board board = getBoardById(id);
-        newTag.setIDinBoard(i);
         board.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -605,9 +649,9 @@ public class ServerUtils {
 
 
     /**
-     * @param tagID = id of the tag in the board
-     * @param text     = the new title of the tag
-     * @param boardId  = the id of the board
+     * @param tagID   = id of the tag in the board
+     * @param text    = the new title of the tag
+     * @param boardId = the id of the board
      */
     public void updateTagTitle(int tagID, String text, Long boardId) {
         Board board = getBoardById(boardId);
@@ -638,24 +682,28 @@ public class ServerUtils {
      * @param boardId the id of the board the tag is in
      * @return the updated board
      */
-    public Board deleteTag(int tagInd, Long boardId) {
+    public Board deleteTagFromBoard(Long tagInd, Long boardId) {
         Board board = getBoardById(boardId);
-        board.updateColIndex(tagInd);
-        board.deleteColumn(tagInd);
+        for(int i=0;i<board.getTags().size();i++){
+            if(board.getTags().get(i).getTagID()==tagInd){
+                board.removeTag(i);
+                break;
+            }
+        }
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
-    /**
-     * Adds a new column to a board.
-     * This method sends a POST request to the server to add a new column to a board.
-     * The boardId parameter specifies the ID of the board to add the column to,
-     * while the column parameter should contain all necessary information about the new column.
-     * @param boardId The ID of the board to add the column to.
-     * @param column The column to add to the board.
-     * @return The deserialized column.
-     */
+//    /**
+//     * Adds a new column to a board.
+//     * This method sends a POST request to the server to add a new column to a board.
+//     * The boardId parameter specifies the ID of the board to add the column to,
+//     * while the column parameter should contain all necessary information about the new column.
+//     * @param boardId The ID of the board to add the column to.
+//     * @param column The column to add to the board.
+//     * @return The deserialized column.
+//     */
 //    public Column addColumnToBoard(Long boardId, Column column) {
 //        // Send a POST request to the server to add a new column to a board
 //        return ClientBuilder.newClient(new ClientConfig())
@@ -664,5 +712,106 @@ public class ServerUtils {
 //                .accept(MediaType.APPLICATION_JSON)
 //                .post(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
 //    }
+
+    /**
+     * POST request to send the input passcode in ClientConnect
+     * @param password the passcode that is provided
+     * @return the password provided
+     */
+    public String sendPassword(String password) {
+//        System.out.println(server);
+//        return null;
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(server).path("add-password") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(password, APPLICATION_JSON), String.class);
+    }
+
+    /**
+     * check in the server if the password is correct
+     * @return true if passwords match, false else
+     */
+    public Boolean checkPassword() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(server).path("check-password") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<Boolean>() {
+                });
+    }
+
+
+    /**
+     * Adds a new Task to the server, and links it to the
+     * Card instance with the corresponding identifier.
+     * @param cardId the identifier of the Card instance
+     * @param task the newly created Task
+     * @return the newly created Task
+     */
+    public Task addTask(long cardId, Task task){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/addTask/byCard")
+                .queryParam("id",cardId)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(task, APPLICATION_JSON),Task.class);
+    }
+
+
+    /**
+     * Updates the entirety of the Task List of a particular
+     * Card instance with the given identifier.
+     * @param cardID the identifier the Card list
+     * @param taskList the updated Task List
+     * @return the updated Task List
+     */
+    public Card updateTaskList(long cardID, List<Task> taskList){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/cards/updateTaskList")
+                .queryParam("id",cardID)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
+    }
+
+
+    /**
+     * Persists the changes given by the Task instance
+     * in the server.
+     * @param task the updated Task instance.
+     */
+    public void updateTask(Task task){
+
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/update")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(task, APPLICATION_JSON), Task.class);
+
+
+    }
+
+
+    /**
+     * Returns the List of all Task instances that are linked
+     * to the Card, identified by the given identifier.
+     * @param cardId the identifier of the Card instance
+     * @return the List of all linked Task instances
+     */
+    public List<Task> getAllTasksByCardId(long cardId){
+        return ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("api/cards/getTaskList")
+                    .queryParam("id", cardId)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<List<Task>>(){});
+    }
+
+
 
 }

@@ -1,12 +1,13 @@
 package client.scenes;
 
+import commons.Card;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.awt.*;
+import java.io.IOException;
 
 public class MainCtrl {
 
@@ -28,10 +29,19 @@ public class MainCtrl {
     private Scene cardView;
     private BoardCustomizationCtrl boardCustomizationCtrl;
 
+    private boolean isAdmin=false;
+
     private Scene boardCustomization;
     private TagViewCtrl tagViewCtrl;
     private Scene tagView;
+
+    //private TagTemplateCtrl tagTemplateCtrl;
+    //private Scene tagTemplate;
     private boolean shownMainOverviewOneTime = false;
+    private String adminPassword;
+    private boolean hasAdminRole;
+
+
     /**
      * This method initializes this controller instances
      * @param primaryStage an injection of the primary stage
@@ -55,8 +65,9 @@ public class MainCtrl {
                            Pair<TagViewCtrl, Parent> tagView) throws Exception {
 
 
+        this.isAdmin = false;
         this.primaryStage = primaryStage;
-        
+
         this.boardOverviewCtrl = boardOverview.getKey();
         this.boardOverview = new Scene(boardOverview.getValue());
 
@@ -72,6 +83,8 @@ public class MainCtrl {
         this.boardCustomization=new Scene(boardCustomization.getValue());
         this.tagViewCtrl = tagView.getKey();
         this.tagView = new Scene(tagView.getValue());
+
+
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
@@ -93,7 +106,7 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
         boardCustomizationCtrl.setBoardText(text);
-        System.out.println(text);
+       // System.out.println(text);
 
         boardOverviewCtrl.socketsCall();
 
@@ -110,6 +123,8 @@ public class MainCtrl {
 
         if(!shownMainOverviewOneTime)
             mainOverviewCtrl.socketsCall();
+        mainOverviewCtrl.loadUserWorkspace();
+
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();
@@ -133,24 +148,33 @@ public class MainCtrl {
 
     /**
      * A method to switch the scene from boardOverView to the CarView
+     * @param card the card instance that will be inspected
      */
-    public void showCardView() {
+    public void showCardView(Card card) {
+
         cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
+        cardViewCtrl.setCard(card);
         primaryStage.setScene(cardView);
-        clientConnectCtrl.refresh();
+        cardViewCtrl.refresh();
         primaryStage.centerOnScreen();
     }
     /**
      * A method to switch the scene to the TagView
      */
-    public void showTagView() {
+    public void showTagView() throws IOException {
         primaryStage.setTitle("Talio - TagView");
-
         primaryStage.setScene(tagView);
+        tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
+
     }
+
+    /**
+     * A method to switch the scene to the TagView
+     */
+
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
@@ -171,12 +195,50 @@ public class MainCtrl {
      * @param address the address of the server
      */
     public void createConnection(String address){
+        //sets the connection of all controllers with the server
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
         boardCustomizationCtrl.setConnection(address);
+        cardViewCtrl.setConnection(address);
+        tagViewCtrl.setConnection(address);
     }
 
+    /**
+     * gets the value of the AdminPassword
+     *
+     * @return the value of the AdminPassword
+     */
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    /**
+     * Sets the value of AdminPassword
+     *
+     * @param adminPassword - the value of the AdminPassword
+     */
+    public void setAdminPassword(String adminPassword) {
+        this.adminPassword = adminPassword;
+    }
+
+    /**
+     * gets the value of the hasAdminRole
+     *
+     * @return the value of the hasAdminRole
+     */
+    public boolean isHasAdminRole() {
+        return hasAdminRole;
+    }
+
+    /**
+     * Sets the value of hasAdminRole
+     *
+     * @param hasAdminRole - the value of the hasAdminRole
+     */
+    public void setHasAdminRole(boolean hasAdminRole) {
+        this.hasAdminRole = hasAdminRole;
+    }
 
     /**
      * changes the scene to board customization
@@ -190,7 +252,13 @@ public class MainCtrl {
      * @return the id of the board
      */
     public Long getBoardId() {
-        System.out.println(boardOverviewCtrl.getId());
         return boardOverviewCtrl.getId();
+    }
+
+    /**
+     * @return the tagviewctrl to access the refresh method in tagview when deleting a templatetag
+     */
+    public TagViewCtrl getTagViewCtrl() {
+        return tagViewCtrl;
     }
 }

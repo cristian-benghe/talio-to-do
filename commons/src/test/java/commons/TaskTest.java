@@ -14,10 +14,8 @@ class TaskTest {
 
     @BeforeEach
     public void setup(){
-        c = new Card("Test Card",null,null,null);
-        c.setId(10L);
 
-        t = new Task(1L,c,"Test Task",false);
+        t = new Task(1L,1,"Test Task",false);
     }
 
     @Test
@@ -28,7 +26,7 @@ class TaskTest {
 
     @Test
     public void NonIDAttributeConstructorNotNullTest(){
-        Task t1 = new Task(c,"Test Task", false);
+        Task t1 = new Task(2,"Test Task", false);
         assertNotNull(t1);
     }
 
@@ -43,12 +41,6 @@ class TaskTest {
         assertEquals(t.getID(),1L);
     }
 
-    @Test
-    public void getCardPositiveTest(){
-        //This assertion won't function well if there is no equals() implementation in the Card class.
-        assertEquals(t.getCard(),c);
-
-    }
 
     @Test
     public void getTitlePositiveTest(){
@@ -57,7 +49,7 @@ class TaskTest {
 
     @Test
     public void getStatusPositiveTest(){
-        assertFalse(t.isComplete());
+        assertFalse(t.getStatus());
     }
 
     @Test
@@ -72,7 +64,7 @@ class TaskTest {
 
     @Test
     public void changeCompleteStatePositiveTest(){
-        assertTrue(t.changeCompleteState());
+        assertTrue(t.setStatus(true));
     }
 
     @Test
@@ -106,13 +98,13 @@ class TaskTest {
     @Test
     public void notSameStatusEqualityNegativeTest(){
         Task t1 = new Task(t);
-        t1.changeCompleteState();
+        t1.setStatus(true);
         assertNotEquals(t,t1);
     }
 
 
     @Test void sameAttributesEqualityPositiveTest(){
-        Task t1 = new Task(1L,c,"Test Task",false);
+        Task t1 = new Task(1L,1,"Test Task",false);
         assertEquals(t,t1);
     }
 }

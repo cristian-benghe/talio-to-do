@@ -2,12 +2,13 @@ package commons;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.List;
 
 @Entity
-public class Column {
+public class Column implements Serializable {
     private int idInBoard=-1;
 
     @Id
@@ -97,6 +98,18 @@ public class Column {
     public void setCards(List<Card> cards) { this.cards = cards; }
 
     /**
+     * A copy method that is needed for the card arrangement in the specific column.
+     * @param column the source column that we will get the cards from
+     * @param column2 the new column that the old column will be copied
+     * @return the copied column
+     */
+    public Column copyCards(Column column, Column column2)
+    {
+        column2.cards = new ArrayList<>(column.getCards());
+        return column2;
+    }
+
+    /**
      * A HashCode implementation for this Column class. If two Column instances are equivalent,
      * then there hash codes should also be equivalent
      * @return a hash code that corresponds to this Column instance
@@ -144,7 +157,9 @@ public class Column {
                 + " has the ID: "
                 + this.id
                 + " and contains the following cards: "
-                + cards1;
+                + cards1
+                + "with position: "
+                + idInBoard;
     }
 
 

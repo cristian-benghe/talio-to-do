@@ -5,16 +5,11 @@ import java.util.List;
 
 import java.util.Optional;
 
+import commons.Task;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 //import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 //import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import commons.Card;
 
@@ -149,7 +144,57 @@ public class CardController {
     }
 
 
+    /**
+     * Handles the POST request for adding a given Task instance to the DB,
+     * and linking it to its corresponding Card instance, identified by the
+     * give n id.
+     * @param id the id of the linked card
+     * @param task the task instance to be added
+     * @return the linked Card instance
+     */
+    @PostMapping(path={"/addTask","/addTask/"})
+    public ResponseEntity<Card> addTask(@RequestParam("id")long id, @RequestBody Task task){
+        try{
+            return ResponseEntity.ok(cardservice.addTask(id,task));
+        }catch(IllegalArgumentException e){
+            return  ResponseEntity.badRequest().build();
+        }
+
+    }
+
+    /**
+     * Handles the PUT request that updates the entirety of the TaskList
+     * field for the Card corresponding to the given identifier.
+     * @param id the identifier of the card
+     * @param taskList the new TaskList
+     * @return the corresponding Card instance
+     */
+    @PutMapping(path={"/updateTaskList","/updateTaskList/"})
+    public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id,
+                                               @RequestBody List<Task> taskList) {
+        try {
+            return ResponseEntity.ok(cardservice.updateTaskList(id, taskList));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 
 
+    /**
+     * Handles the GET request that returns the Task List of
+     * a particular Card instance, identified by the given
+     * identifier.
+     * @param id the identifier of the Card instance
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path={"/getTaskList","/getTaskList"})
+    public ResponseEntity<List<Task>> getTaskList(@RequestParam("id")long id){
+        try{
+            return ResponseEntity.ok(cardservice.getTaskList(id));
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 }
 
