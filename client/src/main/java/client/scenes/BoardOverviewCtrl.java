@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
-import commons.Task;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
@@ -361,20 +360,31 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setLabelAction(Label label) {
         label.setOnMouseClicked(event -> {
-            //TODO, identify the card. Added a temporary sample card instance
-            ArrayList<Task> taskList = new ArrayList<Task>();
-            Card card = new Card("Sample Card",
-                    "A very longgggg description",
-                    taskList,
-                    null);
-            Task task1 = new Task(card, "First task", true);
-            Task task2 = new Task(card, "Second task", false);
-            task1.setID(1);
-            task2.setID(2);
-            taskList.add(task1);
-            taskList.add(task2);
+            int cardIndex = -2 + label.getParent()//HBox
+                        .getParent()   //Anchor
+                        .getParent()
+                        .getChildrenUnmodifiable()
+                        .indexOf(label.getParent().getParent());
+            int columnIndex = 1+label.getParent() //VBox
+                            .getParent() //Anchor
+                            .getParent() //VBox
+                            .getParent() //Scroll
+                            .getParent() //Anchor
+                            .getChildrenUnmodifiable()
+                            .indexOf(
+                                    label.getParent() //VBox
+                                            .getParent() //Anchor
+                                            .getParent() //VBox
+                                            .getParent() //Scroll
+                                    );
 
-            card.setId(1L);
+            Board board = server.getBoardById(id);
+            Column column = board.getColumns().stream()
+                    .filter(column1 -> column1.getIDinBoard() == columnIndex)
+                    .findFirst().get();
+            Card card = column.getCards().get(cardIndex);
+
+
             mainCtrl.showCardView(card);
         });
     }

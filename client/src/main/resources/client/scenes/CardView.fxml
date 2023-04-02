@@ -38,7 +38,7 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Button layoutX="469.0" layoutY="384.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
+      <Button fx:id="addTaskButton" layoutX="469.0" layoutY="384.0" mnemonicParsing="false" onAction="#addNewTask" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
       <ScrollPane layoutX="14.0" layoutY="434.0" prefHeight="43.0" prefWidth="392.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="34.0" prefWidth="429.0">

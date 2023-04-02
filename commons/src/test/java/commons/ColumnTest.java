@@ -86,6 +86,6 @@ class ColumnTest {
     @Test
     void testToString() {
         Column column1 = new Column("Todo", cards );
-        assertEquals(column1.toString(), "The Column Todo has the ID: null and contains the following cards: ");
+        assertEquals(column1.toString(), "The Column Todo has the ID: null and contains the following cards: with position: -1");
     }
 }

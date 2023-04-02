@@ -157,7 +157,9 @@ public class Column implements Serializable {
                 + " has the ID: "
                 + this.id
                 + " and contains the following cards: "
-                + cards1;
+                + cards1
+                + "with position: "
+                + idInBoard;
     }
 
 
