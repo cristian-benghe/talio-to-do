@@ -89,7 +89,7 @@ public class TaskController {
      * a response with HTTP status code 404.
      */
     @PutMapping(path={"update","update/"})
-    public ResponseEntity<Task> updateTitle(@RequestBody Task task){
+    public ResponseEntity<Task> updateTask(@RequestBody Task task){
         taskService.updateTask(task);
         return ResponseEntity.noContent().build();
     }

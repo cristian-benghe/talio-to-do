@@ -236,6 +236,7 @@ public class CardViewCtrl implements Initializable {
         //Create the checkbox for the task
         CheckBox completeBox = new CheckBox();
         completeBox.setSelected(task.getStatus());
+        recordSelectedOnChange(completeBox);
         taskRoot.getChildren().add(completeBox);
 
         //Create the title label for the task
@@ -310,11 +311,33 @@ public class CardViewCtrl implements Initializable {
 
                 if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     card.getTaskList().get(taskIndex).setTitle(field.getText());
+                    server.updateTask(card.getTaskList().get(taskIndex));
                     event.consume();
                 }
 
             }
         });
+    }
+
+    private void recordSelectedOnChange(CheckBox checkBox){
+
+        checkBox.setOnAction(event -> {
+
+            System.out.println("ping");
+            //Find the index of the corresponding task instance
+            int taskIndex = checkBox.getParent().getParent()
+                    .getChildrenUnmodifiable().indexOf(
+                            checkBox.getParent()
+                    );
+            taskIndex = (taskIndex-1)/2;
+
+
+            //Record the change in the status of the task, and ensure it persists in the server
+            card.getTaskList().get(taskIndex).setStatus(checkBox.isSelected());
+            server.updateTask(card.getTaskList().get(taskIndex));
+
+        });
+
     }
 
     /**

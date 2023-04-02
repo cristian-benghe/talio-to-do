@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import commons.*;
+import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.glassfish.jersey.client.ClientConfig;
@@ -786,6 +787,18 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
+    }
+
+    public void updateTask(Task task){
+
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/updateTask")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(task, APPLICATION_JSON));
+
+
     }
 
 
