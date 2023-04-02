@@ -423,6 +423,16 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
+    public Tag getTagById(long tagId) {
+        System.out.println(tagId);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tags/" + tagId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Tag.class);
+    }
+
 
     /**
      * Establishes a WebSocket connection to the specified
@@ -648,6 +658,16 @@ public class ServerUtils {
                 .target(server).path("api/boards/" + id)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    public Tag addCardToTag(Long id, Card newCard) {
+        Tag tag = getTagById(id);
+        tag.addCard(newCard);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/tags/" + id)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
     }
 
 

@@ -15,11 +15,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import client.scenes.CardViewCtrl;
+
 
 public class TagTemplateCtrl implements Initializable {
     private final ServerUtils server;
 
     private final MainCtrl mainCtrl;
+
+    private final CardViewCtrl cardViewCtrl;
     private Long tagId= Long.valueOf(0);
     private Long boardId;
     @FXML
@@ -39,10 +43,7 @@ public class TagTemplateCtrl implements Initializable {
 
 
 
-    @FXML
-    void setCheckbox() {
 
-    }
 
     @FXML
     void setFont() {
@@ -59,6 +60,19 @@ public class TagTemplateCtrl implements Initializable {
 
     }
 
+    @FXML
+    void setCheckbox() {
+        AnchorPane tagList = cardViewCtrl.getTagList();
+
+        if (checkbox.isSelected()) {
+            TextField tagTitle = new TextField(title.getText());
+            tagTitle.setEditable(false);
+            tagList.getChildren().add(tagTitle);
+        } else {
+            tagList.getChildren().removeIf(node -> node instanceof TextField);
+        }
+    }
+
 
 
     /**
@@ -67,9 +81,10 @@ public class TagTemplateCtrl implements Initializable {
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
-    public TagTemplateCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public TagTemplateCtrl(ServerUtils server, MainCtrl mainCtrl,  CardViewCtrl cardViewCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.cardViewCtrl = cardViewCtrl;
     }
 
 

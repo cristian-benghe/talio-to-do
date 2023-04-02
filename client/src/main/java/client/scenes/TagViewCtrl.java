@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import commons.Card;
 import commons.Tag;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -44,7 +45,7 @@ public class TagViewCtrl {
     private void createTag() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/client/scenes/TagTemplate.fxml"));
-        TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
+        TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl, mainCtrl.getCardViewCtrl());
         loader.setController(controller);
         Node node = loader.load();
         controller.setConnection(server.getServer());
@@ -77,7 +78,7 @@ public class TagViewCtrl {
         for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/scenes/TagTemplate.fxml"));
-            TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
+            TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl, mainCtrl.getCardViewCtrl());
             loader.setController(controller);
             controller.setTagId(c.getTagID());
             Node node = loader.load();

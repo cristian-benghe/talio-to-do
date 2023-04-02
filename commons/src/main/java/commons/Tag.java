@@ -52,6 +52,10 @@ public class Tag {
         this.cards=cards;
     }
 
+    public void addCard(Card newCard) {
+        cards.add(newCard);
+    }
+
     /**
      * @return id of a tag in a board
      */

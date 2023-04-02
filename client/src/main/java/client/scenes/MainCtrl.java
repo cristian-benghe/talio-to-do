@@ -259,4 +259,7 @@ public class MainCtrl {
     public TagViewCtrl getTagViewCtrl() {
         return tagViewCtrl;
     }
+    public CardViewCtrl getCardViewCtrl() {
+        return cardViewCtrl;
+    }
 }

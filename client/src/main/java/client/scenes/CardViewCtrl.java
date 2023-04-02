@@ -18,6 +18,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -41,6 +42,13 @@ public class CardViewCtrl implements Initializable {
     private VBox taskList;
     @FXML
     private Label emptyTaskList;
+    @FXML
+    private AnchorPane taglist;
+
+    public AnchorPane getTagList() {
+        return taglist;
+    }
+
 
     //Drag-and-drop markers list
     private Separator closestMarker;
@@ -143,7 +151,7 @@ public class CardViewCtrl implements Initializable {
     public void refresh(){
 
         //Reset the title label
-        titleLabel.setText(card.getTitle());
+        //titleLabel.setText(card.getTitle());
 
         //Reset the long description text area
         longDescription.setText(card.getDescription());
