@@ -10,6 +10,53 @@ import java.util.Set;
 public class Tag implements Serializable {
 
     private int idInBoard=-1;
+    private Double fontRed;
+    private Double fontGreen;
+    private Double fontBlue;
+
+    /**
+     * @return the blue value in highlight
+     */
+    public Double getHighlightBlue() {
+        return highlightBlue;
+    }
+
+    /**
+     * @return the value of red in highlight
+     */
+    public Double getHighlightRed() {
+        return highlightRed;
+    }
+
+    /**
+     * @return the value of green in the highlight
+     */
+    public Double getHighlightGreen() {
+        return highlightGreen;
+    }
+
+    private Double highlightBlue;
+    private Double highlightRed;
+    private Double highlightGreen;
+
+    /**
+     * @return blue value in the rgb of the font
+     */
+    public Double getFontBlue() {
+        return fontBlue;
+    }
+    /**
+     * @return green value in the rgb of the font
+     */
+    public Double getFontGreen() {
+        return fontGreen;
+    }
+    /**
+     * @return red value in the rgb of the font
+     */
+    public Double getFontRed() {
+        return fontRed;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,6 +77,8 @@ public class Tag implements Serializable {
      * Default constructor for creating an empty Tag object
      */
     public Tag() {
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
     }
 
     /**
@@ -42,7 +91,10 @@ public class Tag implements Serializable {
         this.tagID = tagID;
         this.title = title;
         this.cards = cards;
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
     }
+    
 
     /**
      * @param title of the tag
@@ -51,6 +103,15 @@ public class Tag implements Serializable {
     public Tag(String title, Set<Card>cards){
         this.title=title;
         this.cards=cards;
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
+    }
+
+    /**
+     * @param newCard the card to add
+     */
+    public void addCard(Card newCard) {
+        cards.add(newCard);
     }
 
     /**
@@ -155,5 +216,27 @@ public class Tag implements Serializable {
         return this.title +
                 " has the ID: " + this.tagID +
                 " and is part of: " + this.cards.toString();
+    }
+
+    /**
+     * @param red value in rgb of the font
+     * @param green value in rgb of the font
+     * @param blue value in rgb of the font
+     */
+    public void setFontColor(Double red, Double green, Double blue){
+        this.fontRed=red;
+        this.fontGreen=green;
+        this.fontBlue=blue;
+    }
+
+    /**
+     * @param highlightBlue  value in rgb of the font
+     * @param highlightGreen value in rgb of the font
+     * @param highlightRed   value in rgb of the font
+     */
+    public void setHighlightColor(Double highlightBlue, Double highlightGreen, Double highlightRed){
+        this.highlightBlue=highlightBlue;
+        this.highlightGreen=highlightGreen;
+        this.highlightRed=highlightRed;
     }
 }

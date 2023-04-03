@@ -29,7 +29,7 @@ public class Card implements Serializable {
     @JsonIgnore
     private List<Task> taskList;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tags;
 
 
@@ -53,7 +53,6 @@ public class Card implements Serializable {
         this.description = description;
         this.taskList = taskList;
         this.tags = tags;
-
     }
 
 

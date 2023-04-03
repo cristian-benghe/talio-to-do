@@ -66,6 +66,25 @@ public class TagController {
     }
 
     /**
+     * Updates an existing Column object with the specified id.
+     * @param id the id of the Column object to update
+     * @param tag the updated Column object
+     * @return a response containing the updated Column object,or a not found response
+     * if the id is invalid
+     */
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Tag> update(@PathVariable("id") long id, @RequestBody Tag tag) {
+        Optional<Tag> existing = tagservice.getById(id);
+        if (existing.isPresent()) {
+            Tag saved = tagservice.update(existing.get(),tag);
+            return ResponseEntity.ok(saved);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
      * Deletes the Tag object with the specified id and all cards contained by that column.
      * @param id the id of the Tag object to delete
      * @return a response indicating success or failure

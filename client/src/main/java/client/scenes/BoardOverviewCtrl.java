@@ -386,6 +386,8 @@ public class BoardOverviewCtrl implements Initializable {
 
 
             mainCtrl.showCardView(card);
+            mainCtrl.setCard(card);
+
         });
     }
 
