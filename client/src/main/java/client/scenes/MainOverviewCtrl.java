@@ -4,6 +4,7 @@ import client.BoardData;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
+import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.NotFoundException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -152,6 +153,7 @@ public class MainOverviewCtrl implements Initializable {
                             // Call a function to remove the board from the server.
                             server.send("/app/delete-board",
                                     Long.parseLong(item.split("--")[1].trim()));
+
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
                             updateBoardsText();
