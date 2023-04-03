@@ -248,7 +248,7 @@ public class MainOverviewCtrl implements Initializable {
         if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
         if (mainCtrl.isHasAdminRole())
-            boardsText.setText(boardsListElement.getItems().size() + " Available Boards");
+            boardsText.setText(availableBoards.size() + " Available Boards");
         else
             boardsText.setText(availableUserBoards.size() + " Available Boards");
     }
