@@ -19,7 +19,6 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -57,24 +56,13 @@ public class ServerUtils {
     }
 
     /**
-     * getter for the server address
      *
-     * @return the string containing the URL
+     * @param cardId
+     * @param card
+     * @param columnId
+     * @param boardId
+     * @return
      */
-    public String getServerAddress() {
-        return server;
-    }
-
-    /**
-     * Returns an URL with a certain path added
-     *
-     * @param path the desired path
-     * @return the string containing the URL
-     */
-    private String getServerUrl(String path) {
-        return server + path;
-    }
-
     private Column updateCardInColumn(int cardId, Card card, Long columnId, Long boardId) {
         Board board = getBoardById(boardId);
         Column column = board.getColumns().get(Math.toIntExact(columnId) - 1);
@@ -91,14 +79,23 @@ public class ServerUtils {
      * @param cardId Id of the card that will be deleted
      * @return Response of the server/request
      */
-    public Response deleteCardFromCardApi(Long cardId) {
+//    public Response deleteCardFromCardApi(Long cardId) {
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/cards/" + cardId)
+//                .request(MediaType.APPLICATION_JSON)
+//                .delete();
+//    }
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/cards/" + cardId)
-                .request(MediaType.APPLICATION_JSON)
-                .delete();
-    }
-
+    /**
+     *
+     * @param board
+     * @param cardId
+     * @param card
+     * @param columnId
+     * @param boardId
+     * @return
+     */
     private Column updateCardDragDrop(Board board, int cardId,
                                       Card card, Long columnId, Long boardId) {
         Column column = board.getColumns().get(Math.toIntExact(columnId));
@@ -212,36 +209,6 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
-    /**
-     * to get column by id
-     *
-     * @param columnId to get column
-     * @return Column object
-     */
-    public Column getColumnById(long columnId) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/columns/" + columnId)
-                .request(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .get(Column.class);
-    }
-
-    /**
-     * Adds a new board.
-     * This method sends a POST request to the server to add a new card
-     *
-     * @param board The board to be added to the list.
-     * @return The deserialized board
-     */
-    public Board addBoard(Board board) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/boards") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(board, APPLICATION_JSON), Board.class);
-    }
-
 
     /**
      * Retrieves an HTTP GET request for the boards resource.
@@ -258,125 +225,22 @@ public class ServerUtils {
     }
 
 
-    /**
-     * Adds a new card.
-     * This method sends a POST request to the server to add a new card
-     * to the to-do list. The card parameter should contain all necessary
-     * information about the new card, including the task description.
-     *
-     * @param card The card to add to the list.
-     * @return The deserialized card.
-     */
-    public Card addCard(Card card) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/cards") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(card, APPLICATION_JSON), Card.class);
-    }
-
-    /**
-     * Retrieves an HTTP GET request for the cards resource.
-     *
-     * @return all the cards in the database
-     */
-    public List<Card> getCards() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/cards") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Card>>() {
-                });
-    }
-
-    /**
-     * Retrieves an HTTP GET request for the cards resource where the cards are in a certain column.
-     *
-     * @param column the column we search cards in
-     * @return a list of cards
-     */
-    public List<Card> getCardsFromColumn(Column column) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/cards") //
-                .queryParam("column_id", column.getId())
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Card>>() {
-                });
-    }
-
-    /**
-     * Adds a new column.
-     * This method sends a POST request to the server to add a new card
-     * to the to-do list. The column parameter should contain all necessary
-     * information about the new column
-     *
-     * @param tag The column to add to the list.
-     * @return returns a Column object, which is the server's representation
-     * of the newly created column. The response body from the server is
-     * deserialized into a Column object using the Jackson JSON library,
-     * and this object is returned to the caller of the addColumn method
-     */
-    public Tag addTag(Tag tag) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/tags") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(tag, APPLICATION_JSON), Tag.class);
-    }
-
-    /**
-     * Retrieves an HTTP GET request for the columns resource.
-     *
-     * @return all the columns in the database
-     */
-    public List<Column> getColumns() {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/columns") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Column>>() {
-                });
-    }
-
-    /**
-     * Retrieves an HTTP GET request for the columns resource
-     * where the columns are in a certain board.
-     *
-     * @param board the board in which we are looking for columns
-     * @return a list of cards
-     */
-    public List<Column> getColumnsFromBoard(Board board) {
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(server).path("api/columns") //
-                .queryParam("board_id", board.getId())
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Column>>() {
-                });
-    }
-
-    /**
-     * update the board title when it's modified
-     *
-     * @param boardId  the id of the board to be modified
-     * @param newTitle the new title the board will have
-     * @return The deserialized Board object
-     */
-    public Board updateBoardTitle(long boardId, String newTitle) {
-        Board board = ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + boardId)
-                .request(MediaType.APPLICATION_JSON)
-                .get(Board.class);
-        if (board == null) {
-            throw new NoSuchElementException();
-        }
-        board.setTitle(newTitle);
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + boardId)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
-    }
+//    /**
+//     * Adds a new card.
+//     * This method sends a POST request to the server to add a new card
+//     * to the to-do list. The card parameter should contain all necessary
+//     * information about the new card, including the task description.
+//     *
+//     * @param card The card to add to the list.
+//     * @return The deserialized card.
+//     */
+//    public Card addCard(Card card) {
+//        return ClientBuilder.newClient(new ClientConfig()) //
+//                .target(server).path("api/cards") //
+//                .request(APPLICATION_JSON) //
+//                .accept(APPLICATION_JSON) //
+//                .post(Entity.entity(card, APPLICATION_JSON), Card.class);
+//    }
 
     /**
      * This method sends an HTTP DELETE request using the Jersey client library
@@ -500,15 +364,6 @@ public class ServerUtils {
     }
 
     /**
-     * gets the session
-     *
-     * @return the session
-     */
-    public StompSession getSession() {
-        return session;
-    }
-
-    /**
      * sets the session
      *
      * @param session the session
@@ -563,14 +418,6 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
-
-    private Column updateColumn(int columnID, Column column) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + columnID)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
-    }
-
     /**
      * A method to update the board after the column rearrangement
      * @param board board that will be updated
