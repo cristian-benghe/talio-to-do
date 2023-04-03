@@ -291,4 +291,8 @@ public class Board {
     public void removeTag(int i) {
         tags.remove(i);
     }
+
+    public void updateTag(int ind, Tag tag) {
+        tags.set(ind, tag);
+    }
 }

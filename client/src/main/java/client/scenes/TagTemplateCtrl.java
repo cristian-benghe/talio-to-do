@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Card;
+import commons.Tag;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -36,7 +37,7 @@ public class TagTemplateCtrl implements Initializable {
     private ColorPicker highlight;
 
     @FXML
-    private TextField title;
+    private TextField titlee;
     private Card card;
 
 
@@ -87,6 +88,7 @@ public class TagTemplateCtrl implements Initializable {
      */
     public void setTagId(Long tagID) {
         this.tagId = tagID;
+        //this.titlee.setText(server.getTagById(tagID).getTitle());
     }
     @FXML
     private void deleteTag() throws IOException {
@@ -128,7 +130,7 @@ public class TagTemplateCtrl implements Initializable {
      * @param title of the tag
      */
     public void setTitleOfTag(String title) {
-        this.title.setText(title);
+        this.titlee.setText(title);
     }
 
     /**
@@ -139,7 +141,7 @@ public class TagTemplateCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.title.setText("New Tag");
+        //this.titlee.setText("New Tag");
     }
 
     public void setCard(Card card) {
@@ -147,12 +149,20 @@ public class TagTemplateCtrl implements Initializable {
     }
 
     public String getText() {
-        return title.getText();
+        return titlee.getText();
     }
 
     public boolean getCheckBox() {
         return checkbox.isSelected();
     }
+
+    public void addTitle() {
+        this.titlee.setOnKeyTyped(event -> {
+                Tag tag=server.getTagById(tagId);
+                tag.setTitle(this.titlee.getText());
+                server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+                server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+            });    }
 //   public void deleteTag(){
 //        server.deleteTag(tagId);
 //        mainCtrl.deleteTag

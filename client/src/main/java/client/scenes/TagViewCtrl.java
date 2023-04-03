@@ -63,7 +63,7 @@ public class TagViewCtrl {
 
     }
     @FXML
-    private void createTag() throws IOException {
+    private void addTag() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/client/scenes/TagTemplate.fxml"));
         TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
@@ -75,6 +75,7 @@ public class TagViewCtrl {
         //sets connection of every card to the server so you can delete tags
         controller.setBoardId(mainCtrl.getBoardId());
         //sets the board id for deletion of tag from board
+        controller.addTitle();
         tagList.getChildren().add(node);
         tags.add(controller);
         int index = tagList.getChildren().indexOf(node);
@@ -111,13 +112,14 @@ public class TagViewCtrl {
             controller.setTitleOfTag(c.getTitle()); //set title of the tag from the database
             controller.setConnection(server.getServer());
             controller.setBoardId(mainCtrl.getBoardId());
+            controller.addTitle();
             tagList.getChildren().add(node);
             tags.add(controller);
             int index = tagList.getChildren().indexOf(node);
             AnchorPane.setTopAnchor(node, index * 50.0);
             AnchorPane.setLeftAnchor(node, 0.0);
+            controller.setTagId(c.getTagID());
         }
-
     }
 
     /**

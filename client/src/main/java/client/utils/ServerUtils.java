@@ -673,29 +673,29 @@ public class ServerUtils {
      * @param text    = the new title of the tag
      * @param boardId = the id of the board
      */
-    public void updateTagTitle(int tagID, String text, Long boardId) {
-        Board board = getBoardById(boardId);
-        Tag tag = board.getTags().get(tagID - 1);
-        tag.setTitle(text);
-        //updateColumn(Math.toIntExact(column.getId()), column);
-        updateTagInBoard(tagID, tag, boardId);
-    }
+//    public void updateTagTitle(int tagID, String text, Long boardId) {
+//        Board board = getBoardById(boardId);
+//        Tag tag = board.getTags().get(tagID - 1);
+//        tag.setTitle(text);
+//        //updateColumn(Math.toIntExact(column.getId()), column);
+//        updateTagInBoard(tagID, tag, boardId);
+//    }
 
-    private Board updateTagInBoard(int tagID, Tag tag, Long boardId) {
-        Board board = getBoardById(boardId);
-        board.setTag(tagID - 1, tag);
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + boardId)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
-    }
+//    public Board updateTagInBoard(int tagID, Tag tag, Long boardId) {
+//        Board board = getBoardById(boardId);
+//        board.setTag(tagID - 1, tag);
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/boards/" + boardId)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+//    }
 
-    private Tag updateTag(int tagID, Tag tag) {
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + tagID)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
-    }
+//    public Tag updateTag(int tagID, Tag tag) {
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/boards/" + tagID)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+//    }
 
     /**
      * @param tagInd  the index of the the deleted tag
@@ -809,4 +809,27 @@ public class ServerUtils {
     }
 
 
+    public Board updateTagInBoard(int tagId, Tag tag, Long boardId) {
+        Board board=getBoardById(boardId);
+        int ind=-1;
+          for(int i=0;i<board.getTags().size();i++){
+              if(board.getTags().get(i).getTagID()==tagId){
+                  ind=i;
+              }
+          }
+          board.updateTag(ind, tag);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    public Tag updateTagTitle(int tagId, String text) {
+        Tag tag=getTagById(tagId);
+        tag.setTitle(text);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/tags/" + tagId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+    }
 }
