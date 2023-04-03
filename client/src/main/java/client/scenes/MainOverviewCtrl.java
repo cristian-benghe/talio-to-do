@@ -432,6 +432,12 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
+            for(Board b : availableUserBoards) {
+                if(Objects.equals(b.getId(),board.getId())) {
+                    b.setTitle(board.getTitle());
+                }
+            }
+            Platform.runLater(() -> refreshWorkspaceFile());
             Platform.runLater(() -> refreshOverview());
         });
 
