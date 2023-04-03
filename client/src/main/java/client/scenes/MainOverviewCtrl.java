@@ -150,7 +150,8 @@ public class MainOverviewCtrl implements Initializable {
                         // This lambda expression deletes the row (board) from the list view
                         deleteButton.setOnAction(event -> {
                             // Call a function to remove the board from the server.
-                            server.send("/app/delete-board", Long.parseLong(item.split("--")[1].trim()));
+                            server.send("/app/delete-board",
+                                    Long.parseLong(item.split("--")[1].trim()));
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
                             updateBoardsText();
