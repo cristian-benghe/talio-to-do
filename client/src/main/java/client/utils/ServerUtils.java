@@ -832,4 +832,11 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
     }
+
+    public Tag updateTag(Long tagId, Tag tag) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/tags/" + tagId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+    }
 }

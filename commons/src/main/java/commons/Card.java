@@ -25,7 +25,7 @@ public class Card {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Task> taskList;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private Set<Tag> tags;
 
 
@@ -49,7 +49,6 @@ public class Card {
         this.description = description;
         this.taskList = taskList;
         this.tags = tags;
-
     }
 
 

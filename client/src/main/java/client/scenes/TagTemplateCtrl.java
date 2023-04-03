@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.Card;
 import commons.Tag;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +26,12 @@ public class TagTemplateCtrl implements Initializable {
     private final MainCtrl mainCtrl;
     private Long tagId= Long.valueOf(0);
     private Long boardId;
+    private Double fontRed;
+    private Double fontBlue;
+    private Double fontGreen;
+    private Double highlightRed;
+    private Double highlightBlue;
+    private Double highlightGreen;
     @FXML
     private CheckBox checkbox;
 
@@ -43,17 +51,73 @@ public class TagTemplateCtrl implements Initializable {
 
     @FXML
     void setFont() {
-
+        this.fontRed=font.getValue().getRed();
+        this.fontBlue=font.getValue().getBlue();
+        this.fontGreen=font.getValue().getGreen();
+        Tag tag=server.getTagById(tagId);
+        tag.setFontColor(fontRed, fontGreen, fontBlue);
+        server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+        server.updateTag(tagId, tag);
+        setFontColors(fontBlue, fontGreen, fontRed);
     }
 
     @FXML
     void setHighlight() {
+        this.highlightRed=highlight.getValue().getRed();
+        this.highlightBlue=highlight.getValue().getBlue();
+        this.highlightGreen=highlight.getValue().getGreen();
+        Tag tag=server.getTagById(tagId);
+        tag.setHighlightColor(highlightBlue, highlightGreen, highlightRed);
+        server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+        server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+        setHighlightColor(highlightBlue, highlightGreen, highlightRed);
 
     }
 
+    public Double getHighlightBlue() {
+        return highlightBlue;
+    }
+
+    public Double getHighlightGreen() {
+        return highlightGreen;
+    }
+
+    public Double getHighlightRed() {
+        return highlightRed;
+    }
+
+    public void setFontColors(Double blue, Double green, Double red) {
+        Tag tag = server.getTagById(tagId);
+        Color color = Color.color(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
+        // Set the background color of the AnchorPane to the RGB color value
+        String rgbCode = toRgbCode(color);
+        Color color2 = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(), tag.getHighlightBlue());
+        String rgbCode2 = toRgbCode(color2);
+        titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
+        setFont(red, blue, green);
+    }
+    public void setHighlightColor(Double blue, Double green, Double red) {
+        Tag tag = server.getTagById(tagId);
+        Color color = Color.color(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
+        // Set the background color of the AnchorPane to the RGB color value
+        String rgbCode = toRgbCode(color);
+        Color color2 = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(), tag.getHighlightBlue());
+        String rgbCode2 = toRgbCode(color2);
+        titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
+        setFont(red, blue, green);
+    }
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
     @FXML
     void setTitle() {
-
     }
 
     @FXML
@@ -162,9 +226,17 @@ public class TagTemplateCtrl implements Initializable {
                 tag.setTitle(this.titlee.getText());
                 server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
                 server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
-            });    }
-//   public void deleteTag(){
-//        server.deleteTag(tagId);
-//        mainCtrl.deleteTag
-//    }
+            });
+    }
+
+    public void setFont(Double fontRed, Double fontBlue, Double fontGreen){
+        this.fontGreen=fontGreen;
+        this.fontBlue=fontBlue;
+        this.fontRed=fontRed;
+    }
+    public void setHighlight(Double highlightRed, Double highlightBlue, Double highlightGreen){
+        this.highlightBlue=highlightBlue;
+        this.highlightRed=highlightRed;
+        this.highlightGreen=highlightGreen;
+    }
 }

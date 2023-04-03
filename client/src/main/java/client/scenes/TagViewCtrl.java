@@ -50,6 +50,7 @@ public class TagViewCtrl {
             if(tagTemplateCtrl.getCheckBox()==true) {
                 AnchorPane anchorPane=new AnchorPane();
                 TextField textField = new TextField(tagTemplateCtrl.getText());
+                textField.setEditable(false);
                 textField.setMaxWidth(Double.MAX_VALUE);
                 // set the maximum width of the text field
                 textField.setMaxHeight(Double.MAX_VALUE);
@@ -112,6 +113,8 @@ public class TagViewCtrl {
             controller.setTitleOfTag(c.getTitle()); //set title of the tag from the database
             controller.setConnection(server.getServer());
             controller.setBoardId(mainCtrl.getBoardId());
+            controller.setFontColors(c.getFontRed(), c.getFontBlue(), c.getFontGreen());
+            controller.setHighlightColor(c.getHighlightRed(), c.getHighlightBlue(), c.getHighlightGreen());
             controller.addTitle();
             tagList.getChildren().add(node);
             tags.add(controller);

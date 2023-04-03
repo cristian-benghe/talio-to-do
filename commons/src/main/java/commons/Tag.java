@@ -9,6 +9,37 @@ import java.util.Set;
 public class Tag {
 
     private int idInBoard=-1;
+    private Double fontRed;
+    private Double fontGreen;
+    private Double fontBlue;
+
+    public Double getHighlightBlue() {
+        return highlightBlue;
+    }
+
+    public Double getHighlightRed() {
+        return highlightRed;
+    }
+
+    public Double getHighlightGreen() {
+        return highlightGreen;
+    }
+
+    private Double highlightBlue;
+    private Double highlightRed;
+    private Double highlightGreen;
+
+    public Double getFontBlue() {
+        return fontBlue;
+    }
+
+    public Double getFontGreen() {
+        return fontGreen;
+    }
+
+    public Double getFontRed() {
+        return fontRed;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +60,8 @@ public class Tag {
      * Default constructor for creating an empty Tag object
      */
     public Tag() {
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
     }
 
     /**
@@ -41,7 +74,10 @@ public class Tag {
         this.tagID = tagID;
         this.title = title;
         this.cards = cards;
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
     }
+    
 
     /**
      * @param title of the tag
@@ -50,6 +86,8 @@ public class Tag {
     public Tag(String title, Set<Card>cards){
         this.title=title;
         this.cards=cards;
+        this.setFontColor(0.0, 0.0, 0.0);
+        this.setHighlightColor(1.0, 1.0, 1.0);
     }
 
     public void addCard(Card newCard) {
@@ -158,5 +196,15 @@ public class Tag {
         return this.title +
                 " has the ID: " + this.tagID +
                 " and is part of: " + this.cards.toString();
+    }
+    public void setFontColor(Double red, Double green, Double blue){
+        this.fontRed=red;
+        this.fontGreen=green;
+        this.fontBlue=blue;
+    }
+    public void setHighlightColor(Double highlightBlue, Double highlightGreen, Double highlightRed){
+        this.highlightBlue=highlightBlue;
+        this.highlightGreen=highlightGreen;
+        this.highlightRed=highlightRed;
     }
 }
