@@ -25,6 +25,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.paint.Color;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 
 
 import java.net.URL;
@@ -400,6 +403,7 @@ public class BoardOverviewCtrl implements Initializable {
         column.setOnDragDetected(event -> {
             Dragboard dragboard = column.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent clipboardContent = new ClipboardContent();
+            dragboard.setDragView(column.snapshot(null, null));
             clipboardContent.putString("DeletionColumn");
             dragboard.setContent(clipboardContent);
             event.consume();
@@ -574,6 +578,7 @@ public class BoardOverviewCtrl implements Initializable {
         //set the drag of the specific column
         card.setOnDragDetected(event -> {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
+            dragboard.setDragView(card.snapshot(null, null));
             ClipboardContent clipboardContent = new ClipboardContent();
             clipboardContent.putString("DeletionCard"); dragboard.setContent(clipboardContent);
             event.consume(); cardBin(vBox);
