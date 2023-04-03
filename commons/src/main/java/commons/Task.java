@@ -1,24 +1,51 @@
 package commons;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class Task {
+public class Task implements Serializable {
 
 
     //Encapsulated Task Attributes
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private long taskId;
 
     private int position;
 
     private String title;
     private boolean status;
+
+    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Card card;
+
+
+    /**
+     * A getter for the Card attribute.
+     * @return the reference stored in the attribute.
+     */
+    public Card getCard() {
+        return card;
+    }
+
+    /**
+     * A setter for the Card attribute.
+     * @param card the reference for the linked Card instance.
+     */
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
+
+
 
     /**
      * A default constructor for the Task class.

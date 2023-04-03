@@ -68,4 +68,15 @@ public class SomeController {
     public ResponseEntity<Boolean> getPassword() {
         return ResponseEntity.ok(Objects.equals(inputPasscode, password));
     }
+
+//    /**
+//     * Used for refreshing availableUserBoards
+//     * @param integer random
+//     * @return param integer
+//     */
+//    @MessageMapping("/refresh") // app/refresh
+//    @SendTo("/topic/refresh")
+//    public Integer addMessageRefresh(Integer integer) {
+//        return integer;
+//    }
 }

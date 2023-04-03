@@ -43,8 +43,8 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 @Component
 public class ServerUtils {
 
-    private String server = "http://localhost:8080/";
-    private StompSession session = connect("ws://localhost:8080/websocket");
+    private String server;
+    private StompSession session;
 
 
     /**
@@ -420,6 +420,10 @@ public class ServerUtils {
                 .get(Board.class);
     }
 
+    /**
+     * @param tagId the id of the tag
+     * @return the tag with id tagid
+     */
     public Tag getTagById(long tagId) {
         System.out.println(tagId);
         return ClientBuilder.newClient(new ClientConfig())
@@ -506,7 +510,7 @@ public class ServerUtils {
      * @param server the URL of the server in String format
      */
     public void setServer(String server) {
-        server = server;
+        this.server = server;
     }
 
     /**
@@ -657,6 +661,11 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * @param id the id of the card
+     * @param newCard the new card
+     * @return the updated card in the database
+     */
     public Tag addCardToTag(Long id, Card newCard) {
         Tag tag = getTagById(id);
         tag.addCard(newCard);
@@ -761,43 +770,32 @@ public class ServerUtils {
                 });
     }
 
-    public List<Task> getAllTasks(){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/tasks/getTask/all")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Task>>(){});
-    }
 
-    public Task getTaskByID(long id){
+    /**
+     * Adds a new Task to the server, and links it to the
+     * Card instance with the corresponding identifier.
+     * @param cardId the identifier of the Card instance
+     * @param task the newly created Task
+     * @return the newly created Task
+     */
+    public Task addTask(long cardId, Task task){
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
-                .path("api/tasks/getTask/byID")
-                .queryParam("id", id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Task.class);
-    }
-    public boolean deleteTaskByID(long id){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/tasks/delete/"+id)
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .delete(boolean.class);
-    }
-
-    public Card addTask(long cardId, Task task){
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server)
-                .path("api/cards/addTask")
+                .path("api/tasks/addTask/byCard")
                 .queryParam("id",cardId)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(task, APPLICATION_JSON),Card.class);
+                .post(Entity.entity(task, APPLICATION_JSON),Task.class);
     }
 
+
+    /**
+     * Updates the entirety of the Task List of a particular
+     * Card instance with the given identifier.
+     * @param cardID the identifier the Card list
+     * @param taskList the updated Task List
+     * @return the updated Task List
+     */
     public Card updateTaskList(long cardID, List<Task> taskList){
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server)
@@ -808,22 +806,32 @@ public class ServerUtils {
                 .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
     }
 
-
+    /**
+     * @param tagId the id of the tag
+     * @param tag the new tag
+     * @param boardId the id of the board
+     * @return the updated board after addition
+     */
     public Board updateTagInBoard(int tagId, Tag tag, Long boardId) {
         Board board=getBoardById(boardId);
         int ind=-1;
-          for(int i=0;i<board.getTags().size();i++){
-              if(board.getTags().get(i).getTagID()==tagId){
-                  ind=i;
-              }
-          }
-          board.updateTag(ind, tag);
+        for(int i=0;i<board.getTags().size();i++){
+            if(board.getTags().get(i).getTagID()==tagId){
+                ind=i;
+            }
+        }
+        board.updateTag(ind, tag);
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * @param tagId the id of the tag
+     * @param text the new title of the tag
+     * @return the new tag with the updated title
+     */
     public Tag updateTagTitle(int tagId, String text) {
         Tag tag=getTagById(tagId);
         tag.setTitle(text);
@@ -833,10 +841,50 @@ public class ServerUtils {
                 .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
     }
 
+    /**
+     * @param tagId the id of the tag
+     * @param tag the updated tag
+     * @return the updated tag in the database
+     */
     public Tag updateTag(Long tagId, Tag tag) {
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/tags/" + tagId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
     }
+    /**
+     * Persists the changes given by the Task instance
+     * in the server.
+     * @param task the updated Task instance.
+     */
+    public void updateTask(Task task){
+
+        ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/tasks/update")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .put(Entity.entity(task, APPLICATION_JSON), Task.class);
+
+
+    }
+
+
+    /**
+     * Returns the List of all Task instances that are linked
+     * to the Card, identified by the given identifier.
+     * @param cardId the identifier of the Card instance
+     * @return the List of all linked Task instances
+     */
+    public List<Task> getAllTasksByCardId(long cardId){
+        return ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("api/cards/getTaskList")
+                    .queryParam("id", cardId)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(new GenericType<List<Task>>(){});
+    }
+
+    
 }

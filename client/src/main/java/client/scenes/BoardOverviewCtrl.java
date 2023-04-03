@@ -180,6 +180,7 @@ public class BoardOverviewCtrl implements Initializable {
                 event.consume();
                 columnsRefresh();
             }
+            server.send("/topic/update-in-board", server.getBoardById(id));
         });
     }
 
@@ -213,9 +214,11 @@ public class BoardOverviewCtrl implements Initializable {
                 new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox) + 1);
         textField.setOnKeyPressed(e ->
         {
+            columnLabel.setText("Press enter to save!!");
             if(e.getCode() == KeyCode.ENTER) {
                 updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1, textField.getText());
                 server.send("/app/update-labels-in-board", server.getBoardById(id));
+                columnLabel.setText("...");
             }
         });
 
@@ -303,6 +306,8 @@ public class BoardOverviewCtrl implements Initializable {
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                     getChildren().get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+                        ((Label)(((VBox) anchorPane1.getChildren().get(0))
+                        .getChildren().get(0))).setText("Press enter to save!!");
                         if(event1.getCode() == KeyCode.ENTER) {
                             server.updateCardTitle((long) vBox
                                             .getChildren().indexOf(anchorPane1) - 1,
@@ -310,6 +315,8 @@ public class BoardOverviewCtrl implements Initializable {
                                             .getChildren().get(0)).
                                             getChildren().get(1)).getChildren().get(0)).
                                             getText(), id);
+                            ((Label)(((VBox) anchorPane1.getChildren().get(0))
+                                    .getChildren().get(0))).setText("=====");
                             server.send("/app/update-labels-in-board", server.getBoardById(id));
                         }
                     });
@@ -331,12 +338,16 @@ public class BoardOverviewCtrl implements Initializable {
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
         ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
                 get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+                    ((Label)(((VBox) anchorPane1.getChildren().get(0))
+                    .getChildren().get(0))).setText("Press enter to save!!");
                     if(event1.getCode() == KeyCode.ENTER) {
                         server.updateCardTitle((long) vBox.getChildren().
                                         indexOf(anchorPane1) - 1, columnid,
                                 ((TextField) ((HBox) ((VBox) anchorPane1
                                         .getChildren().get(0)).getChildren().get(1)).
                                         getChildren().get(0)).getText(), id);
+                        ((Label)(((VBox) anchorPane1.getChildren().get(0))
+                                .getChildren().get(0))).setText("=====");
                         server.send("/app/update-in-board", server.getBoardById(id));
                     }
                 });
@@ -435,6 +446,13 @@ public class BoardOverviewCtrl implements Initializable {
                 event.consume();
                 server.send("app/update-in-board", server.getBoardById(id));
             }
+            if (Objects.equals(event.getDragboard().getString(), "DeletionCard") &&
+                    (((AnchorPane) event.getGestureSource()).getParent().equals(myVBox)))
+            {
+                sameColumnDirectBottomDragDrop(event,button,myVBox);
+                event.setDropCompleted(true);
+                event.consume();
+            }
             if((Objects.equals(event.getDragboard().getString(), "DeletionColumn")))
             {
                 if (event.getX() >= 75) {
@@ -443,6 +461,7 @@ public class BoardOverviewCtrl implements Initializable {
                         event.setDropCompleted(true); event.consume();
                     } else {
                         rightColumnDrop(myVBox,event); event.setDropCompleted(true);event.consume();
+                        server.send("app/update-in-board", server.getBoardById(id));
                     }
                 }
                 else {
@@ -451,9 +470,12 @@ public class BoardOverviewCtrl implements Initializable {
                         event.setDropCompleted(true); event.consume();
                     }   else {
                         leftColumnDrop(myVBox,event); event.setDropCompleted(true); event.consume();
+                        server.send("app/update-in-board", server.getBoardById(id));
                     }
                 }
             }
+            server.send("/app/update-in-board", server.getBoardById(id));
+
         });
     }
 
@@ -487,6 +509,32 @@ public class BoardOverviewCtrl implements Initializable {
         columnsRefresh();
     }
 
+    /***
+     *
+     * @param event
+     * @param button
+     * @param myVBox
+     */
+    public void sameColumnDirectBottomDragDrop(DragEvent event, Button button, VBox myVBox)
+    {
+        int cardId = ((AnchorPane) event.getGestureSource()).
+            getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
+                    getGestureSource());
+        int columnId = hbox.getChildren().
+                indexOf(myVBox.getParent());
+        myVBox.getChildren().remove(button);
+        myVBox.getChildren().remove((AnchorPane)event.getGestureSource());
+        setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
+        Board board1 = server.getBoardById(id);
+        Column column = board1.getColumns().get(columnId);
+        Card card = column.getCards().get(cardId-2);
+        column.getCards().remove(card);
+        column.getCards().add(card);
+        server.updateCardArrangement(columnId, column, id);
+        server.send("/app/update-in-board", server.getBoardById(id));
+        myVBox.getChildren().add((AnchorPane) event.getGestureSource());
+        myVBox.getChildren().add(button);
+    }
     /**
      * A method to rearrange Column with drag and drop
      * @param vBox vBox that the column is dropped in
@@ -530,7 +578,7 @@ public class BoardOverviewCtrl implements Initializable {
             Dragboard dragboard = card.startDragAndDrop(TransferMode.MOVE);
             ClipboardContent clipboardContent = new ClipboardContent();
             clipboardContent.putString("DeletionCard"); dragboard.setContent(clipboardContent);
-            event.consume();cardBin(vBox);
+            event.consume(); cardBin(vBox);
         });
 
         card.setOnDragOver(event -> {
@@ -557,7 +605,10 @@ public class BoardOverviewCtrl implements Initializable {
                         event.consume();
                     } else {
                         lowerCardDrop(card, vBox, event);
+                        server.send("/app/update-in-board", server.getBoardById(id));
                         event.setDropCompleted(true); event.consume();
+
+
                     }
                 } //upperside
                 else {
@@ -567,11 +618,13 @@ public class BoardOverviewCtrl implements Initializable {
                         event.consume();
                     } else {
                         upperCardDrop(card, vBox, event);
-                        event.setDropCompleted(true);
-                        event.consume();
+                        server.send("/app/update-in-board", server.getBoardById(id));
+                        event.setDropCompleted(true);event.consume();
                     }
                 }
             }
+            server.send("/app/update-in-board", server.getBoardById(id));
+
         });
     }
 
@@ -586,9 +639,11 @@ public class BoardOverviewCtrl implements Initializable {
         if (event.getY() >= 40)
         {
             directLower(card,vBox,event);
+
         }
         else {
             directUpper(card,vBox,event);
+
         }
     }
 
@@ -638,6 +693,7 @@ public class BoardOverviewCtrl implements Initializable {
             }
         }
         server.updateCardArrangement(indexColumnTarget, columnTarget, id);
+        server.send("app/update-in-board", server.getBoardById(id));
         columnsRefresh();
     }
     /**
@@ -686,6 +742,7 @@ public class BoardOverviewCtrl implements Initializable {
             }
         }
         server.updateCardArrangement(indexColumnTarget, columnTarget, id);
+        server.send("app/update-in-board", server.getBoardById(id));
         columnsRefresh();
     }
 
@@ -722,6 +779,7 @@ public class BoardOverviewCtrl implements Initializable {
         }
         server.updateCardArrangement(hbox.getChildren()
                 .indexOf(vBox.getParent()), column, id);
+        server.send("app/update-in-board", server.getBoardById(id));
         columnsRefresh();
     }
 
@@ -759,6 +817,7 @@ public class BoardOverviewCtrl implements Initializable {
         Collections.reverse(column.getCards());
         server.updateCardArrangement(hbox.getChildren()
                 .indexOf(vBox.getParent()), column, id);
+        server.send("app/update-in-board", server.getBoardById(id));
         columnsRefresh();
     }
     /**
@@ -842,9 +901,11 @@ public class BoardOverviewCtrl implements Initializable {
             hbox.getChildren().add(anchorPaneVBox);
             textField.setOnKeyPressed(e ->
             {
+                columnLabel.setText("Press enter to save!!");
                 if(e.getCode() == KeyCode.ENTER){
                     updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1,
                             textField.getText());
+                    columnLabel.setText("...");
                 }
             });
             Button button =

@@ -1,7 +1,9 @@
 package server.service;
 
+import commons.Card;
 import commons.Task;
 import org.springframework.stereotype.Service;
+import server.database.CardRepository;
 import server.database.TaskRepository;
 
 import java.util.List;
@@ -12,14 +14,16 @@ public class TaskService {
 
 
     private final TaskRepository repo;
-
+    private final CardRepository cardRepo;
 
     /**
      * A constructor for the TaskService class that assigns a Task Repository
      * @param repo the repository reference for the Task objects
+     * @param cardRepo the repository reference for the Card objects
      */
-    public TaskService(TaskRepository repo){
+    public TaskService(TaskRepository repo, CardRepository cardRepo){
         this.repo = repo;
+        this.cardRepo = cardRepo;
     }
 
 
@@ -53,14 +57,44 @@ public class TaskService {
     /**
      * Deletes the Task object with the specified id.
      * @param id the identifier of the Task object to be deleted
+     * @return returns true if the deletion was successful
      */
     public boolean delete(long id) {
         try {
             repo.deleteById(id);
             return true;
         }catch(Exception e){
+            e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Adds a new Task instance, and links it to the Card instance corresponding
+     * to the given identifier.
+     * @param task the new Task instance to be added
+     * @param cardId the identifier of the Card
+     * @return the newly added task instance
+     * @throws IllegalArgumentException The exception is thrown if the task instance
+     * is null, or if no Card instance corresponds to the given identifier.
+     */
+    public Task addTaskToCard(Task task, long cardId) throws IllegalArgumentException{
+
+        if(task == null){
+            throw new IllegalArgumentException("The task instance was null.");
+        }
+
+        Optional<Card> optCard = cardRepo.findById(cardId);
+        if(optCard.isEmpty()){
+            throw new IllegalArgumentException("No card with such id exists");
+        }
+
+        task.setCard(optCard.get());
+        optCard.get().getTaskList().add(task);
+
+        cardRepo.save(optCard.get());
+        return repo.save(task);
+
     }
 
 
@@ -76,6 +110,7 @@ public class TaskService {
     /**
      *  Updates the task instance corresponding to the given ID
      *  in the Task Repository.
+     * @param newTask the updated Task instance.
      * @return the updated Task instance
      * @throws IllegalArgumentException if the given id is null, or if the Task instance does not
      * exist, an IllegalArgumentException will be thrown.

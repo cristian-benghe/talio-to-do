@@ -3,11 +3,12 @@ package commons;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Board {
+public class Board implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -292,6 +293,10 @@ public class Board {
         tags.remove(i);
     }
 
+    /**
+     * @param ind the index of the tag to update
+     * @param tag the new tag
+     */
     public void updateTag(int ind, Tag tag) {
         tags.set(ind, tag);
     }

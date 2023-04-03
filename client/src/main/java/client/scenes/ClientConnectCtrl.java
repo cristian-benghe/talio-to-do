@@ -42,9 +42,9 @@ public class ClientConnectCtrl implements Initializable {
      * Constructs a new instance of the ClientConnectCtrl class with the specified
      * ServerUtils and MainCtrl objects injected as dependencies.
      *
-     * @param server        the ServerUtils object to use for interacting with the server
-     * @param mainCtrl      the MainCtrl object to use for coordinating the application's
-     *                      main control flow
+     * @param server   the ServerUtils object to use for interacting with the server
+     * @param mainCtrl the MainCtrl object to use for coordinating the application's
+     *                 main control flow
      */
     @Inject
     public ClientConnectCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -54,13 +54,11 @@ public class ClientConnectCtrl implements Initializable {
 
     /**
      * sets the default value for the address on port 8080
-     * @param location
-     * The location used to resolve relative paths for the root object, or
-     * {@code null} if the location is not known.
      *
-     * @param resources
-     * The resources used to localize the root object, or {@code null} if
-     * the root object was not localized.
+     * @param location  The location used to resolve relative paths for the root object, or
+     *                  {@code null} if the location is not known.
+     * @param resources The resources used to localize the root object, or {@code null} if
+     *                  the root object was not localized.
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -80,7 +78,9 @@ public class ClientConnectCtrl implements Initializable {
         shakeAnim.setCycleCount(6);
         shakeAnim.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(ActionEvent event) {isAnimPlaying = false;}
+            public void handle(ActionEvent event) {
+                isAnimPlaying = false;
+            }
         });
 
         adminCheckbox.setOnAction(e -> {
@@ -96,13 +96,13 @@ public class ClientConnectCtrl implements Initializable {
      * If the user inputs a non-blank address, then the method also changes the scene of the
      * primary stage to the MainOverview scene.
      */
-    public void connect(){
+    public void connect() {
 
         //Get the server address
         String serverAddress = serverAddressField.getText();
-
+        server.setServer(serverAddress);
         //Check that the password entered is correct
-        if(adminCheckbox.isSelected() && !isValidAdminPassword(password.getText()))  {
+        if (adminCheckbox.isSelected() && !isValidAdminPassword(password.getText())) {
             errorPassword.setText("The password is incorrect!");
             errorPassword.setTextFill(Color.RED);
 
@@ -139,9 +139,12 @@ public class ClientConnectCtrl implements Initializable {
 
         //Set up the websocket
         if (serverAddress.contains("http://")) {
+            System.out.println("SALUTTT");
             server.setSession(
                     server.connect("ws://" + serverAddress.substring(7) + "websocket"));
+
         }
+
 
         //Handle the admin login
         //By this point, the password is correct if the admin login option was selected.
@@ -151,15 +154,17 @@ public class ClientConnectCtrl implements Initializable {
         mainCtrl.createConnection(serverAddress);
         //Switch the scene to the main overview
         mainCtrl.showMainOverview();
+
     }
 
 
     /**
      * Method which verifies if the password input by the user is valid or not
+     *
      * @param password - the password input by the user
      * @return true / false if the password is valid or not
      */
-    public boolean isValidAdminPassword(String password){
+    public boolean isValidAdminPassword(String password) {
         if (password == null)
             return false;
         server.sendPassword(password);
@@ -168,19 +173,20 @@ public class ClientConnectCtrl implements Initializable {
 
     /**
      * Display a shake animation if the input text is wrong
+     *
      * @param isAdmin Set true if the error is due to the admin password.
      *                Otherwise, the error is due to the server address.
      */
-    public void errorShakeAnim(boolean isAdmin){
+    public void errorShakeAnim(boolean isAdmin) {
 
         //Show the error message and assign the animation to the correct error label
-        if(isAdmin){
+        if (isAdmin) {
             //Alternate the visibility of the error labels
             errorMsg.setVisible(false);
             errorPassword.setVisible(true);
 
             //Stop the animation and reset
-            if(shakeAnim.getNode().equals(errorMsg)) {
+            if (shakeAnim.getNode().equals(errorMsg)) {
                 shakeAnim.stop();
                 isAnimPlaying = false;
             }
@@ -188,13 +194,13 @@ public class ClientConnectCtrl implements Initializable {
             //Assign the animation
             shakeAnim.setNode(errorPassword);
 
-        }else{
+        } else {
             //Alternate the visibility of the error labels
             errorMsg.setVisible(true);
             errorPassword.setVisible(false);
 
             //Stop the animation and reset
-            if(shakeAnim.getNode().equals(errorPassword)) {
+            if (shakeAnim.getNode().equals(errorPassword)) {
                 shakeAnim.stop();
                 isAnimPlaying = false;
             }
@@ -205,7 +211,7 @@ public class ClientConnectCtrl implements Initializable {
 
 
         //Play a short rotation animation if the animation is not already playing.
-        if(!isAnimPlaying){
+        if (!isAnimPlaying) {
             isAnimPlaying = true;
             shakeAnim.play();
         }
@@ -214,10 +220,11 @@ public class ClientConnectCtrl implements Initializable {
 
     /**
      * check if a certain URL is valid
+     *
      * @param address the URL to be checked in String format
      * @return true if valid, false else
      */
-    public boolean isValidUrl(String address){
+    public boolean isValidUrl(String address) {
         try {
             URL url = new URL(address);
             return true;
@@ -228,17 +235,17 @@ public class ClientConnectCtrl implements Initializable {
 
     /**
      * checks if a connection to a certain URL is valid
+     *
      * @param address the URL in String format
      * @return true if the connection is made successfully,
      * false otherwise.
      */
-    public boolean validConnection(String address){
-        try{
+    public boolean validConnection(String address) {
+        try {
             server.setServerAddress(address);
             server.getBoards();
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -248,7 +255,7 @@ public class ClientConnectCtrl implements Initializable {
      * Resets the visibility of the error message and
      * the default input of the serverAddress
      */
-    public void refresh(){
+    public void refresh() {
 
         //Resets the visibility of the error messages
         errorMsg.setVisible(false);
@@ -267,6 +274,7 @@ public class ClientConnectCtrl implements Initializable {
 
     /**
      * creates the connection and sets the URL
+     *
      * @param address the URL that provides where the connection needs to be established
      */
     public void setConnection(String address) {

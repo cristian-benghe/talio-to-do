@@ -1,26 +1,36 @@
 package commons;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Tag {
+public class Tag implements Serializable {
 
     private int idInBoard=-1;
     private Double fontRed;
     private Double fontGreen;
     private Double fontBlue;
 
+    /**
+     * @return the blue value in highlight
+     */
     public Double getHighlightBlue() {
         return highlightBlue;
     }
 
+    /**
+     * @return the value of red in highlight
+     */
     public Double getHighlightRed() {
         return highlightRed;
     }
 
+    /**
+     * @return the value of green in the highlight
+     */
     public Double getHighlightGreen() {
         return highlightGreen;
     }
@@ -29,14 +39,21 @@ public class Tag {
     private Double highlightRed;
     private Double highlightGreen;
 
+    /**
+     * @return blue value in the rgb of the font
+     */
     public Double getFontBlue() {
         return fontBlue;
     }
-
+    /**
+     * @return green value in the rgb of the font
+     */
     public Double getFontGreen() {
         return fontGreen;
     }
-
+    /**
+     * @return red value in the rgb of the font
+     */
     public Double getFontRed() {
         return fontRed;
     }
@@ -90,6 +107,9 @@ public class Tag {
         this.setHighlightColor(1.0, 1.0, 1.0);
     }
 
+    /**
+     * @param newCard the card to add
+     */
     public void addCard(Card newCard) {
         cards.add(newCard);
     }
@@ -197,11 +217,23 @@ public class Tag {
                 " has the ID: " + this.tagID +
                 " and is part of: " + this.cards.toString();
     }
+
+    /**
+     * @param red value in rgb of the font
+     * @param green value in rgb of the font
+     * @param blue value in rgb of the font
+     */
     public void setFontColor(Double red, Double green, Double blue){
         this.fontRed=red;
         this.fontGreen=green;
         this.fontBlue=blue;
     }
+
+    /**
+     * @param highlightBlue  value in rgb of the font
+     * @param highlightGreen value in rgb of the font
+     * @param highlightRed   value in rgb of the font
+     */
     public void setHighlightColor(Double highlightBlue, Double highlightGreen, Double highlightRed){
         this.highlightBlue=highlightBlue;
         this.highlightGreen=highlightGreen;

@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
 import commons.Card;
 import commons.Tag;
 import javafx.fxml.FXML;
@@ -74,34 +73,35 @@ public class TagTemplateCtrl implements Initializable {
 
     }
 
-    public Double getHighlightBlue() {
-        return highlightBlue;
-    }
-
-    public Double getHighlightGreen() {
-        return highlightGreen;
-    }
-
-    public Double getHighlightRed() {
-        return highlightRed;
-    }
-
+    /**
+     * @param blue value in rgb of the font
+     * @param green   value in rgb of the font
+     * @param red value in rgb of the font
+     */
     public void setFontColors(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
         Color color = Color.color(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
         // Set the background color of the AnchorPane to the RGB color value
         String rgbCode = toRgbCode(color);
-        Color color2 = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(), tag.getHighlightBlue());
+        Color color2 = Color.color(tag.getHighlightRed(),
+                tag.getHighlightGreen(), tag.getHighlightBlue());
         String rgbCode2 = toRgbCode(color2);
         titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
         setFont(red, blue, green);
     }
+
+    /**
+     * @param blue value in rgb of the font
+     * @param green value in rgb of the font
+     * @param red value in rgb of the font
+     */
     public void setHighlightColor(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
         Color color = Color.color(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
         // Set the background color of the AnchorPane to the RGB color value
         String rgbCode = toRgbCode(color);
-        Color color2 = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(), tag.getHighlightBlue());
+        Color color2 = Color.color(tag.getHighlightRed(),
+                tag.getHighlightGreen(), tag.getHighlightBlue());
         String rgbCode2 = toRgbCode(color2);
         titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
         setFont(red, blue, green);
@@ -208,35 +208,48 @@ public class TagTemplateCtrl implements Initializable {
         //this.titlee.setText("New Tag");
     }
 
+    /**
+     * @param card the card of the tag
+     */
     public void setCard(Card card) {
         this.card=card;
     }
 
+    /**
+     * @return the title of the tag
+     */
     public String getText() {
         return titlee.getText();
     }
 
+    /**
+     * @return if the tag is done or not in the tagoverview
+     */
     public boolean getCheckBox() {
         return checkbox.isSelected();
     }
 
+    /**
+     * event listener for any modification to the title
+     */
     public void addTitle() {
         this.titlee.setOnKeyTyped(event -> {
-                Tag tag=server.getTagById(tagId);
-                tag.setTitle(this.titlee.getText());
-                server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
-                server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
-            });
+            Tag tag=server.getTagById(tagId);
+            tag.setTitle(this.titlee.getText());
+            server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+            server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+        });
     }
 
+    /**
+     * @param fontRed value in rgb of the font
+     * @param fontBlue   value in rgb of the font
+     * @param fontGreen  value in rgb of the font
+     */
     public void setFont(Double fontRed, Double fontBlue, Double fontGreen){
         this.fontGreen=fontGreen;
         this.fontBlue=fontBlue;
         this.fontRed=fontRed;
     }
-    public void setHighlight(Double highlightRed, Double highlightBlue, Double highlightGreen){
-        this.highlightBlue=highlightBlue;
-        this.highlightRed=highlightRed;
-        this.highlightGreen=highlightGreen;
-    }
+
 }

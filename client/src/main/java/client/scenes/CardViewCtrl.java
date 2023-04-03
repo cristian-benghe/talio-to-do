@@ -43,6 +43,9 @@ public class CardViewCtrl implements Initializable {
     @FXML
     private HBox taglist;
 
+    /**
+     * @return the list of tags
+     */
     public HBox getTagList() {
         return taglist;
     }
@@ -130,7 +133,7 @@ public class CardViewCtrl implements Initializable {
      * Changes the Scene to the TagView Scene
      */
     @FXML
-    private void getTagView() throws IOException {
+    public void getTagView() throws IOException {
         mainCtrl.showTagView();
 
     }
@@ -142,6 +145,7 @@ public class CardViewCtrl implements Initializable {
      */
     public void setCard(Card card) {
         this.card = card;
+        this.card.setTaskList(server.getAllTasksByCardId(card.getId()));
     }
 
     /**
@@ -243,6 +247,7 @@ public class CardViewCtrl implements Initializable {
         //Create the checkbox for the task
         CheckBox completeBox = new CheckBox();
         completeBox.setSelected(task.getStatus());
+        recordSelectedOnChange(completeBox);
         taskRoot.getChildren().add(completeBox);
 
         //Create the title label for the task
@@ -317,11 +322,33 @@ public class CardViewCtrl implements Initializable {
 
                 if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     card.getTaskList().get(taskIndex).setTitle(field.getText());
+                    server.updateTask(card.getTaskList().get(taskIndex));
                     event.consume();
                 }
 
             }
         });
+    }
+
+    private void recordSelectedOnChange(CheckBox checkBox){
+
+        checkBox.setOnAction(event -> {
+
+            System.out.println("ping");
+            //Find the index of the corresponding task instance
+            int taskIndex = checkBox.getParent().getParent()
+                    .getChildrenUnmodifiable().indexOf(
+                            checkBox.getParent()
+                    );
+            taskIndex = (taskIndex-1)/2;
+
+
+            //Record the change in the status of the task, and ensure it persists in the server
+            card.getTaskList().get(taskIndex).setStatus(checkBox.isSelected());
+            server.updateTask(card.getTaskList().get(taskIndex));
+
+        });
+
     }
 
     /**
@@ -421,7 +448,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @param newMarker the new marker separator
      */
-    private void changeClosestMarker(Separator newMarker) {
+    public void changeClosestMarker(Separator newMarker) {
 
         //Check whether a task is currently dragged.
         if (!isTaskDragged) {
@@ -475,7 +502,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @param bin the binImage instance that will be assigned the event handlers
      */
-    public void setDragForBin(Node bin) {
+    private void setDragForBin(Node bin) {
         bin.setOnDragOver(event -> {
             if (event.getGestureSource() != bin
                     && event.getDragboard().hasString()) {
@@ -492,8 +519,8 @@ public class CardViewCtrl implements Initializable {
 
                     //Determine the ID of the task to be deleted
                     Dragboard dragboard = event.getDragboard();
-                    int position = Integer.parseInt((String)
-                            dragboard.getContent(DataFormat.PLAIN_TEXT));
+                    int position = Integer.parseInt(
+                            (String) dragboard.getContent(DataFormat.PLAIN_TEXT));
 
                     //Remove the task from the Card's task list
                     deleteCardInList(position);
@@ -536,7 +563,7 @@ public class CardViewCtrl implements Initializable {
      * @param task the task HBox to be deleted
      * @return the deleted task HBox
      */
-    public HBox deleteTaskFromList(HBox task) {
+    private HBox deleteTaskFromList(HBox task) {
 
         if (card.getTaskList().isEmpty()) {
             displayTasks();
@@ -548,11 +575,14 @@ public class CardViewCtrl implements Initializable {
         return (HBox) taskList.getChildren().remove(index);
     }
 
+    /**
+     * Handles the addition of a new Task to the list in both the
+     * UI and in the server.
+     */
     public void addNewTask() {
 
         Task task = new Task(card.getTaskList().size(), "New task!", false);
-
-        card = server.addTask(card.getId(), task);
+        card.getTaskList().add(server.addTask(card.getId(), task));
         refresh();
 
     }
@@ -561,10 +591,10 @@ public class CardViewCtrl implements Initializable {
      * Resets and displays the available tags of the current card
      * instance in the scene.
      */
-        public void displayTags() {
+    public void displayTags() {
            
-        }
-    
+    }
+
 
     /**
      * @param address of the server
@@ -573,7 +603,7 @@ public class CardViewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
-    public void addTaskBeforeInList(int current, int before){
+    private void addTaskBeforeInList(int current, int before){
 
         for(Task task : card.getTaskList()){
             if(task.getPosition() == current){
@@ -597,15 +627,15 @@ public class CardViewCtrl implements Initializable {
 
     }
 
-    public void deleteCardInList(int position){
+    private void deleteCardInList(int position){
 
         //Remove the specified card
         card.getTaskList().remove(position);
 
         //Decrement any greater subsequent positions
-        for(Task task : card.getTaskList()){
-            if (task.getPosition() > position){
-                task.setPosition(task.getPosition()-1);
+        for (Task task : card.getTaskList()) {
+            if (task.getPosition() > position) {
+                task.setPosition(task.getPosition() - 1);
             }
         }
 
@@ -615,14 +645,18 @@ public class CardViewCtrl implements Initializable {
         mainCtrl.setCard(card);
 
     }
-    public void sortTasksByPosition(){
+    private void sortTasksByPosition(){
         List<Task> sortedList = card.getTaskList();
-        sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ? 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
+        sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ?
+                1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
         card.setTaskList(sortedList);
         System.out.println(card.getTaskList().toString());
 
     }
 
+    /**
+     * @param tagList to set in the cardviewctrl
+     */
     public void setCardViewCtrl(HBox tagList) {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);

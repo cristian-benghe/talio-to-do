@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class MainCtrl {
@@ -42,6 +41,7 @@ public class MainCtrl {
     private String adminPassword;
     private boolean hasAdminRole;
     private Card card;
+
 
     /**
      * This method initializes this controller instances
@@ -124,6 +124,8 @@ public class MainCtrl {
 
         if(!shownMainOverviewOneTime)
             mainOverviewCtrl.socketsCall();
+        mainOverviewCtrl.loadUserWorkspace();
+
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
         primaryStage.centerOnScreen();
@@ -262,18 +264,24 @@ public class MainCtrl {
     public TagViewCtrl getTagViewCtrl() {
         return tagViewCtrl;
     }
-    public CardViewCtrl getCardViewCtrl() {
-        return cardViewCtrl;
-    }
 
+    /**
+     * @param card the current card in the ctrl
+     */
     public void setCard(Card card) {
         this.card=card;
     }
 
+    /**
+     * @return the last card entered
+     */
     public Card getCard() {
         return card;
     }
 
+    /**
+     * @return the cardviewctrl
+     */
     public CardViewCtrl getcardViewCtrl() {
         return cardViewCtrl;
     }

@@ -2,9 +2,11 @@ package commons;
 
 //import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -14,7 +16,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 
 @Entity
 @Table(name = "card")
-public class Card {
+public class Card implements Serializable {
     private Long columnid = (long)-1;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +24,9 @@ public class Card {
     private String title;
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Task> taskList;
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -54,6 +54,11 @@ public class TagService {
     }
 
 
+    /**
+     * @param existing the initial tag
+     * @param updated the tag after update
+     * @return the updated tag
+     */
     public Tag update(Tag existing, Tag updated) {
         existing.setTitle(updated.getTitle());
         Set<Card> existingCards = existing.getCards();

@@ -89,11 +89,29 @@ public class TaskController {
      * a response with HTTP status code 404.
      */
     @PutMapping(path={"update","update/"})
-    public ResponseEntity<Task> updateTitle(@RequestBody Task task){
+    public ResponseEntity<Task> updateTask(@RequestBody Task task){
         taskService.updateTask(task);
         return ResponseEntity.noContent().build();
     }
 
+
+    /**
+     * Handles the POST request that adds a new Task instance and links it
+     * to its corresponding Card instance.
+     * @param cardId the identifier of the Card instance
+     * @param task the new Task instance
+     * @return the newly created Task instance
+     */
+    @PostMapping(path={"addTask/byCard","addTask/byCard/"})
+    public ResponseEntity<Task> addTask(@RequestParam("id") long cardId, @RequestBody Task task){
+
+        try{
+            return ResponseEntity.ok(taskService.addTaskToCard(task,cardId));
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.badRequest().build();
+        }
+
+    }
 
 
 }

@@ -114,7 +114,8 @@ public class TagViewCtrl {
             controller.setConnection(server.getServer());
             controller.setBoardId(mainCtrl.getBoardId());
             controller.setFontColors(c.getFontRed(), c.getFontBlue(), c.getFontGreen());
-            controller.setHighlightColor(c.getHighlightRed(), c.getHighlightBlue(), c.getHighlightGreen());
+            controller.setHighlightColor(c.getHighlightRed(),
+                    c.getHighlightBlue(), c.getHighlightGreen());
             controller.addTitle();
             tagList.getChildren().add(node);
             tags.add(controller);
@@ -132,6 +133,9 @@ public class TagViewCtrl {
         server.setServerAddress(address);
     }
 
+    /**
+     * @param card set card of the tags
+     */
     public void setCard(Card card) {
         this.card=card;
     }
