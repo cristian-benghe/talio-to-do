@@ -4,7 +4,6 @@ import client.BoardData;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Board;
-import jakarta.ws.rs.HEAD;
 import jakarta.ws.rs.NotFoundException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
