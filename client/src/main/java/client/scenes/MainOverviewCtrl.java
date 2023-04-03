@@ -150,7 +150,8 @@ public class MainOverviewCtrl implements Initializable {
                         // This lambda expression deletes the row (board) from the list view
                         deleteButton.setOnAction(event -> {
                             // Call a function to remove the board from the server.
-                            server.deleteBoard(Long.parseLong(item.split("--")[1].trim()));
+                            server.send("/app/delete-board",
+                                    Long.parseLong(item.split("--")[1].trim()));
 
                             // Remove the item from the list view.
                             getListView().getItems().remove(item);
@@ -176,7 +177,6 @@ public class MainOverviewCtrl implements Initializable {
                                 }
                             availableUserBoards.remove(toBeRemoved);
                             refreshWorkspaceFile();
-                            server.send("/app/refresh", 10);
                             updateBoardsList();
                         });
                         updateBoardsText();
@@ -248,7 +248,7 @@ public class MainOverviewCtrl implements Initializable {
         if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
         if (mainCtrl.isHasAdminRole())
-            boardsText.setText(boardsListElement.getItems().size() + " Available Boards");
+            boardsText.setText(availableBoards.size() + " Available Boards");
         else
             boardsText.setText(availableUserBoards.size() + " Available Boards");
     }
@@ -332,13 +332,25 @@ public class MainOverviewCtrl implements Initializable {
 
 
         //server.addBoard(board);
-        refreshOverview(); //to be deleted after websockets implementation
+        refreshOverview();
+        if (!mainCtrl.isHasAdminRole())
+            refreshWorkspaceFile();
+        refreshOverview();
+
+        server.send("/app/boards", board);
+        board = server.getBoards().get(server.getBoards().size()-1);
+
+        availableUserBoards.add(board);
+
+        refreshOverview();
+        if (!mainCtrl.isHasAdminRole())
+            refreshWorkspaceFile();
+        refreshOverview();
+        //server.send("/app/refresh", 10);
+
         if (!mainCtrl.isHasAdminRole())
             refreshWorkspaceFile();
 
-        server.send("/app/boards", board);
-
-        server.send("/app/refresh", 10);
 
 //        //TODO Retrieve the new board from the server to determine the board's ID.
 //        //board = server.();
@@ -367,7 +379,7 @@ public class MainOverviewCtrl implements Initializable {
         if (!mainCtrl.isHasAdminRole()) {
 
             refreshWorkspaceFile();
-            server.send("/app/refresh", 10);
+            //server.send("/app/refresh", 10);
             //refreshWorkspaceFile();
         }
         // Navigate to the board view for the selected board
@@ -409,10 +421,10 @@ public class MainOverviewCtrl implements Initializable {
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
-            if (!mainCtrl.isHasAdminRole()) {
-                if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
-                availableUserBoards.add(board);
-            }
+//            if (!mainCtrl.isHasAdminRole()) {
+//                if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
+//                availableUserBoards.add(board);
+//            }
             Platform.runLater(() -> refreshOverview());
         });
 
@@ -420,6 +432,12 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
+            for(Board b : availableUserBoards) {
+                if(Objects.equals(b.getId(),board.getId())) {
+                    b.setTitle(board.getTitle());
+                }
+            }
+            Platform.runLater(() -> refreshWorkspaceFile());
             Platform.runLater(() -> refreshOverview());
         });
 
