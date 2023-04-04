@@ -679,8 +679,16 @@ public class CardViewCtrl implements Initializable {
     void saveColor() {
         card.setColor(this.blue, this.green, this.red);
         Board board=server.getBoardById(mainCtrl.getBoardId());
-        Column column=board.getColumns().get(Math.toIntExact(card.getColumnId()));
-        server.updateCardColor(card.getId(), column.getId(), card, mainCtrl.getBoardId());
+        Long colId= Long.valueOf(-1);
+        for(Column c:board.getColumns()){
+            for(Card cardCheck:c.getCards()){
+                if(cardCheck.getId()==card.getId()){
+                    colId=c.getId();
+                    break;
+                }
+            }
+        }
+        server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
 
     }
 }

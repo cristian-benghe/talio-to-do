@@ -885,10 +885,7 @@ public class ServerUtils {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<List<Task>>(){});
     }
-    public void updateCardColor(Long cardid, Long columnID, Card card, Long boardId) {
-        updateCardInColumnColor(Math.toIntExact(cardid), card, columnID, boardId);
-    }
-    private Column updateCardInColumnColor(int cardId, Card cardd, Long columnId, Long boardId) {
+    public Column updateCardInColumnColor(Long cardId, Card cardd, Long columnId, Long boardId) {
         Column column=getColumnById(columnId);
         for(int i=0;i<column.getCards().size();i++){
             if(column.getCards().get(i).getId()==cardId){
