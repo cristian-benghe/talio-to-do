@@ -2,7 +2,9 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import commons.Card;
+import commons.Column;
 import commons.Task;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
@@ -28,10 +30,15 @@ import java.util.ResourceBundle;
 
 public class CardViewCtrl implements Initializable {
 
+    private Double blue;
+    private Double green;
+    private Double red;
+
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private Card card;
     private String text;
+    @FXML ColorPicker cardColor;
     @FXML
     private Label titleLabel;
     @FXML
@@ -660,5 +667,20 @@ public class CardViewCtrl implements Initializable {
     public void setCardViewCtrl(HBox tagList) {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);
+    }
+    @FXML
+    public void getColor() {
+           this.blue=cardColor.getValue().getBlue();
+           this.red=cardColor.getValue().getRed();
+           this.green=cardColor.getValue().getGreen();
+    }
+
+    @FXML
+    void saveColor() {
+        card.setColor(this.blue, this.green, this.red);
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        Column column=board.getColumns().get(Math.toIntExact(card.getColumnId()));
+        server.updateCardColor(card.getId(), column.getId(), card, mainCtrl.getBoardId());
+
     }
 }

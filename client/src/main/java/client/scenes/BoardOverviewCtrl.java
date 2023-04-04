@@ -916,6 +916,12 @@ public class BoardOverviewCtrl implements Initializable {
             for (Card kard : c.getCards()) {
                 vBox.getChildren().add(button);
                 AnchorPane anchorPane1 = addCard(vBox);
+
+
+                Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
+                anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) + ";");
+                
+
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,

@@ -163,7 +163,9 @@ public class Column implements Serializable {
     }
 
 
-
-
-
+    public void updateColorInCard(int i, Double red, Double blue, Double green) {
+        Card card=cards.get(i);
+        card.setColor(blue, green, red);
+        cards.set(i, card);
+    }
 }

@@ -885,6 +885,21 @@ public class ServerUtils {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<List<Task>>(){});
     }
+    public void updateCardColor(Long cardid, Long columnID, Card card, Long boardId) {
+        updateCardInColumnColor(Math.toIntExact(cardid), card, columnID, boardId);
+    }
+    private Column updateCardInColumnColor(int cardId, Card cardd, Long columnId, Long boardId) {
+        Column column=getColumnById(columnId);
+        for(int i=0;i<column.getCards().size();i++){
+            if(column.getCards().get(i).getId()==cardId){
+                column.updateColorInCard(i, cardd.getRed(), cardd.getBlue(), cardd.getGreen());
+            }
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
 
     
 }

@@ -23,7 +23,9 @@ public class Card implements Serializable {
     private Long id;
     private String title;
     private String description;
-
+    private Double red;
+    private Double green;
+    private Double blue;
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     @JsonIgnore
@@ -37,6 +39,8 @@ public class Card implements Serializable {
      * empty constructor
      */
     public Card() {
+        setColor(1.0, 1.0, 1.0);
+
     }
 
     /**
@@ -53,6 +57,7 @@ public class Card implements Serializable {
         this.description = description;
         this.taskList = taskList;
         this.tags = tags;
+        setColor(1.0, 1.0, 1.0);
     }
 
 
@@ -188,5 +193,23 @@ public class Card implements Serializable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
+    }
+
+    public void setColor(Double blue, Double green, Double red) {
+        this.blue=blue;
+        this.red=red;
+        this.green=green;
+    }
+
+    public Double getRed() {
+        return red;
+    }
+
+    public Double getGreen() {
+        return green;
+    }
+
+    public Double getBlue() {
+        return blue;
     }
 }
