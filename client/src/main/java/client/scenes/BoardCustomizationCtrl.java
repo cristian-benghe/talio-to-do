@@ -66,7 +66,6 @@ public class BoardCustomizationCtrl implements Initializable {
      * save the changes of board customziation
      */
     public void save(){
-        System.out.println(blue+" "+green+" "+red+" "+ mainCtrl.getBoardId());
         if(blue!=-1 && green!=-1 && red!=-1) {
             server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
         }

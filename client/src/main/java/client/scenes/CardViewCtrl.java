@@ -1,4 +1,5 @@
 package client.scenes;
+
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Card;
@@ -20,10 +21,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.io.IOException;
 
 public class CardViewCtrl implements Initializable {
 
@@ -39,6 +40,16 @@ public class CardViewCtrl implements Initializable {
     private VBox taskList;
     @FXML
     private Label emptyTaskList;
+    @FXML
+    private HBox taglist;
+
+    /**
+     * @return the list of tags
+     */
+    public HBox getTagList() {
+        return taglist;
+    }
+
 
     //Drag-and-drop markers list
     private Separator closestMarker;
@@ -124,6 +135,7 @@ public class CardViewCtrl implements Initializable {
     @FXML
     public void getTagView() throws IOException {
         mainCtrl.showTagView();
+
     }
 
     /**
@@ -143,15 +155,14 @@ public class CardViewCtrl implements Initializable {
     public void refresh() {
 
         //Reset the title label
-        titleLabel.setText(card.getTitle());
+        //titleLabel.setText(card.getTitle());
 
         //Reset the long description text area
-        longDescription.setText(card.getDescription());
 
+        longDescription.setText(card.getDescription());
         //Reset the task and tag lists
         displayTasks();
         displayTags();
-
     }
 
     /**
@@ -580,10 +591,10 @@ public class CardViewCtrl implements Initializable {
      * Resets and displays the available tags of the current card
      * instance in the scene.
      */
-    private void displayTags() {
-
-
+    public void displayTags() {
+           
     }
+
 
     /**
      * @param address of the server
@@ -612,6 +623,8 @@ public class CardViewCtrl implements Initializable {
         }
         sortTasksByPosition();
         this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        mainCtrl.setCard(card);
+
     }
 
     private void deleteCardInList(int position){
@@ -628,7 +641,8 @@ public class CardViewCtrl implements Initializable {
 
         //Make changes persist in the DB
         sortTasksByPosition();
-        this.setCard(server.updateTaskList(card.getId(), card.getTaskList()));
+        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        mainCtrl.setCard(card);
 
     }
     private void sortTasksByPosition(){
@@ -640,5 +654,11 @@ public class CardViewCtrl implements Initializable {
 
     }
 
-
+    /**
+     * @param tagList to set in the cardviewctrl
+     */
+    public void setCardViewCtrl(HBox tagList) {
+        taglist.getChildren().clear();
+        this.taglist.getChildren().addAll(tagList);
+    }
 }
