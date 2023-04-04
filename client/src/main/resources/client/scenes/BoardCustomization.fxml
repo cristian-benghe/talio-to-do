@@ -42,7 +42,7 @@
             </CheckBox>
          </children>
       </Pane>
-      <Label layoutX="18.0" layoutY="14.0" prefHeight="33.0" prefWidth="225.0" text="Board Customization">
+      <Label layoutX="67.0" layoutY="19.0" prefHeight="33.0" prefWidth="225.0" text="Board Customization">
          <font>
             <Font size="24.0" />
          </font>
@@ -52,5 +52,6 @@
             <Button layoutY="1.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0" prefWidth="100.0" text="Save" /> <!--onAction="#ok" / onAction="#ok" -->
          </children>
       </Pane>
+      <Button layoutX="19.0" layoutY="23.0" mnemonicParsing="false" onAction="#getBackBoardCustomization" text="&lt;-" />
    </children>
 </AnchorPane>
