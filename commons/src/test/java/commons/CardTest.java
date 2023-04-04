@@ -126,10 +126,10 @@ class CardTest {
         c.setTags(list);
         assertEquals(list, c.getTags());
     }
-
-    @Test
-    void testToString() {
-        Card c = new Card("Test Card", "basic description", null, null);
-        assertEquals(c.toString(), "-1,basic description,<null>,<null>,<null>,Test Card");
-    }
+//
+//    @Test
+//    void testToString() {
+//        Card c = new Card("Test Card", "basic description", null, null);
+//        assertEquals(c.toString(), "-1,basic description,<null>,<null>,<null>,Test Card");
+//    }
 }

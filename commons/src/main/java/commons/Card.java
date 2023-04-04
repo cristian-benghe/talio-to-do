@@ -195,20 +195,34 @@ public class Card implements Serializable {
         return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
     }
 
+    /**
+     * @param blue value in the rgb
+     * @param green value in the rgb
+     * @param red value in the rgb
+     */
     public void setColor(Double blue, Double green, Double red) {
         this.blue=blue;
         this.red=red;
         this.green=green;
     }
 
+    /**
+     * @return value in the rgb
+     */
     public Double getRed() {
         return red;
     }
 
+    /**
+     * @return value in the rgb
+     */
     public Double getGreen() {
         return green;
     }
 
+    /**
+     * @return value in the rgb
+     */
     public Double getBlue() {
         return blue;
     }

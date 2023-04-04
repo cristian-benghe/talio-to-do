@@ -38,7 +38,7 @@ public class CardViewCtrl implements Initializable {
     private final MainCtrl mainCtrl;
     private Card card;
     private String text;
-    @FXML ColorPicker cardColor;
+    @FXML private ColorPicker cardColor;
     @FXML
     private Label titleLabel;
     @FXML
@@ -668,13 +668,20 @@ public class CardViewCtrl implements Initializable {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);
     }
+
+    /**
+     * get color from card
+     */
     @FXML
     public void getColor() {
-           this.blue=cardColor.getValue().getBlue();
-           this.red=cardColor.getValue().getRed();
-           this.green=cardColor.getValue().getGreen();
+        this.blue=cardColor.getValue().getBlue();
+        this.red=cardColor.getValue().getRed();
+        this.green=cardColor.getValue().getGreen();
     }
 
+    /**
+     * save color in the db
+     */
     @FXML
     void saveColor() {
         card.setColor(this.blue, this.green, this.red);

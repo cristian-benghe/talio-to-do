@@ -885,6 +885,14 @@ public class ServerUtils {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<List<Task>>(){});
     }
+
+    /**
+     * @param cardId id of the card
+     * @param cardd the updated card
+     * @param columnId the id of the column
+     * @param boardId the id of the board
+     * @return the updated card
+     */
     public Column updateCardInColumnColor(Long cardId, Card cardd, Long columnId, Long boardId) {
         Column column=getColumnById(columnId);
         for(int i=0;i<column.getCards().size();i++){
