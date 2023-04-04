@@ -64,8 +64,8 @@ public class Tag implements Serializable {
     private String title;
 
     // this joins the Tag and the Card tables together
-    @ManyToMany(mappedBy = "tags")
-    private Set<Card> cards = new HashSet<>();
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    private Set<Card> cards = new HashSet<>();
 
     // this joins the Tag and the Board tables together
 //    @ManyToOne
@@ -87,10 +87,10 @@ public class Tag implements Serializable {
      * @param title - the name of the tag
      * @param cards - the set of Cards associated with the tag
      */
-    public Tag(long tagID, String title, Set<Card> cards){
+    public Tag(long tagID, String title){
         this.tagID = tagID;
         this.title = title;
-        this.cards = cards;
+        //this.cards = cards;
         this.setFontColor(0.0, 0.0, 0.0);
         this.setHighlightColor(1.0, 1.0, 1.0);
     }
@@ -100,9 +100,9 @@ public class Tag implements Serializable {
      * @param title of the tag
      * @param cards that are associated to a tag
      */
-    public Tag(String title, Set<Card>cards){
+    public Tag(String title){
         this.title=title;
-        this.cards=cards;
+        //this.cards=cards;
         this.setFontColor(0.0, 0.0, 0.0);
         this.setHighlightColor(1.0, 1.0, 1.0);
     }
@@ -110,9 +110,9 @@ public class Tag implements Serializable {
     /**
      * @param newCard the card to add
      */
-    public void addCard(Card newCard) {
-        cards.add(newCard);
-    }
+//   // public void addCard(Card newCard) {
+//        cards.add(newCard);
+//    }
 
     /**
      * @return id of a tag in a board
@@ -151,9 +151,9 @@ public class Tag implements Serializable {
      *
      * @return the value of the card
      */
-    public Set<Card> getCards() {
-        return cards;
-    }
+    //public Set<Card> getCards() {
+//        return cards;
+//    }
 
     /**
      * Sets the value of tagID
@@ -178,45 +178,45 @@ public class Tag implements Serializable {
      *
      * @param cards - the set of cards to be set
      */
-    public void setCards(Set<Card> cards) {
-        this.cards = cards;
-    }
-
-    /**
-     * equals method of the class
-     *
-     * @return true/false if this and o are equal or not
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Tag)) return false;
-        Tag tag = (Tag) o;
-        return getTagID() == tag.getTagID() && getTitle().equals(tag.getTitle()) &&
-                getCards().equals(tag.getCards());
-    }
-
-    /**
-     * hashcode method of the class Tag
-     *
-     * @return the hashcode of the Tag object
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTagID(), getTitle(), getCards());
-    }
-
-    /**
-     * toString method that prints the Tag object in a human-friendly way
-     *
-     * @return a string which represents the Tag object in a human-friendly way
-     */
-    @Override
-    public String toString() {
-        return this.title +
-                " has the ID: " + this.tagID +
-                " and is part of: " + this.cards.toString();
-    }
+//    public void setCards(Set<Card> cards) {
+//        this.cards = cards;
+//    }
+//
+//    /**
+//     * equals method of the class
+//     *
+//     * @return true/false if this and o are equal or not
+//     */
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (!(o instanceof Tag)) return false;
+//        Tag tag = (Tag) o;
+//        return getTagID() == tag.getTagID() && getTitle().equals(tag.getTitle()) &&
+//                getCards().equals(tag.getCards());
+//    }
+//
+//    /**
+//     * hashcode method of the class Tag
+//     *
+//     * @return the hashcode of the Tag object
+//     */
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getTagID(), getTitle(), getCards());
+//    }
+//
+//    /**
+//     * toString method that prints the Tag object in a human-friendly way
+//     *
+//     * @return a string which represents the Tag object in a human-friendly way
+//     */
+//    @Override
+//    public String toString() {
+//        return this.title +
+//                " has the ID: " + this.tagID +
+//                " and is part of: " + this.cards.toString();
+//    }
 
     /**
      * @param red value in rgb of the font

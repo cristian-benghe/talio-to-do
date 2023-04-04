@@ -20,6 +20,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
@@ -421,6 +422,22 @@ public class ServerUtils {
     }
 
     /**
+     * Retrieves using an HTTP GET request a board with a certain id
+     *
+     * @param cardId the id of the board we are looking for
+     * @return The deserialized Board object
+     */
+    public Card getCardById(long cardId) {
+        System.out.println(cardId);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Card.class);
+    }
+
+    /**
      * @param tagId the id of the tag
      * @return the tag with id tagid
      */
@@ -666,15 +683,26 @@ public class ServerUtils {
      * @param newCard the new card
      * @return the updated card in the database
      */
-    public Tag addCardToTag(Long id, Card newCard) {
-        Tag tag = getTagById(id);
-        tag.addCard(newCard);
+//    public Tag addCardToTag(Long id, Card newCard) {
+//        Tag tag = getTagById(id);
+//        tag.addCard(newCard);
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/tags/" + id)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+//    }
+    public Card addTagtoCard(Long id, Tag newTag) {
+        Card card = getCardById(id);
+        card.addTag(newTag);
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/tags/" + id)
+                .target(server).path("api/cards/" + id)
                 .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
     }
+
+
 
 
     /**
@@ -723,6 +751,36 @@ public class ServerUtils {
                 .target(server).path("api/boards/" + boardId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    public Card deleteTagsFromCard(Long cardId) {
+        Card card = getCardById(cardId);
+        card.setTags(null);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+    }
+
+
+
+
+
+    public Card deleteTagFromCard(Long tagInd, Long cardId) {
+        Card card = getCardById(cardId);
+        Tag tagToRemove = card.getTags().stream()
+                .filter(tag -> Objects.equals(tag.getTagID(), tagInd))
+                .findFirst()
+                .orElse(null);
+        if (tagToRemove != null) {
+            card.getTags().remove(tagToRemove);
+        }
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
     }
 //    /**
 //     * Adds a new column to a board.

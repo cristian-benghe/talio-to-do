@@ -61,10 +61,10 @@ public class TagService {
      */
     public Tag update(Tag existing, Tag updated) {
         existing.setTitle(updated.getTitle());
-        Set<Card> existingCards = existing.getCards();
-        Set<Card> updatedCards = updated.getCards();
-        existingCards.clear();
-        existingCards.addAll(updatedCards);
+//        Set<Card> existingCards = existing.getCards();
+//        Set<Card> updatedCards = updated.getCards();
+//        existingCards.clear();
+//        existingCards.addAll(updatedCards);
         return repo.save(existing);
     }
     /**

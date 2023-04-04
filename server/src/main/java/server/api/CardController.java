@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.util.Optional;
 
+import commons.Board;
 import commons.Task;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -121,7 +122,11 @@ public class CardController {
 //            return ResponseEntity.notFound().build();
 //        }
 //    }
-
+       @PutMapping("/{id}")
+       public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
+            Card updated = cardservice.update(id, card);
+             return ResponseEntity.ok(updated);
+}
 
 
 

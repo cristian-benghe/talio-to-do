@@ -1,5 +1,6 @@
 package server.service;
 
+import commons.Board;
 import commons.Card;
 import commons.Task;
 import org.springframework.stereotype.Service;
@@ -57,6 +58,18 @@ public class CardService {
      * Deletes the Card object with the specified id.
      * @param id the id of the Card object to delete
      */
+
+    public Card update(long id, Card card) {
+        Optional<Card> existing = repo.findById(id);
+        if (existing.isPresent()) {
+            Card updated = existing.get();
+            updated.setTitle(card.getTitle());
+            updated.setTags(card.getTags());
+            return repo.save(updated);
+        } else {
+            throw new IllegalArgumentException("Card with ID " + id + " not found.");
+        }
+    }
     public void delete(long id) {
         repo.deleteById(id);
     }

@@ -135,7 +135,6 @@ public class CardViewCtrl implements Initializable {
     @FXML
     public void getTagView() throws IOException {
         mainCtrl.showTagView();
-
     }
 
     /**

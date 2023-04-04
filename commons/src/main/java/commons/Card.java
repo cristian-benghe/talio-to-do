@@ -55,6 +55,10 @@ public class Card implements Serializable {
         this.tags = tags;
     }
 
+    public void addTag(Tag newTag) {
+        tags.add(newTag);
+    }
+
 
     // getters and setters
 
@@ -189,4 +193,16 @@ public class Card implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
     }
+    public void removeTag(int i) {
+        tags.remove(i);
+    }
+    public boolean hasTagWithId(Long tagId) {
+        for (Tag tag : tags) {
+            if (Objects.equals(tag.getTagID(), tagId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

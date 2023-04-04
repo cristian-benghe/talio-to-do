@@ -229,6 +229,10 @@ public class TagTemplateCtrl implements Initializable {
         return checkbox.isSelected();
     }
 
+    public void setCheckBox(boolean selected) {
+        checkbox.setSelected(selected);
+    }
+
     /**
      * event listener for any modification to the title
      */

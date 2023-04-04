@@ -41,7 +41,6 @@ public class TagViewCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
-
     @FXML
     private void gettoCard()
     {
@@ -57,18 +56,26 @@ public class TagViewCtrl {
                 // set the maximum height of the text field
                 anchorPane.getChildren().add(textField);
                 hBox.getChildren().add(anchorPane);
+
+                server.addTagtoCard(card.getId(),server.getTagById(tagTemplateCtrl.getTagId()) );
+
             }
         }
+        System.out.println(card.getTags().size()+"dfgbfdghn");
+
         mainCtrl.getcardViewCtrl().setCardViewCtrl(hBox);
+        mainCtrl.setCard(card);
         mainCtrl.showCardView(card);
 
     }
     @FXML
     private void addTag() throws IOException {
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/client/scenes/TagTemplate.fxml"));
         TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
         controller.setCard(mainCtrl.getCard());
+        server.deleteTagsFromCard(card.getId());
 
         loader.setController(controller);
         Node node = loader.load();
@@ -82,7 +89,7 @@ public class TagViewCtrl {
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
-        Tag tag = new Tag("New tag", null);
+        Tag tag = new Tag("New tag");
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
         //add tag to database
         Board board=server.getBoardById(mainCtrl.getBoardId());
@@ -91,6 +98,7 @@ public class TagViewCtrl {
         Long id= board.getTags().get(ind).getTagID();
         //the id of the tag in the database
         controller.setTagId(id);  //set the tagid
+
     }
 
 
@@ -103,6 +111,8 @@ public class TagViewCtrl {
         tags.clear();
         //clears the tags displayed in the scene to update them from the database
         for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
+            System.out.println("yey"+card.getTags());
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/scenes/TagTemplate.fxml"));
             TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
@@ -117,13 +127,18 @@ public class TagViewCtrl {
             controller.setHighlightColor(c.getHighlightRed(),
                     c.getHighlightBlue(), c.getHighlightGreen());
             controller.addTitle();
+
             tagList.getChildren().add(node);
             tags.add(controller);
             int index = tagList.getChildren().indexOf(node);
             AnchorPane.setTopAnchor(node, index * 50.0);
             AnchorPane.setLeftAnchor(node, 0.0);
             controller.setTagId(c.getTagID());
+            if(card.hasTagWithId(c.getTagID())){
+                controller.setCheckBox(true);
+            }
         }
+        server.deleteTagsFromCard(card.getId());
     }
 
     /**
