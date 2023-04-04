@@ -253,6 +253,19 @@ public class BoardOverviewCtrl implements Initializable {
 
         setCardDragDrop(anchorPane1, vBox);
         vBox.setMargin(anchorPane1, new Insets(2, 2, 2, 2));
+
+//        anchorPane1.(event -> {
+//            if (event.getButton() == MouseButton.PRIMARY) {
+//                if (anchorPane1.getStyle().contains("-fx-margin")) {
+//                    // remove margin styling to deselect
+//                    anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
+//                } else {
+//                    // set margin styling to select
+//                    anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-margin: 2 2 2 2; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4;");
+//                }
+//            }
+//        });
+
         return anchorPane1;
     }
 
@@ -282,6 +295,15 @@ public class BoardOverviewCtrl implements Initializable {
 
         anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
         anchorPane1.setPrefSize(150, 80);
+
+        anchorPane1.setOnMouseEntered(e -> {
+            anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-width: 4; -fx-margin: -2;");
+        });
+
+        anchorPane1.setOnMouseExited(e -> {
+            anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
+        });
+
         return anchorPane1;
     }
 
