@@ -70,6 +70,7 @@ public class BoardOverviewCtrl implements Initializable {
     @FXML
     private ImageView binImage;
 
+    private AnchorPane selectedAnchorPane;
 
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
@@ -249,22 +250,26 @@ public class BoardOverviewCtrl implements Initializable {
      * @return an anchorPane as a card
      */
     public AnchorPane addCard(VBox vBox) {
-        AnchorPane anchorPane1 = createCard();
+        AnchorPane anchorPane1 = createCard(vBox);
 
         setCardDragDrop(anchorPane1, vBox);
         vBox.setMargin(anchorPane1, new Insets(2, 2, 2, 2));
 
-//        anchorPane1.(event -> {
-//            if (event.getButton() == MouseButton.PRIMARY) {
-//                if (anchorPane1.getStyle().contains("-fx-margin")) {
-//                    // remove margin styling to deselect
-//                    anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
-//                } else {
-//                    // set margin styling to select
-//                    anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-margin: 2 2 2 2; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4;");
-//                }
-//            }
-//        });
+        anchorPane1.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                if (selectedAnchorPane != null && selectedAnchorPane != anchorPane1) {
+                    // reset the previously selected anchor pane
+                    resetAnchorPane(selectedAnchorPane);
+                }
+                if (anchorPane1 != selectedAnchorPane) {
+                    // set the new selected anchor pane
+                    selectAnchorPane(anchorPane1);
+                } else {
+                    // deselect the current anchor pane
+                    resetAnchorPane(anchorPane1);
+                }
+            }
+        });
 
         return anchorPane1;
     }
@@ -273,8 +278,9 @@ public class BoardOverviewCtrl implements Initializable {
      * A method to create a new card
      *
      * @return return an anchorPane as a card!
+     * @param vBox - the column with cards
      */
-    public AnchorPane createCard() {
+    public AnchorPane createCard(VBox vBox) {
         AnchorPane anchorPane1 = new AnchorPane();
         Label myLabel = new Label();
         myLabel.setText("=====");
@@ -297,14 +303,29 @@ public class BoardOverviewCtrl implements Initializable {
         anchorPane1.setPrefSize(150, 80);
 
         anchorPane1.setOnMouseEntered(e -> {
-            anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-width: 4; -fx-margin: -2;");
+            if (anchorPane1 != selectedAnchorPane) {
+                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4; -fx-margin: -2;");
+            }
         });
 
         anchorPane1.setOnMouseExited(e -> {
-            anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
+            if (anchorPane1 != selectedAnchorPane) {
+                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
+            }
         });
 
         return anchorPane1;
+    }
+
+    private void selectAnchorPane(AnchorPane anchorPane) {
+        // set the new selected anchor pane
+        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4;");
+        selectedAnchorPane = anchorPane;
+    }
+
+    private void resetAnchorPane(AnchorPane anchorPane) {
+        // reset the anchor pane to its default appearance
+        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
     }
 
     /**
