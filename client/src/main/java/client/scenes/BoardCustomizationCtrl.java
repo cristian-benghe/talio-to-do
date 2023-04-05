@@ -70,7 +70,6 @@ public class BoardCustomizationCtrl implements Initializable {
             server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
         }
         server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
-        mainCtrl.showBoardOverview(text, blue, green, red);
     }
 
     /**
@@ -78,5 +77,13 @@ public class BoardCustomizationCtrl implements Initializable {
      */
     public void setBoardText(String text) {
         this.text = text;
+    }
+
+    /**
+     * To get back to the boardOverview
+     */
+    @FXML
+    private void getBackBoardCustomization() {
+        mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
 }
