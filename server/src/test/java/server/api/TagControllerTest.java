@@ -33,8 +33,8 @@ public class TagControllerTest {
     @Test
     public void testGetAll() {
         List<Tag> expectedTags = new ArrayList<>();
-        expectedTags.add(new Tag("tag", null));
-        expectedTags.add(new Tag("title", null));
+        expectedTags.add(new Tag("tag"));
+        expectedTags.add(new Tag("title"));
         when(tagService.getAll()).thenReturn(expectedTags);
 
         List<Tag> actualTags = tagController.getAll();
@@ -45,7 +45,7 @@ public class TagControllerTest {
     @Test
     public void testGetById() {
         long tagId = 1;
-        Tag expectedTag = new Tag("tag", null);
+        Tag expectedTag = new Tag("tag");
         when(tagService.getById(tagId)).thenReturn(Optional.of(expectedTag));
 
         ResponseEntity<Tag> response = tagController.getById(tagId);
@@ -68,7 +68,7 @@ public class TagControllerTest {
 
     @Test
     public void testAdd() {
-        Tag expectedTag = new Tag("tag", null);
+        Tag expectedTag = new Tag("tag");
         when(tagService.add(any(Tag.class))).thenReturn(expectedTag);
 
         ResponseEntity<Tag> response = tagController.add(expectedTag);
@@ -80,7 +80,7 @@ public class TagControllerTest {
     @Test
     public void testDelete() {
         long tagId = 1;
-        Tag existingTag = new Tag("tag", null);
+        Tag existingTag = new Tag("tag");
         when(tagService.getById(tagId)).thenReturn(Optional.of(existingTag));
 
         ResponseEntity<Void> response = tagController.delete(tagId);

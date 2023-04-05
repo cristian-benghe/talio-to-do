@@ -21,8 +21,10 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+
 
 import commons.*;
 import jakarta.ws.rs.core.MediaType;
@@ -678,11 +680,11 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
-    /**
-     * @param id the id of the card
-     * @param newCard the new card
-     * @return the updated card in the database
-     */
+//    /**
+//     * @param id the id of the card
+//     * @param newCard the new card
+//     * @return the updated card in the database
+//     */
 //    public Tag addCardToTag(Long id, Card newCard) {
 //        Tag tag = getTagById(id);
 //        tag.addCard(newCard);
@@ -692,6 +694,12 @@ public class ServerUtils {
 //                .request(MediaType.APPLICATION_JSON)
 //                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
 //    }
+
+    /**
+     * @param id the id of the card
+     * @param newTag the new tag
+     * @return the updated card in the database
+     */
     public Card addTagtoCard(Long id, Tag newTag) {
         Card card = getCardById(id);
         card.addTag(newTag);
@@ -752,7 +760,12 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
-
+    /**
+     * Deletes all tags from a card with the specified card ID.
+     *
+     * @param cardId the ID of the card to delete tags from
+     * @return the updated card object returned by the server
+     */
     public Card deleteTagsFromCard(Long cardId) {
         Card card = getCardById(cardId);
         card.setTags(null);
@@ -767,21 +780,21 @@ public class ServerUtils {
 
 
 
-    public Card deleteTagFromCard(Long tagInd, Long cardId) {
-        Card card = getCardById(cardId);
-        Tag tagToRemove = card.getTags().stream()
-                .filter(tag -> Objects.equals(tag.getTagID(), tagInd))
-                .findFirst()
-                .orElse(null);
-        if (tagToRemove != null) {
-            card.getTags().remove(tagToRemove);
-        }
-
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/cards/" + cardId)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
-    }
+//    public Card deleteTagFromCard(Long tagInd, Long cardId) {
+//        Card card = getCardById(cardId);
+//        Tag tagToRemove = card.getTags().stream()
+//                .filter(tag -> Objects.equals(tag.getTagID(), tagInd))
+//                .findFirst()
+//                .orElse(null);
+//        if (tagToRemove != null) {
+//            card.getTags().remove(tagToRemove);
+//        }
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/cards/" + cardId)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+//    }
 //    /**
 //     * Adds a new column to a board.
 //     * This method sends a POST request to the server to add a new column to a board.
@@ -897,6 +910,42 @@ public class ServerUtils {
                 .target(server).path("api/tags/" + tagId)
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+    }
+
+    /**
+     * Updates a tag within a card with the specified tag and card IDs.
+     * The tag is updated with the new title,
+     * font color, and highlight color from the provided tag object.
+     * The updated tag is then added to the
+     * card's tag set and the old tag with the same ID is removed.
+     *
+     * @param tagId the ID of the tag to update
+     * @param cardId the ID of the card containing the tag to update
+     * @param card the card object containing the tag to update
+     * @param tag the updated tag object containing the new tag information
+     * @return the updated card object returned by the server
+     */
+
+    public Card updateTagInCard(Long tagId, Long cardId, Card card, Tag tag) {
+        Tag updated=getTagById(tagId);
+        updated.setTitle(tag.getTitle());
+        updated.setFontColor(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
+        updated.setHighlightColor(tag.getHighlightBlue(), tag.getHighlightGreen(),
+                tag.getHighlightRed());
+
+
+        Set<Tag> tagSet = card.getTags();
+        for (Tag t : tagSet) {
+            if (Objects.equals(t.getTagID(), tagId)) {
+                tagSet.remove(t);
+                tagSet.add(updated);
+                break;
+            }
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(APPLICATION_JSON)
+                .put(Entity.entity(card, APPLICATION_JSON), Card.class);
     }
 
     /**

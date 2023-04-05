@@ -55,6 +55,11 @@ public class Card implements Serializable {
         this.tags = tags;
     }
 
+    /**
+     * add a new tag to the card
+     * @param newTag
+     */
+
     public void addTag(Tag newTag) {
         tags.add(newTag);
     }
@@ -193,9 +198,16 @@ public class Card implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
     }
-    public void removeTag(int i) {
-        tags.remove(i);
-    }
+
+//    public void removeTag(int i) {
+//        tags.remove(i);
+//    }
+
+    /**
+     * Verify if the tag has a tag with a certain id
+     * @param tagId id of the card
+     * @return true if the card has the specific tag
+     */
     public boolean hasTagWithId(Long tagId) {
         for (Tag tag : tags) {
             if (Objects.equals(tag.getTagID(), tagId)) {

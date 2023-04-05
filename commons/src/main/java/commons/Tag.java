@@ -2,9 +2,9 @@ package commons;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
+
 import java.util.Objects;
-import java.util.Set;
+
 
 @Entity
 public class Tag implements Serializable {
@@ -85,7 +85,7 @@ public class Tag implements Serializable {
      * Constructs a new Tag object with the specified id and title.
      * @param tagID - the unique identifier for the tag
      * @param title - the name of the tag
-     * @param cards - the set of Cards associated with the tag
+
      */
     public Tag(long tagID, String title){
         this.tagID = tagID;
@@ -98,7 +98,6 @@ public class Tag implements Serializable {
 
     /**
      * @param title of the tag
-     * @param cards that are associated to a tag
      */
     public Tag(String title){
         this.title=title;
@@ -182,41 +181,40 @@ public class Tag implements Serializable {
 //        this.cards = cards;
 //    }
 //
-//    /**
-//     * equals method of the class
-//     *
-//     * @return true/false if this and o are equal or not
-//     */
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Tag)) return false;
-//        Tag tag = (Tag) o;
-//        return getTagID() == tag.getTagID() && getTitle().equals(tag.getTitle()) &&
-//                getCards().equals(tag.getCards());
-//    }
+    /**
+     * equals method of the class
+     *
+     * @return true/false if this and o are equal or not
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Tag)) return false;
+        Tag tag = (Tag) o;
+        return getTagID() == tag.getTagID() && getTitle().equals(tag.getTitle());
+    }
 //
-//    /**
-//     * hashcode method of the class Tag
-//     *
-//     * @return the hashcode of the Tag object
-//     */
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(getTagID(), getTitle(), getCards());
-//    }
-//
-//    /**
-//     * toString method that prints the Tag object in a human-friendly way
-//     *
-//     * @return a string which represents the Tag object in a human-friendly way
-//     */
-//    @Override
-//    public String toString() {
-//        return this.title +
-//                " has the ID: " + this.tagID +
-//                " and is part of: " + this.cards.toString();
-//    }
+    /**
+     * hashcode method of the class Tag
+     *
+     * @return the hashcode of the Tag object
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTagID(), getTitle());
+    }
+
+    /**
+     * toString method that prints the Tag object in a human-friendly way
+     *
+     * @return a string which represents the Tag object in a human-friendly way
+     */
+    @Override
+    public String toString() {
+        return this.title +
+                " has the ID: " + this.tagID ;
+
+    }
 
     /**
      * @param red value in rgb of the font

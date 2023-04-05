@@ -57,17 +57,23 @@ public class TagViewCtrl {
                 anchorPane.getChildren().add(textField);
                 hBox.getChildren().add(anchorPane);
 
-                server.addTagtoCard(card.getId(),server.getTagById(tagTemplateCtrl.getTagId()) );
+                card = server.addTagtoCard(card.getId(),
+                        server.getTagById(tagTemplateCtrl.getTagId()) );
 
             }
         }
-        System.out.println(card.getTags().size()+"dfgbfdghn");
+
 
         mainCtrl.getcardViewCtrl().setCardViewCtrl(hBox);
         mainCtrl.setCard(card);
         mainCtrl.showCardView(card);
 
     }
+
+
+
+
+
     @FXML
     private void addTag() throws IOException {
 
@@ -75,7 +81,7 @@ public class TagViewCtrl {
                 "/client/scenes/TagTemplate.fxml"));
         TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
         controller.setCard(mainCtrl.getCard());
-        server.deleteTagsFromCard(card.getId());
+        //server.deleteTagsFromCard(card.getId());
 
         loader.setController(controller);
         Node node = loader.load();
@@ -111,7 +117,7 @@ public class TagViewCtrl {
         tags.clear();
         //clears the tags displayed in the scene to update them from the database
         for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
-            System.out.println("yey"+card.getTags());
+
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/client/scenes/TagTemplate.fxml"));

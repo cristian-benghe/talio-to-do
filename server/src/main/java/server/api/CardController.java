@@ -4,7 +4,7 @@ import java.util.List;
 
 import java.util.Optional;
 
-import commons.Board;
+
 import commons.Task;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -122,11 +122,19 @@ public class CardController {
 //            return ResponseEntity.notFound().build();
 //        }
 //    }
-       @PutMapping("/{id}")
-       public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
-            Card updated = cardservice.update(id, card);
-             return ResponseEntity.ok(updated);
-}
+
+    /**
+     * PUT request for updating a card with that specific id
+     * @param id - the id of the card to be updated
+     * @param card - the new card which will replace the already existing card
+     * @return - status 200 if the card has been successfully
+     * updated in the database or NOT FOUND (error 404) if the card is not found in the database
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
+        Card updated = cardservice.update(id, card);
+        return ResponseEntity.ok(updated);
+    }
 
 
 
