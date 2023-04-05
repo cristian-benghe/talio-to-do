@@ -1087,6 +1087,15 @@ public class BoardOverviewCtrl implements Initializable {
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
 
+        // Add a listener to the scene to detect when the Shift+/ key combination is pressed
+        anchorPane.setOnKeyPressed(event -> {
+            if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
+                if (!(event.getTarget() instanceof TextField)) {
+                    helpDialog.showAndWait();
+                }
+            }
+        });
+
     }
 
     /**
