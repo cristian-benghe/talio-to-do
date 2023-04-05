@@ -2,18 +2,25 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import commons.Card;
+import javafx.animation.ScaleTransition;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import javax.swing.text.html.ImageView;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertTrue;
 
 class CardViewCtrlTest {
 
@@ -116,6 +123,79 @@ class CardViewCtrlTest {
     void testGetTitleLabel() {
         cardViewCtrl.setTitleLabel(null);
         assertNull(cardViewCtrl.getTitleLabel());
+    }
+
+    @Test
+    void testGetTaskList() {
+        cardViewCtrl.setTaskList(null);
+        assertNull(cardViewCtrl.getTaskList());
+    }
+
+    @Test
+    void testGetEmptyTaskList() {
+        cardViewCtrl.setEmptyTaskList(null);
+        assertNull(cardViewCtrl.getEmptyTaskList());
+    }
+
+    @Test
+    void testSetLongDescription() {
+        TextArea testLongDescription = null;
+        cardViewCtrl.setLongDescription(testLongDescription);
+        assertEquals(testLongDescription, cardViewCtrl.getLongDescription());
+    }
+
+    @Test
+    void testIsTaskDragged() {
+        cardViewCtrl.setTaskDragged(true);
+        assertTrue(cardViewCtrl.isTaskDragged());
+    }
+
+    @Test
+    void testIsDraggedOverBin() {
+        cardViewCtrl.setDraggedOverBin(true);
+        assertTrue(cardViewCtrl.isDraggedOverBin());
+    }
+
+    @Test
+    void testGetBinContraction() {
+        ScaleTransition testBinContraction = new ScaleTransition(Duration.seconds(1));
+        cardViewCtrl.setBinContraction(testBinContraction);
+        assertEquals(testBinContraction, cardViewCtrl.getBinContraction());
+    }
+
+    @Test
+    void testGetBinExpansion() {
+        ScaleTransition testBinExpansion = new ScaleTransition(Duration.seconds(1));
+        cardViewCtrl.setBinExpansion(testBinExpansion);
+        assertEquals(testBinExpansion, cardViewCtrl.getBinExpansion());
+    }
+
+    @Test
+    void testGetBinImage() {
+        ImageView testBinImage = null;
+        cardViewCtrl.setBinImage(null);
+        assertEquals(null, cardViewCtrl.getBinImage());
+    }
+
+    @Test
+    void testSetTaskList() {
+        VBox testTaskList = new VBox();
+        cardViewCtrl.setTaskList(testTaskList);
+        assertEquals(testTaskList, cardViewCtrl.getTaskList());
+    }
+
+    @Test
+    void testSetEmptyTaskList() {
+        Label testEmptyTaskList = null;
+        cardViewCtrl.setEmptyTaskList(testEmptyTaskList);
+        assertEquals(testEmptyTaskList, cardViewCtrl.getEmptyTaskList());
+    }
+
+    @Test
+    void testSetTaglist() {
+        HBox testTaglist = new HBox();
+        cardViewCtrl.setTaglist(testTaglist);
+        assertEquals(testTaglist, cardViewCtrl.getTaglist());
     }
 
 }

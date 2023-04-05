@@ -839,12 +839,57 @@ public class CardViewCtrl implements Initializable {
      *
      * @param taglist the tag list HBox to set
      */
-    public void setTagist(HBox taglist) {
+    public void setTaglist(HBox taglist) {
         this.taglist = taglist;
     }
 
+    /**
+     *
+     * Sets the closest marker to the specified separator object.
+     * @param closestMarker the separator object to set as the closest marker
+     */
+    public void setClosestMarker(Separator closestMarker) {
+        this.closestMarker = closestMarker;
+    }
+    /**
 
+     Sets whether a task is currently being dragged or not.
+     @param taskDragged true if a task is being dragged, false otherwise
+     */
+    public void setTaskDragged(boolean taskDragged) {
+        isTaskDragged = taskDragged;
+    }
+    /**
 
+     Sets whether a task is currently being dragged over the bin or not.
+     @param draggedOverBin true if a task is being dragged over the bin, false otherwise
+     */
+    public void setDraggedOverBin(boolean draggedOverBin) {
+        isDraggedOverBin = draggedOverBin;
+    }
+    /**
 
+     Sets the bin contraction scale transition.
+     @param binContraction the bin contraction scale transition to set
+     */
+    public void setBinContraction(ScaleTransition binContraction) {
+        this.binContraction = binContraction;
+    }
+    /**
+
+     Sets the bin expansion scale transition.
+     @param binExpansion the bin expansion scale transition to set
+     */
+    public void setBinExpansion(ScaleTransition binExpansion) {
+        this.binExpansion = binExpansion;
+    }
+    /**
+
+     Sets the bin image to the specified image view.
+     @param binImage the image view to set as the bin image
+     */
+    public void setBinImage(ImageView binImage) {
+        this.binImage = binImage;
+    }
 
 }
