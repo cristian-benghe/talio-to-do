@@ -304,28 +304,46 @@ public class BoardOverviewCtrl implements Initializable {
 
         anchorPane1.setOnMouseEntered(e -> {
             if (anchorPane1 != selectedAnchorPane) {
-                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4; -fx-margin: -2;");
+                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; " +
+                        "-fx-background-radius:  15; " +
+                        "-fx-border-color: lightblue; " +
+                        "-fx-border-radius: 15; " +
+                        "-fx-border-width: 4; " +
+                        "-fx-margin: -2;");
             }
         });
 
         anchorPane1.setOnMouseExited(e -> {
             if (anchorPane1 != selectedAnchorPane) {
-                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
+                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; " +
+                        "-fx-background-radius:  15; " +
+                        "-fx-border-color: transparent; " +
+                        "-fx-margin: 0;");
             }
         });
 
         return anchorPane1;
     }
 
+    /**
+     * This method colours the margins of the selected card
+     * @param anchorPane - the anchor pane that is selected
+     */
     private void selectAnchorPane(AnchorPane anchorPane) {
         // set the new selected anchor pane
-        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4;");
+        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
+                "-fx-border-color: lightblue; -fx-border-radius: 15; -fx-border-width: 4;");
         selectedAnchorPane = anchorPane;
     }
 
+    /**
+     * This method discolours the margins of the previous selected card
+     * @param anchorPane - the anchor pane whose margins to be discoloured
+     */
     private void resetAnchorPane(AnchorPane anchorPane) {
         // reset the anchor pane to its default appearance
-        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; -fx-border-color: transparent; -fx-margin: 0;");
+        anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
+                "-fx-border-color: transparent; -fx-margin: 0;");
     }
 
     /**
