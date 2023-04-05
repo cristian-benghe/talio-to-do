@@ -57,5 +57,10 @@
       <!--Below you can see the Delete Board button-->
       <Button layoutX="52.0" layoutY="543.0" mnemonicParsing="false" onAction="#deleteBoard" prefHeight="35.0" prefWidth="158.0" text="Delete Board" />
       <Label fx:id="boardTitleLabel" layoutX="110.0" layoutY="22.0" prefHeight="18.0" prefWidth="178.0" text="Press enter to save!" visible="false" />
+      <Button layoutX="886.0" layoutY="49.0" mnemonicParsing="false" onAction="#help" prefHeight="35.0" prefWidth="41.0" text="?">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

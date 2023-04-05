@@ -8,10 +8,12 @@ import commons.Column;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,6 +53,9 @@ public class BoardOverviewCtrl implements Initializable {
 
     //Dialog box for the delete board button
     private Dialog deleteBoardDialog;
+
+    //Help box for the help functionality
+    private Dialog helpDialog;
     //id of the board
     private Long id = (long) -1;
     @FXML
@@ -1048,6 +1053,39 @@ public class BoardOverviewCtrl implements Initializable {
 
         deleteBoardDialog.getDialogPane().getButtonTypes().addAll(cancelBT, confirmBT);
 
+        // Set up the dialog for the help button
+        helpDialog = new Dialog<String>();
+        helpDialog.initModality(Modality.APPLICATION_MODAL);
+        helpDialog.setTitle("Help");
+
+        helpDialog.setHeaderText("Help zone");
+
+        Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
+
+        // Create a VBox to hold the keyboard shortcuts list
+        VBox shortcutsList = new VBox();
+        shortcutsList.setSpacing(5);
+
+        // Add each keyboard shortcut to the VBox
+        Label upDownLeftRight = new Label("Up/Down/Left/Right -> select tasks");
+        Label shiftUpDown = new Label("Shift+Up/Down -> change order of cards in the column");
+        Label editCardTitle = new Label("E -> edit the card title");
+        Label deleteCard = new Label("Del/Backspace -> delete a card");
+        Label openCardDetails = new Label("Enter -> open card details");
+        Label closeCardDetails = new Label("Esc -> close card details");
+        Label addTags = new Label("T -> open popup for adding tags");
+        Label colorPresetSelection = new Label("C -> open popup for color preset selection");
+
+        // Add the keyboard shortcuts to the VBox
+        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard, openCardDetails, closeCardDetails, addTags, colorPresetSelection);
+
+        // Add the VBox to the dialog's content
+        helpDialog.getDialogPane().setContent(shortcutsList);
+
+        // Add an OK button to the dialog
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
+
 
     }
 
@@ -1088,6 +1126,17 @@ public class BoardOverviewCtrl implements Initializable {
             server.send("/app/delete-board", id);
             mainCtrl.showMainOverview();
 
+        }
+    }
+
+    /**
+     * This method shows the help dialog when the "?" button is clicked
+     */
+    public void help(){
+        Optional<ButtonType> result = helpDialog.showAndWait();
+
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+            mainCtrl.showMainOverview();
         }
     }
 
