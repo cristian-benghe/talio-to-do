@@ -1054,6 +1054,13 @@ public class BoardOverviewCtrl implements Initializable {
         deleteBoardDialog.getDialogPane().getButtonTypes().addAll(cancelBT, confirmBT);
 
         // Set up the dialog for the help button
+        helpPopUp();
+    }
+
+    /**
+     * Set up the dialog for the help button
+     */
+    public void helpPopUp(){
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
@@ -1095,7 +1102,6 @@ public class BoardOverviewCtrl implements Initializable {
                 }
             }
         });
-
     }
 
     /**
@@ -1141,7 +1147,7 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * This method shows the help dialog when the "?" button is clicked
      */
-    public void help(){
+    public void showHelp(){
         Optional<ButtonType> result = helpDialog.showAndWait();
 
         if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
