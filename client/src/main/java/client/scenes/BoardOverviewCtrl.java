@@ -1025,7 +1025,6 @@ public class BoardOverviewCtrl implements Initializable {
         if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
 
             //server.deleteBoard(id);
-
             server.send("/app/delete-board", id);
             mainCtrl.showMainOverview();
 

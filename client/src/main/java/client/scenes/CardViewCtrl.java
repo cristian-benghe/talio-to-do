@@ -30,7 +30,7 @@ public class CardViewCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private Card card;
+
     private String text;
     @FXML
     private Label titleLabel;
@@ -42,6 +42,8 @@ public class CardViewCtrl implements Initializable {
     private Label emptyTaskList;
     @FXML
     private HBox taglist;
+
+    private Card card;
 
     /**
      * @return the list of tags
@@ -56,13 +58,12 @@ public class CardViewCtrl implements Initializable {
     private boolean isTaskDragged;
     private boolean isDraggedOverBin;
 
-    @FXML
-    private ImageView binImage;
 
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
     private ScaleTransition binExpansion;
-
+    @FXML
+    private ImageView binImage;
 
     /**
      * Initialize the controller and the scene
@@ -118,7 +119,7 @@ public class CardViewCtrl implements Initializable {
      * To get back to the boardOverview
      */
     @FXML
-    private void getBackCard() {
+    public void getBackCard() {
         mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
 
@@ -212,7 +213,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @return a newly created task list marker separator
      */
-    private Separator createTaskDropMarker() {
+    public Separator createTaskDropMarker() {
         //Add a separator marker
         Separator marker = new Separator();
         marker.setPrefHeight(6);
@@ -502,7 +503,7 @@ public class CardViewCtrl implements Initializable {
      *
      * @param bin the binImage instance that will be assigned the event handlers
      */
-    private void setDragForBin(Node bin) {
+    public void setDragForBin(Node bin) {
         bin.setOnDragOver(event -> {
             if (event.getGestureSource() != bin
                     && event.getDragboard().hasString()) {
@@ -661,4 +662,189 @@ public class CardViewCtrl implements Initializable {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);
     }
+
+    /**
+     * Getter for the long description TextArea.
+     *
+     * @return the long description TextArea
+     */
+    public TextArea getLongDescription() {
+        return longDescription;
+    }
+
+    /**
+     * Setter for the long description TextArea.
+     *
+     * @param longDescription the long description TextArea to set
+     */
+    public void setLongDescription(TextArea longDescription) {
+        this.longDescription = longDescription;
+    }
+
+    /**
+     * Getter for the ServerUtils object.
+     *
+     * @return the ServerUtils object
+     */
+    public ServerUtils getServer() {
+        return server;
+    }
+
+    /**
+     * Getter for the MainCtrl object.
+     *
+     * @return the MainCtrl object
+     */
+    public MainCtrl getMainCtrl() {
+        return mainCtrl;
+    }
+
+    /**
+     * Getter for the text string.
+     *
+     * @return the text string
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Getter for the title label.
+     *
+     * @return the title label
+     */
+    public Label getTitleLabel() {
+        return titleLabel;
+    }
+
+    /**
+     * Getter for the task list VBox.
+     *
+     * @return the task list VBox
+     */
+    public VBox getTaskList() {
+        return taskList;
+    }
+
+    /**
+     * Getter for the empty task list Label.
+     *
+     * @return the empty task list Label
+     */
+    public Label getEmptyTaskList() {
+        return emptyTaskList;
+    }
+
+    /**
+     * Getter for the tag list HBox.
+     *
+     * @return the tag list HBox
+     */
+    public HBox getTaglist() {
+        return taglist;
+    }
+
+    /**
+     * Getter for the Card object.
+     *
+     * @return the Card object
+     */
+    public Card getCard() {
+        return card;
+    }
+
+    /**
+     * Getter for the closest marker Separator.
+     *
+     * @return the closest marker Separator
+     */
+    public Separator getClosestMarker() {
+        return closestMarker;
+    }
+
+    /**
+     * Getter for the task dragged boolean.
+     *
+     * @return true if a task is being dragged, false otherwise
+     */
+    public boolean isTaskDragged() {
+        return isTaskDragged;
+    }
+
+    /**
+     * Getter for the dragged over bin boolean.
+     *
+     * @return true if a task is being dragged over the bin, false otherwise
+     */
+    public boolean isDraggedOverBin() {
+        return isDraggedOverBin;
+    }
+
+    /**
+     * Getter for the bin contraction ScaleTransition.
+     *
+     * @return the bin contraction ScaleTransition
+     */
+    public ScaleTransition getBinContraction() {
+        return binContraction;
+    }
+
+    /**
+     * Getter for the bin expansion ScaleTransition.
+     *
+     * @return the bin expansion ScaleTransition
+     */
+    public ScaleTransition getBinExpansion() {
+        return binExpansion;
+    }
+
+    /**
+     * Getter for the bin image ImageView.
+     *
+     * @return the bin image ImageView
+     */
+    public ImageView getBinImage() {
+        return binImage;
+    }
+
+    /**
+     * Setter for the title label.
+     *
+     * @param titleLabel the title label to set
+     */
+    public void setTitleLabel(Label titleLabel) {
+        this.titleLabel = titleLabel;
+    }
+
+    /**
+     * Setter for the task list VBox.
+     *
+     * @param taskList the task list VBox to set
+     */
+    public void setTaskList(VBox taskList) {
+        this.taskList = taskList;
+    }
+
+    /**
+     * Setter for the empty task list Label.
+     *
+     * @param emptyTaskList the empty task list Label to set
+     */
+    public void setEmptyTaskList(Label emptyTaskList) {
+        this.emptyTaskList = emptyTaskList;
+    }
+
+    /**
+     * Setter for the tag list HBox.
+     *
+     * @param taglist the tag list HBox to set
+     */
+    public void setTagist(HBox taglist) {
+        this.taglist = taglist;
+    }
+
+
+
+
+
 }
