@@ -15,13 +15,17 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.io.IOException;
 
@@ -47,6 +51,12 @@ public class CardViewCtrl implements Initializable {
 
     @FXML
     private ImageView binImage;
+
+    @FXML
+    private AnchorPane anchorPane;
+
+    //Help box for the help functionality
+    private Dialog helpDialog;
 
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
@@ -101,6 +111,67 @@ public class CardViewCtrl implements Initializable {
 
         binImage.setImage(new Image("BinImage.png"));
         setDragForBin(binImage);
+
+        // Set up the dialog for the help button
+        helpPopUp();
+    }
+
+    /**
+     * Set up the dialog for the help button
+     */
+    public void helpPopUp(){
+        helpDialog = new Dialog<String>();
+        helpDialog.initModality(Modality.APPLICATION_MODAL);
+        helpDialog.setTitle("Help");
+
+        helpDialog.setHeaderText("Help zone");
+
+        Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
+
+        // Create a VBox to hold the keyboard shortcuts list
+        VBox shortcutsList = new VBox();
+        shortcutsList.setSpacing(5);
+
+        // Add each keyboard shortcut to the VBox
+        Label upDownLeftRight = new Label("Up/Down/Left/Right -> select tasks");
+        Label shiftUpDown = new Label("Shift+Up/Down -> change order of cards in the column");
+        Label editCardTitle = new Label("E -> edit the card title");
+        Label deleteCard = new Label("Del/Backspace -> delete a card");
+        Label openCardDetails = new Label("Enter -> open card details");
+        Label closeCardDetails = new Label("Esc -> close card details");
+        Label addTags = new Label("T -> open popup for adding tags");
+        Label colorPresetSelection = new Label("C -> open popup for color preset selection");
+
+        // Add the keyboard shortcuts to the VBox
+        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
+                openCardDetails, closeCardDetails, addTags, colorPresetSelection);
+
+        // Add the VBox to the dialog's content
+        helpDialog.getDialogPane().setContent(shortcutsList);
+
+        // Add an OK button to the dialog
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
+
+        // Add a listener to the scene to detect when the Shift+/ key combination is pressed
+        anchorPane.setOnKeyPressed(event -> {
+            if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
+                if (!(event.getTarget() instanceof TextField)) {
+                    helpDialog.showAndWait();
+                }
+            }
+        });
+    }
+
+    /**
+     * This method shows the help dialog when the "?" button is clicked
+     */
+    public void showHelp(){
+        Optional<ButtonType> result = helpDialog.showAndWait();
+
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+            mainCtrl.showMainOverview();
+        }
     }
 
     /**
