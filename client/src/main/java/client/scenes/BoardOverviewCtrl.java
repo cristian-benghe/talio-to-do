@@ -8,12 +8,10 @@ import commons.Column;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -348,8 +346,10 @@ public class BoardOverviewCtrl implements Initializable {
     private void resetAnchorPane(AnchorPane anchorPane) {
         // reset the anchor pane to its default appearance
         anchorPane.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
-                "-fx-border-color: transparent; -fx-margin: 0;");
+                "-fx-border-color: transparent;");
+        selectedAnchorPane = null;
     }
+
 
     /**
      * A method to create a button
@@ -1077,7 +1077,8 @@ public class BoardOverviewCtrl implements Initializable {
         Label colorPresetSelection = new Label("C -> open popup for color preset selection");
 
         // Add the keyboard shortcuts to the VBox
-        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard, openCardDetails, closeCardDetails, addTags, colorPresetSelection);
+        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
+                openCardDetails, closeCardDetails, addTags, colorPresetSelection);
 
         // Add the VBox to the dialog's content
         helpDialog.getDialogPane().setContent(shortcutsList);
@@ -1085,7 +1086,6 @@ public class BoardOverviewCtrl implements Initializable {
         // Add an OK button to the dialog
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
-
 
     }
 
