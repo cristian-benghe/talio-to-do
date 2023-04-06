@@ -1123,8 +1123,11 @@ public class BoardOverviewCtrl implements Initializable {
 
         // Add a listener to the scene to detect when the Shift+/ key combination is pressed
         anchorPane.setOnKeyPressed(event -> {
-            int shiftColumnIndex = hbox.getChildren().
-                    indexOf(selectedAnchorPane.getParent().getParent());
+            int shiftColumnIndex = -1;
+            if(selectedAnchorPane != null) {
+                shiftColumnIndex = hbox.getChildren().
+                        indexOf(selectedAnchorPane.getParent().getParent());
+            }
             if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
                 if (!(event.getTarget() instanceof TextField)) {
                     helpDialog.showAndWait();
@@ -1135,7 +1138,9 @@ public class BoardOverviewCtrl implements Initializable {
                         getChildren().get(0)).getChildren().get(0)));
             }
             if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
-                    !(event.getTarget() instanceof TextField)) keyECard();
+                    !(event.getTarget() instanceof TextField)) {
+                keyECard(event);
+            }
             else if(event.isShiftDown()&&event.getCode()==KeyCode.UP && selectedAnchorPane != null)
             {
                 int index = ((VBox) selectedAnchorPane.getParent()).
@@ -1315,15 +1320,17 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A method to handle when up pressed in focus of card.
+     * @param event fine
      */
-    public  void keyECard()
+    public  void keyECard(KeyEvent event)
     {
-        ((TextField) ((HBox) (((VBox) selectedAnchorPane.
+        Platform.runLater(() ->((HBox) (((VBox) selectedAnchorPane.
                 getChildren().get(0)).getChildren().get(1))).
-                getChildren().get(0)).requestFocus();
+                getChildren().get(0).requestFocus());
         ((TextField) ((HBox) (((VBox) selectedAnchorPane.
                 getChildren().get(0)).getChildren().get(1))).
                 getChildren().get(0)).setPromptText("");
+        event.consume();
     }
 
     /**
