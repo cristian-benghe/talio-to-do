@@ -351,18 +351,25 @@ public class MainOverviewCtrl implements Initializable {
         refreshOverview();
 
         server.send("/app/boards", board);
-        board = server.getBoards().get(server.getBoards().size()-1);
+        Platform.runLater(() ->
+        {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Board board1 = server.getBoards().get(server.getBoards().size() - 1);
+            availableUserBoards.add(board1);
 
-        availableUserBoards.add(board);
+            refreshOverview();
+            if (!mainCtrl.isHasAdminRole())
+                refreshWorkspaceFile();
+            refreshOverview();
+            //server.send("/app/refresh", 10);
 
-        refreshOverview();
-        if (!mainCtrl.isHasAdminRole())
-            refreshWorkspaceFile();
-        refreshOverview();
-        //server.send("/app/refresh", 10);
-
-        if (!mainCtrl.isHasAdminRole())
-            refreshWorkspaceFile();
+            if (!mainCtrl.isHasAdminRole())
+                refreshWorkspaceFile();
+        });
 
 
 //        //TODO Retrieve the new board from the server to determine the board's ID.
