@@ -292,4 +292,12 @@ public class Board implements Serializable {
     public void removeTag(int i) {
         tags.remove(i);
     }
+
+    /**
+     * @param ind the index of the tag to update
+     * @param tag the new tag
+     */
+    public void updateTag(int ind, Tag tag) {
+        tags.set(ind, tag);
+    }
 }

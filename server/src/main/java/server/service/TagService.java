@@ -1,15 +1,13 @@
 package server.service;
-import java.util.List;
-import java.util.Optional;
-
-
-import org.springframework.stereotype.Service;
 
 
 import commons.Tag;
-
-
+import org.springframework.stereotype.Service;
 import server.database.TagRepository;
+
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TagService {
 
@@ -53,6 +51,21 @@ public class TagService {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
         return repo.save(tag);
+    }
+
+
+    /**
+     * @param existing the initial tag
+     * @param updated the tag after update
+     * @return the updated tag
+     */
+    public Tag update(Tag existing, Tag updated) {
+        existing.setTitle(updated.getTitle());
+//        Set<Card> existingCards = existing.getCards();
+//        Set<Card> updatedCards = updated.getCards();
+//        existingCards.clear();
+//        existingCards.addAll(updatedCards);
+        return repo.save(existing);
     }
     /**
      * Deletes the Tag object with the specified id.
