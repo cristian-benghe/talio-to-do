@@ -160,6 +160,10 @@ public class CardViewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
+            if(event.getCode() == KeyCode.ESCAPE && !(event.getTarget() instanceof TextArea))
+            {
+                getBackCard();
+            }
         });
     }
 
