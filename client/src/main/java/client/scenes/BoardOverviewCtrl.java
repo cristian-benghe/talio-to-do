@@ -1096,6 +1096,10 @@ public class BoardOverviewCtrl implements Initializable {
         return labels;
     }
 
+    /**
+     * A method to return the list of labels to represent the help information for the drag and drop
+     * @return list of labels which includes informations
+     */
     public ArrayList<Label> helpDragDrop()
     {
         ArrayList<Label> labels = new ArrayList<>();
