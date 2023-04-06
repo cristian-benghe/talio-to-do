@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="466.0" prefWidth="933.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainOverviewCtrl">
+<AnchorPane fx:id="anchorPane" prefHeight="464.0" prefWidth="991.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainOverviewCtrl">
     <children>
         <Button layoutX="60.0" layoutY="39.0" mnemonicParsing="false" onAction="#searchBoard" prefHeight="40.0" prefWidth="166.0" text="Enter board by ID">
             <font>
@@ -60,5 +60,10 @@
             <Font size="13.0" />
          </font>
       </Label>
+      <Button layoutX="927.0" layoutY="42.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="35.0" prefWidth="42.0" text="?">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
