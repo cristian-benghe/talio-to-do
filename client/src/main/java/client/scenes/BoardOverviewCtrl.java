@@ -1131,6 +1131,36 @@ public class BoardOverviewCtrl implements Initializable {
                         getChildren().get(0)).getChildren().get(1))).getChildren().get(0)).setPromptText("");
             }
         });
+        ((ScrollPane)((AnchorPane)anchorPane.getChildren().get(7)).getChildren().get(0)).setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.UP && selectedAnchorPane != null)
+            {
+                int index = ((VBox)selectedAnchorPane.getParent()).getChildren().indexOf(selectedAnchorPane);
+                if(index != 2)
+                {
+                    ((AnchorPane) ((VBox)selectedAnchorPane.getParent()).
+                            getChildren().get(index)).
+                            setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
+                                    "-fx-border-color: transparent;");
+
+                    selectAnchorPane((AnchorPane) ((VBox)selectedAnchorPane.getParent()).getChildren().get(index-1));
+                }
+            }
+            if(event.getCode() == KeyCode.DOWN && selectedAnchorPane != null)
+            {
+                int index = ((VBox)selectedAnchorPane.getParent()).getChildren().indexOf(selectedAnchorPane);
+                if(index != ((VBox)selectedAnchorPane.getParent()).getChildren().size()-2)
+                {
+                    ((AnchorPane) ((VBox)selectedAnchorPane.getParent()).
+                            getChildren().get(index)).
+                            setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
+                                    "-fx-border-color: transparent;");
+
+                    selectAnchorPane((AnchorPane) ((VBox)selectedAnchorPane.getParent()).getChildren().get(index+1));
+                }
+            }
+        }
+
+        );
 
     }
 
