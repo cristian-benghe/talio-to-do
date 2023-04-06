@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="504.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardViewCtrl"> <!-- not forget to add fx:controller="client.scenes.CardView" -->
+<AnchorPane fx:id="anchorPane" prefHeight="504.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardViewCtrl"> <!-- not forget to add fx:controller="client.scenes.CardView" -->
    <children>
       <Label fx:id="titleLabel" layoutX="60.0" layoutY="13.0" prefHeight="35.0" prefWidth="198.0" text="Title of the card">
          <font>
@@ -51,6 +51,11 @@
             <Image url="@../../BinImage.png" />
          </image>
       </ImageView>
-      <Button layoutX="408.0" layoutY="442.0" mnemonicParsing="false" onAction="#getTagView" onMousePressed="#getTagView" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
+      <Button layoutX="408.0" layoutY="442.0" mnemonicParsing="false" onMousePressed="#getTagView" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
+      <Button layoutX="514.0" layoutY="13.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="35.0" prefWidth="41.0" text="?">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>
