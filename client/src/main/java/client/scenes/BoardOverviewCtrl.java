@@ -1218,11 +1218,13 @@ public class BoardOverviewCtrl implements Initializable {
         });
     }
 
+    /**
+     * This method creates a popup for the card customization shortcut
+     */
     public void showCardCustomization() {
         cardCustomization = new Dialog<>();
         cardCustomization.setTitle("Card Customization");
 
-        // Create a ColorPicker control for the background color
         ColorPicker colorPicker = new ColorPicker();
         colorPicker.setValue(Color.WHITE);
         colorPicker.getStyleClass().add("button");
@@ -1230,22 +1232,21 @@ public class BoardOverviewCtrl implements Initializable {
         VBox content = new VBox();
 
         Label cardColor = new Label("New card colour:");
-        HBox NewColourBox = new HBox(10, cardColor, colorPicker);
-        content.getChildren().add(NewColourBox);
+        HBox newColourBox = new HBox(10, cardColor, colorPicker);
+        content.getChildren().add(newColourBox);
 
-        // Add a Save & Quit button to the dialog
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
-        cardCustomization.getDialogPane().getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
+        cardCustomization.getDialogPane().getButtonTypes().
+                addAll(saveQuitButtonType, ButtonType.CANCEL);
 
         cardCustomization.getDialogPane().setContent(content);
 
-        // Return the chosen color when the Save & Quit button is clicked
-        cardCustomization.setResultConverter(buttonType -> {
-            if (buttonType == saveQuitButtonType) {
-                return colorPicker.getValue();
-            }
-            return null;
-        });
+//        cardCustomization.setResultConverter(buttonType -> {
+//            if (buttonType == saveQuitButtonType) {
+//                return colorPicker.getValue();
+//            }
+//            return null;
+//        });
     }
 
 
