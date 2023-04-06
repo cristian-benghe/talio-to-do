@@ -435,33 +435,42 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setLabelAction(Label label) {
         label.setOnMouseClicked(event -> {
-            int cardIndex = -2 + label.getParent()//HBox
-                    .getParent()   //Anchor
-                    .getParent()
-                    .getChildrenUnmodifiable()
-                    .indexOf(label.getParent().getParent());
-            int columnIndex = 1 + label.getParent() //VBox
-                    .getParent() //Anchor
-                    .getParent() //VBox
-                    .getParent() //Scroll
-                    .getParent() //Anchor
-                    .getChildrenUnmodifiable()
-                    .indexOf(
-                            label.getParent() //VBox
-                                    .getParent() //Anchor
-                                    .getParent() //VBox
-                                    .getParent() //Scroll
-                    );
-
-            Board board = server.getBoardById(id);
-            Column column = board.getColumns().stream()
-                    .filter(column1 -> column1.getIDinBoard() == columnIndex)
-                    .findFirst().get();
-            Card card = column.getCards().get(cardIndex);
-
-
-            mainCtrl.showCardView(card);
+            labelActionGeneral(label);
         });
+    }
+
+    /**
+     * A method the run the label mouseclick
+     * @param label Label to related to the card
+     */
+
+    public void labelActionGeneral (Label label) {
+        int cardIndex = -2 + label.getParent()//HBox
+                .getParent()   //Anchor
+                .getParent()
+                .getChildrenUnmodifiable()
+                .indexOf(label.getParent().getParent());
+        int columnIndex = 1 + label.getParent() //VBox
+                .getParent() //Anchor
+                .getParent() //VBox
+                .getParent() //Scroll
+                .getParent() //Anchor
+                .getChildrenUnmodifiable()
+                .indexOf(
+                        label.getParent() //VBox
+                                .getParent() //Anchor
+                                .getParent() //VBox
+                                .getParent() //Scroll
+                );
+
+        Board board = server.getBoardById(id);
+        Column column = board.getColumns().stream()
+                .filter(column1 -> column1.getIDinBoard() == columnIndex)
+                .findFirst().get();
+        Card card = column.getCards().get(cardIndex);
+
+
+        mainCtrl.showCardView(card);
     }
 
     /**
@@ -1100,6 +1109,11 @@ public class BoardOverviewCtrl implements Initializable {
                 if (!(event.getTarget() instanceof TextField)) {
                     helpDialog.showAndWait();
                 }
+            }
+            if(event.getCode() == KeyCode.ENTER && selectedAnchorPane != null)
+            {
+                labelActionGeneral((Label)(((VBox)selectedAnchorPane.
+                        getChildren().get(0)).getChildren().get(0)));
             }
         });
     }
