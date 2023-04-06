@@ -32,8 +32,8 @@ public class TagServiceTests {
     @Test
     void testGetAllTags() {
         List<Tag> tags = new ArrayList<>();
-        Tag tag1 = new Tag("Tag1", null);
-        Tag tag2 = new Tag("Tag2", null);
+        Tag tag1 = new Tag("Tag1");
+        Tag tag2 = new Tag("Tag2");
         tags.add(tag1);
         tags.add(tag2);
 
@@ -49,7 +49,7 @@ public class TagServiceTests {
     @Test
     void testGetTagById() {
         long id = 1L;
-        Tag tag = new Tag("Tag1", null);
+        Tag tag = new Tag("Tag1");
         tag.setTagID(id);
         when(tagRepository.findById(id)).thenReturn(Optional.of(tag));
 
@@ -61,7 +61,7 @@ public class TagServiceTests {
 
     @Test
     void testAddTag() {
-        Tag tag = new Tag("Tag1", null);
+        Tag tag = new Tag("Tag1");
 
         when(tagRepository.save(tag)).thenReturn(tag);
 
@@ -72,7 +72,7 @@ public class TagServiceTests {
 
     @Test
     void testAddTagWithNullOrEmptyTitle() {
-        Tag tag = new Tag(null, null);
+        Tag tag = new Tag(null);
 
         assertThrows(IllegalArgumentException.class, () -> {
             tagService.add(tag);
