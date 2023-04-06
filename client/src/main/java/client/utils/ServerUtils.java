@@ -19,7 +19,7 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.NoSuchElementException;
+//import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -544,11 +544,11 @@ public class ServerUtils {
 //                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
 //    }
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/tags/" + id)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
-    }
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/tags/" + id)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+//    }
 
 
     /**
