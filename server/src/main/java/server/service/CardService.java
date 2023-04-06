@@ -1,5 +1,6 @@
 package server.service;
 
+
 import commons.Card;
 import commons.Task;
 import org.springframework.stereotype.Service;
@@ -43,10 +44,13 @@ public class CardService {
     }
 
     /**
-     * Adds a new Card object to the database.
-     * @param card the Card object to add
-     * @return the saved Card object or null if the title is null or empty
+     * Adds a Card entity.
+     *
+     * @param card the card entity to add
+     * @return the added  card entity
+     * @throws IllegalArgumentException if the title of the card entity is null or empty
      */
+
     public Card add(Card card) {
         if (isNullOrEmpty(card.getTitle())) {
             throw new IllegalArgumentException("Title cannot be null or empty");
@@ -54,8 +58,32 @@ public class CardService {
         return repo.save(card);
     }
     /**
+     * Updates a Card entity by ID.
+     *
+     * @param id the ID of the Card entity to update
+     * @param card the updated Card entity
+     * @return the updated Card entity
+     * @throws IllegalArgumentException if the Card entity with the specified ID does not exist or
+     * the title of the Card entity is null or empty
+     */
+
+    public Card update(long id, Card card) {
+        Optional<Card> existing = repo.findById(id);
+        if (existing.isPresent()) {
+            Card updated = existing.get();
+            updated.setTitle(card.getTitle());
+            updated.setTags(card.getTags());
+            updated.setColor(card.getBlue(), card.getGreen(), card.getRed());
+            updated.setTaskList(card.getTaskList());
+            return repo.save(updated);
+        } else {
+            throw new IllegalArgumentException("Card with ID " + id + " not found.");
+        }
+    }
+
+    /**
      * Deletes the Card object with the specified id.
-     * @param id the id of the Card object to delete
+     * @param id the id of the card object to delete
      */
     public void delete(long id) {
         repo.deleteById(id);

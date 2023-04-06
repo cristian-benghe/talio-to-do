@@ -54,5 +54,6 @@
       <Button layoutX="408.0" layoutY="442.0" mnemonicParsing="false" onMousePressed="#getTagView" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
       <ColorPicker fx:id="cardColor" layoutX="376.0" layoutY="18.0" onAction="#getColor" />
       <Button layoutX="523.0" layoutY="18.0" mnemonicParsing="false" onAction="#saveColor" text="Save" />
+      <Button layoutX="408.0" layoutY="442.0" mnemonicParsing="false" onAction="#getTagView" onMousePressed="#getTagView" prefHeight="25.0" prefWidth="30.0" text="+" textAlignment="CENTER" />
    </children>
 </AnchorPane>

@@ -77,7 +77,7 @@ class CardTest {
         Set<Tag> tags = new HashSet<>();
         Set<Card> cards = new HashSet<>();
         cards.add(c);
-        Tag t1 = new Tag(0L, "tag1", cards);
+        Tag t1 = new Tag(0L, "tag1");
         tags.add(t1);
         c.setTags(tags);
         assertEquals(tags, c.getTags());
