@@ -23,6 +23,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -1095,6 +1096,17 @@ public class BoardOverviewCtrl implements Initializable {
         return labels;
     }
 
+    public ArrayList<Label> helpDragDrop()
+    {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Note, it's a template!!"));
+        labels.add(new Label("To delete the card you can drag and rop it to the BIN"));
+        labels.add(new Label("To rearrange cards you can drag and drop"));
+        labels.add(new Label("To enter the card views you can press to the ===== sign"));
+        return labels;
+    }
+
     /**
      * Set up the dialog for the help button
      */
@@ -1107,20 +1119,47 @@ public class BoardOverviewCtrl implements Initializable {
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
 
-        // Create a VBox to hold the keyboard shortcuts list
+// Create a TabPane to hold the keyboard shortcuts list and other tabs
+        TabPane tabPane = new TabPane();
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(50);
+        tabPane.setTabMaxHeight(50);
+
         VBox shortcutsList = new VBox();
         shortcutsList.setSpacing(5);
-
-        // Add the keyboard shortcuts to the VBox
+        shortcutsList.setPadding(new Insets(15.0,5.0,5.0,5.0));
         shortcutsList.getChildren().addAll(helpLabel());
+        VBox dragAndDropList = new VBox();
+        dragAndDropList.setSpacing(5);
+        dragAndDropList.setPadding(new Insets(15.0,5.0,5.0,5.0));
+        dragAndDropList.getChildren().addAll(helpDragDrop());
 
-        // Add the VBox to the dialog's content
-        helpDialog.getDialogPane().setContent(shortcutsList);
+        Tab shortcutsTab = new Tab("Keyboard Shortcuts", shortcutsList);
+        tabPane.getTabs().add(shortcutsTab);
 
-        // Add an OK button to the dialog
+        Tab dragTab = new Tab("Drag and Drop Informations", dragAndDropList);
+        tabPane.getTabs().add(dragTab);
+        tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+
+
+// Center and fill the TabPane
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabMinWidth(100);
+        tabPane.setTabMaxWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(30);
+        tabPane.setTabMaxHeight(30);
+
+
+
+        VBox.setVgrow(tabPane, Priority.ALWAYS);
+
+// Add the TabPane to the dialog's content
+        helpDialog.getDialogPane().setContent(tabPane);
+
+// Add an OK button to the dialog
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
-
         // Add a listener to the scene to detect when the Shift+/ key combination is pressed
         anchorPane.setOnKeyPressed(event -> {
             int shiftColumnIndex = -1;
