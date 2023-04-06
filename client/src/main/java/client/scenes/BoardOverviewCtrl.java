@@ -1252,24 +1252,57 @@ public class BoardOverviewCtrl implements Initializable {
                     }
                     else if(event.getCode() == KeyCode.LEFT && selectedAnchorPane != null)
                     {
-                        int index = hbox.getChildren().
-                                indexOf(selectedAnchorPane.getParent().getParent());
-                        if(index != 0) {
-                            keyLeftCard(index);
-                            event.consume();
-                        }
+                        leftKeyCheck(event);
                     }
                     else if(event.getCode() == KeyCode.RIGHT && selectedAnchorPane != null)
                     {
-                        int index = hbox.getChildren().
-                                indexOf(selectedAnchorPane.getParent().getParent());
-                        if(index != hbox.getChildren().size()-1) {
-                            keyRightCard(index);
-                            event.consume();
-                        }
+                        rightKeyCheck(event);
                     }
                 }
         );
+    }
+
+    /**
+     * Check whether action can be done
+     * @param event key event handler
+     */
+    public void rightKeyCheck(KeyEvent event)
+    {
+        int indexColumnCurrent = hbox.getChildren().
+                indexOf(selectedAnchorPane.getParent().getParent());
+        int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                getChildren().indexOf(selectedAnchorPane);
+        if(indexColumnCurrent < hbox.getChildren().size()-1 &&
+                cardIndex < ((VBox) ((AnchorPane)hbox.getChildren().
+                        get(indexColumnCurrent+1)).getChildren().get(0)).getChildren().size()-1) {
+            if((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                    get(indexColumnCurrent+1)).getChildren().get(0)).
+                    getChildren().get(cardIndex) instanceof AnchorPane) {
+                keyRightCard(indexColumnCurrent);
+                event.consume();
+            }
+
+        }
+    }
+    /**
+     * Check whether action can be done
+     * @param event key event handler
+     */
+    public void leftKeyCheck(KeyEvent event)
+    {
+        int indexColumnCurrent = hbox.getChildren().
+                indexOf(selectedAnchorPane.getParent().getParent());
+        int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                getChildren().indexOf(selectedAnchorPane);
+        if(indexColumnCurrent != 0 && cardIndex < ((VBox) ((AnchorPane)hbox.getChildren().
+                get(indexColumnCurrent-1)).getChildren().get(0)).getChildren().size()-1) {
+            if((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                    get(indexColumnCurrent-1)).getChildren().get(0)).
+                    getChildren().get(cardIndex) instanceof AnchorPane) {
+                keyLeftCard(indexColumnCurrent);
+                event.consume();
+            }
+        }
     }
 
     /**
