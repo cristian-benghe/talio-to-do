@@ -1166,6 +1166,17 @@ public class BoardOverviewCtrl implements Initializable {
                                     getParent()).getChildren().get(index + 1));
                         }
                     }
+                    if(event.getCode() == KeyCode.DELETE && selectedAnchorPane != null)
+                    {
+                        server.deleteCardServer(server.getBoardById(id),
+                                Long.valueOf(((AnchorPane) selectedAnchorPane).getParent().
+                                        getChildrenUnmodifiable().
+                                        indexOf((AnchorPane) selectedAnchorPane)),
+                                (long) hbox.getChildren().
+                                        indexOf(((AnchorPane) selectedAnchorPane).
+                                                getParent().getParent()) + 1, id);
+                        columnsRefresh();
+                    }
                 }
 
         );
