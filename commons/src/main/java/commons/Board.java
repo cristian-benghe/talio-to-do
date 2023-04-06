@@ -20,7 +20,8 @@ public class Board implements Serializable {
     @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.REFRESH, CascadeType.DETACH})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE,
+        CascadeType.REFRESH, CascadeType.DETACH})
     private List<Tag> tags = new ArrayList<>();
 
     /**
