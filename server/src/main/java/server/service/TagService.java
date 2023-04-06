@@ -1,13 +1,13 @@
 package server.service;
 
-import commons.Card;
+
 import commons.Tag;
 import org.springframework.stereotype.Service;
 import server.database.TagRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 @Service
 public class TagService {
 
@@ -61,10 +61,10 @@ public class TagService {
      */
     public Tag update(Tag existing, Tag updated) {
         existing.setTitle(updated.getTitle());
-        Set<Card> existingCards = existing.getCards();
-        Set<Card> updatedCards = updated.getCards();
-        existingCards.clear();
-        existingCards.addAll(updatedCards);
+//        Set<Card> existingCards = existing.getCards();
+//        Set<Card> updatedCards = updated.getCards();
+//        existingCards.clear();
+//        existingCards.addAll(updatedCards);
         return repo.save(existing);
     }
     /**

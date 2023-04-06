@@ -179,6 +179,7 @@ public class MainCtrl {
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
+        System.out.println(card.getTags().size()+"fg ");
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
