@@ -286,8 +286,8 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * A method to create a new card
      *
-     * @return return an anchorPane as a card!
      * @param vBox - the column with cards
+     * @return return an anchorPane as a card!
      */
     public AnchorPane createCard(VBox vBox) {
         AnchorPane anchorPane1 = new AnchorPane();
@@ -336,6 +336,7 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * This method colours the margins of the selected card
+     *
      * @param anchorPane - the anchor pane that is selected
      */
     private void selectAnchorPane(AnchorPane anchorPane) {
@@ -347,6 +348,7 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * This method discolours the margins of the previous selected card
+     *
      * @param anchorPane - the anchor pane whose margins to be discoloured
      */
     private void resetAnchorPane(AnchorPane anchorPane) {
@@ -397,7 +399,7 @@ public class BoardOverviewCtrl implements Initializable {
                                     getChildren().get(1)).getChildren().get(0)).
                                     getText(), id);
                             ((Label) (((VBox) anchorPane1.getChildren().get(0))
-                                    .getChildren().get(0))).setText("=====");
+                            .getChildren().get(0))).setText("=====");
                             server.send("/app/update-labels-in-board", server.getBoardById(id));
                         }
                     });
@@ -447,10 +449,11 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A method the run the label mouseclick
+     *
      * @param label Label to related to the card
      */
 
-    public void labelActionGeneral (Label label) {
+    public void labelActionGeneral(Label label) {
         int cardIndex = -2 + label.getParent()//HBox
                 .getParent()   //Anchor
                 .getParent()
@@ -529,7 +532,8 @@ public class BoardOverviewCtrl implements Initializable {
                         getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
                                 getGestureSource())), (long) hbox.getChildren()
                         .indexOf(((AnchorPane) event.
-                        getGestureSource()).getParent().getParent()), (long) hbox.getChildren().
+                                getGestureSource()).getParent().
+                                getParent()), (long) hbox.getChildren().
                         indexOf(myVBox.getParent()), id);
                 server.send("/app/update-in-board", server.getBoardById(id));
                 myVBox.getChildren().add((AnchorPane) event.getGestureSource());
@@ -1075,7 +1079,7 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * Set up the dialog for the help button
      */
-    public void helpPopUp(){
+    public void helpPopUp() {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
@@ -1116,49 +1120,53 @@ public class BoardOverviewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
-            if(event.getCode() == KeyCode.ENTER && selectedAnchorPane != null)
-            {
-                labelActionGeneral((Label)(((VBox)selectedAnchorPane.
+            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null) {
+                labelActionGeneral((Label) (((VBox) selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }
-            if(selectedAnchorPane != null && event.getCode() == KeyCode.E &&
-                    !(event.getTarget() instanceof TextField))
-            {
+            if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
+                    !(event.getTarget() instanceof TextField)) {
 
-                ( (TextField)((HBox)(((VBox)selectedAnchorPane.
-                        getChildren().get(0)).getChildren().get(1))).getChildren().get(0)).requestFocus();
-                ( (TextField)((HBox)(((VBox)selectedAnchorPane.
-                        getChildren().get(0)).getChildren().get(1))).getChildren().get(0)).setPromptText("");
+                ((TextField) ((HBox) (((VBox) selectedAnchorPane.
+                        getChildren().get(0)).getChildren().get(1))).
+                        getChildren().get(0)).requestFocus();
+                ((TextField) ((HBox) (((VBox) selectedAnchorPane.
+                        getChildren().get(0)).getChildren().get(1))).
+                        getChildren().get(0)).setPromptText("");
             }
         });
-        ((ScrollPane)((AnchorPane)anchorPane.getChildren().get(7)).getChildren().get(0)).setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.UP && selectedAnchorPane != null)
-            {
-                int index = ((VBox)selectedAnchorPane.getParent()).getChildren().indexOf(selectedAnchorPane);
-                if(index != 2)
-                {
-                    ((AnchorPane) ((VBox)selectedAnchorPane.getParent()).
-                            getChildren().get(index)).
-                            setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
-                                    "-fx-border-color: transparent;");
+        ((ScrollPane) ((AnchorPane) anchorPane.getChildren().get(7)).getChildren().
+                get(0)).setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.UP && selectedAnchorPane != null) {
+                        int index = ((VBox) selectedAnchorPane.getParent()).
+                                getChildren().indexOf(selectedAnchorPane);
+                        if (index != 2) {
+                            ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
+                                    getChildren().get(index)).
+                                    setStyle("-fx-background-color:  " +
+                                            "#C0C0C0; -fx-background-radius:  15; "+
+                                            "-fx-border-color: transparent;");
 
-                    selectAnchorPane((AnchorPane) ((VBox)selectedAnchorPane.getParent()).getChildren().get(index-1));
-                }
-            }
-            if(event.getCode() == KeyCode.DOWN && selectedAnchorPane != null)
-            {
-                int index = ((VBox)selectedAnchorPane.getParent()).getChildren().indexOf(selectedAnchorPane);
-                if(index != ((VBox)selectedAnchorPane.getParent()).getChildren().size()-2)
-                {
-                    ((AnchorPane) ((VBox)selectedAnchorPane.getParent()).
-                            getChildren().get(index)).
-                            setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15; " +
-                                    "-fx-border-color: transparent;");
+                            selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
+                                    getParent()).getChildren().get(index - 1));
+                        }
+                    }
+                    if (event.getCode() == KeyCode.DOWN && selectedAnchorPane != null) {
+                        int index = ((VBox) selectedAnchorPane.getParent()).
+                                getChildren().indexOf(selectedAnchorPane);
+                        if (index != ((VBox) selectedAnchorPane.getParent()).
+                                getChildren().size() - 2) {
+                            ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
+                                    getChildren().get(index)).
+                                    setStyle("-fx-background-color:  " +
+                                            "#C0C0C0; -fx-background-radius:  15; " +
+                                            "-fx-border-color: transparent;");
 
-                    selectAnchorPane((AnchorPane) ((VBox)selectedAnchorPane.getParent()).getChildren().get(index+1));
+                            selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
+                                    getParent()).getChildren().get(index + 1));
+                        }
+                    }
                 }
-            }
-        }
 
         );
 
@@ -1207,10 +1215,10 @@ public class BoardOverviewCtrl implements Initializable {
     /**
      * This method shows the help dialog when the "?" button is clicked
      */
-    public void showHelp(){
+    public void showHelp() {
         Optional<ButtonType> result = helpDialog.showAndWait();
 
-        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
             mainCtrl.showMainOverview();
         }
     }
