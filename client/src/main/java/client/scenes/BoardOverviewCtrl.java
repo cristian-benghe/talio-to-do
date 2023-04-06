@@ -13,6 +13,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -30,6 +35,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 
+import java.awt.*;
 import java.net.URL;
 import java.util.*;
 
@@ -1115,7 +1121,17 @@ public class BoardOverviewCtrl implements Initializable {
                 labelActionGeneral((Label)(((VBox)selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }
+            if(selectedAnchorPane != null && event.getCode() == KeyCode.E &&
+                    !(event.getTarget() instanceof TextField))
+            {
+
+                ( (TextField)((HBox)(((VBox)selectedAnchorPane.
+                        getChildren().get(0)).getChildren().get(1))).getChildren().get(0)).requestFocus();
+                ( (TextField)((HBox)(((VBox)selectedAnchorPane.
+                        getChildren().get(0)).getChildren().get(1))).getChildren().get(0)).setPromptText("");
+            }
         });
+
     }
 
     /**
