@@ -1073,6 +1073,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         // Set up the dialog for the help button
         helpPopUp();
+        setScrollPaneShortcuts();
     }
 
     /**
@@ -1122,6 +1123,8 @@ public class BoardOverviewCtrl implements Initializable {
 
         // Add a listener to the scene to detect when the Shift+/ key combination is pressed
         anchorPane.setOnKeyPressed(event -> {
+            int shiftColumnIndex = hbox.getChildren().
+                    indexOf(selectedAnchorPane.getParent().getParent());
             if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
                 if (!(event.getTarget() instanceof TextField)) {
                     helpDialog.showAndWait();
@@ -1132,9 +1135,33 @@ public class BoardOverviewCtrl implements Initializable {
                         getChildren().get(0)).getChildren().get(0)));
             }
             if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
-                    !(event.getTarget() instanceof TextField)) keyECard();;
+                    !(event.getTarget() instanceof TextField)) keyECard();
+            else if(event.isShiftDown()&&event.getCode()==KeyCode.UP && selectedAnchorPane != null)
+            {
+                int index = ((VBox) selectedAnchorPane.getParent()).
+                        getChildren().indexOf(selectedAnchorPane);
+                if (index != 2) {
+                    keyShiftUpCard(index);
+                    selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                        get(shiftColumnIndex)).getChildren().get(0)).getChildren().get(index-1));
+                }
+                event.consume();
+
+            }
+            else if(event.isShiftDown()&&event.getCode()==KeyCode.DOWN&&selectedAnchorPane != null)
+            {
+                int index = ((VBox) selectedAnchorPane.getParent()).
+                        getChildren().indexOf(selectedAnchorPane);
+                if (index != ((VBox) selectedAnchorPane.getParent()).getChildren().size()-2) {
+                    keyShiftDownCard(index);
+                    selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                            get(shiftColumnIndex)).getChildren().
+                            get(0)).getChildren().get(index+1));
+                }
+                event.consume();
+            }
         });
-        setScrollPaneShortcuts();
+
     }
 
     /**
@@ -1144,16 +1171,21 @@ public class BoardOverviewCtrl implements Initializable {
     {
         ((ScrollPane) ((AnchorPane) anchorPane.getChildren().get(7)).getChildren().
                 get(0)).setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.UP && selectedAnchorPane != null) {
+                    if (event.getCode() == KeyCode.UP &&
+                            selectedAnchorPane != null && !event.isShiftDown()) {
                         int index = ((VBox) selectedAnchorPane.getParent()).
                                 getChildren().indexOf(selectedAnchorPane);
-                        if (index != 2) keyUpCard(index);
+                        if (index != 2) keyUpCard(index); event.consume();
                     }
-                    else if (event.getCode() == KeyCode.DOWN && selectedAnchorPane != null) {
+                    else if (event.getCode() == KeyCode.DOWN &&
+                            selectedAnchorPane != null && !event.isShiftDown()) {
                         int index = ((VBox) selectedAnchorPane.getParent()).
                                 getChildren().indexOf(selectedAnchorPane);
                         if (index != ((VBox) selectedAnchorPane.getParent()).
-                                getChildren().size() - 2) keyDownCard(index);
+                                getChildren().size() - 2) {
+                            keyDownCard(index);
+                            event.consume();
+                        }
                     }
                     else if(event.getCode() == KeyCode.DELETE && selectedAnchorPane != null)
                     {
@@ -1165,26 +1197,66 @@ public class BoardOverviewCtrl implements Initializable {
                                         indexOf(((AnchorPane) selectedAnchorPane).
                                                 getParent().getParent()) + 1, id);
                         columnsRefresh();
+                        event.consume();
                     }
                     else if(event.getCode() == KeyCode.LEFT && selectedAnchorPane != null)
                     {
                         int index = hbox.getChildren().
                                 indexOf(selectedAnchorPane.getParent().getParent());
-                        if(index != 0)
+                        if(index != 0) {
                             keyLeftCard(index);
+                            event.consume();
+                        }
                     }
                     else if(event.getCode() == KeyCode.RIGHT && selectedAnchorPane != null)
                     {
                         int index = hbox.getChildren().
                                 indexOf(selectedAnchorPane.getParent().getParent());
-                        if(index != hbox.getChildren().size()-1)
+                        if(index != hbox.getChildren().size()-1) {
                             keyRightCard(index);
+                            event.consume();
+                        }
                     }
                 }
-
         );
     }
 
+    /**
+     * A method to replace a card upwards by pressing the shift + up/arrow
+     * @param index index of the card
+     */
+    public void keyShiftUpCard(int index)
+    {
+        Board board1 = server.getBoardById(id);
+        int columnIndex = hbox.getChildren().indexOf(selectedAnchorPane.getParent().getParent());
+        Column column = board1.getColumns()
+                .get(columnIndex);
+        Card cardLower = column.getCards().get(index-2);
+        Card cardUpper = column.getCards().get(index-3);
+        column.getCards().set(index-2,cardUpper);
+        column.getCards().set(index-3,cardLower);
+        server.updateCardArrangement(hbox.getChildren()
+                .indexOf(selectedAnchorPane.getParent().getParent()), column, id);
+        columnsRefresh();
+    }
+    /**
+     * A method to replace a card downwards by pressing the shift + down/arrow
+     * @param index index of the card
+     */
+    public void keyShiftDownCard(int index)
+    {
+        Board board1 = server.getBoardById(id);
+        int columnIndex = hbox.getChildren().indexOf(selectedAnchorPane.getParent().getParent());
+        Column column = board1.getColumns()
+                .get(columnIndex);
+        Card cardUpper = column.getCards().get(index-2);
+        Card cardLower = column.getCards().get(index-1);
+        column.getCards().set(index-2,cardLower);
+        column.getCards().set(index-1,cardUpper);
+        server.updateCardArrangement(hbox.getChildren()
+                .indexOf(selectedAnchorPane.getParent().getParent()), column, id);
+        columnsRefresh();
+    }
     /**
      * A method for a functionality to shift right between cards!
      * @param index index of the card
