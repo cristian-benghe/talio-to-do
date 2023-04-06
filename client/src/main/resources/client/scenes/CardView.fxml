@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="504.0" prefWidth="635.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardViewCtrl"> <!-- not forget to add fx:controller="client.scenes.CardView" -->
+<AnchorPane prefHeight="504.0" prefWidth="580.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.CardViewCtrl"> <!-- not forget to add fx:controller="client.scenes.CardView" -->
    <children>
       <Label fx:id="titleLabel" layoutX="60.0" layoutY="13.0" prefHeight="35.0" prefWidth="198.0" text="Title of the card">
          <font>

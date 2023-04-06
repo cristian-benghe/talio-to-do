@@ -1,0 +1,57 @@
+/* Set the default font for all controls */
+* {
+    -fx-font-family: "Arial";
+}
+
+/* Style the main title */
+.label {
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+/* Style the section titles */
+.label > .font {
+    -fx-font-size: 10px;
+}
+
+/* Style the color picker */
+.color-picker {
+    -fx-pref-width: 149px;
+    -fx-pref-height: 40px;
+}
+
+/* Style the password fields */
+.password-field {
+    -fx-pref-width: 200px;
+}
+
+/* Style the "enable password" checkbox */
+.check-box {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* Style the "save" button */
+.button {
+    -fx-pref-width: 60px;
+    -fx-pref-height: 25px;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #66c2ff;
+    -fx-text-fill: white;
+}
+
+/* Style the "back" button */
+.button:pressed {
+    -fx-background-color: #0073e6;
+}
+
+/* Style the panes */
+.pane {
+    -fx-background-color: #f2f2f2;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+    -fx-padding: 10px;
+}
