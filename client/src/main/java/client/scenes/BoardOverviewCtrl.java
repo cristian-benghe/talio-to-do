@@ -35,7 +35,6 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 
-import java.awt.*;
 import java.net.URL;
 import java.util.*;
 
@@ -1077,6 +1076,25 @@ public class BoardOverviewCtrl implements Initializable {
     }
 
     /**
+     * A method that creates the labels for the ? button and shortcut
+     * @return list of labels
+     */
+    public ArrayList<Label> helpLabel()
+    {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Up/Down/Left/Right -> select tasks"));
+        labels.add(new Label("Shift+Up/Down -> change order of cards in the column"));
+        labels.add(new Label("E -> edit the card title"));
+        labels.add(new Label("Del/Backspace -> delete a card"));
+        labels.add(new Label("Enter -> open card details"));
+        labels.add(new Label("Esc -> close card details"));
+        labels.add(new Label("T -> open popup for adding tags"));
+        labels.add(new Label("C -> open popup for color preset selection"));
+        return labels;
+    }
+
+    /**
      * Set up the dialog for the help button
      */
     public void helpPopUp() {
@@ -1092,19 +1110,8 @@ public class BoardOverviewCtrl implements Initializable {
         VBox shortcutsList = new VBox();
         shortcutsList.setSpacing(5);
 
-        // Add each keyboard shortcut to the VBox
-        Label upDownLeftRight = new Label("Up/Down/Left/Right -> select tasks");
-        Label shiftUpDown = new Label("Shift+Up/Down -> change order of cards in the column");
-        Label editCardTitle = new Label("E -> edit the card title");
-        Label deleteCard = new Label("Del/Backspace -> delete a card");
-        Label openCardDetails = new Label("Enter -> open card details");
-        Label closeCardDetails = new Label("Esc -> close card details");
-        Label addTags = new Label("T -> open popup for adding tags");
-        Label colorPresetSelection = new Label("C -> open popup for color preset selection");
-
         // Add the keyboard shortcuts to the VBox
-        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
-                openCardDetails, closeCardDetails, addTags, colorPresetSelection);
+        shortcutsList.getChildren().addAll(helpLabel());
 
         // Add the VBox to the dialog's content
         helpDialog.getDialogPane().setContent(shortcutsList);
@@ -1125,48 +1132,30 @@ public class BoardOverviewCtrl implements Initializable {
                         getChildren().get(0)).getChildren().get(0)));
             }
             if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
-                    !(event.getTarget() instanceof TextField)) {
-
-                ((TextField) ((HBox) (((VBox) selectedAnchorPane.
-                        getChildren().get(0)).getChildren().get(1))).
-                        getChildren().get(0)).requestFocus();
-                ((TextField) ((HBox) (((VBox) selectedAnchorPane.
-                        getChildren().get(0)).getChildren().get(1))).
-                        getChildren().get(0)).setPromptText("");
-            }
+                    !(event.getTarget() instanceof TextField)) keyECard();;
         });
+        setScrollPaneShortcuts();
+    }
+
+    /**
+     * A method that sets the shortcuts of the scrollPane
+     */
+    public void setScrollPaneShortcuts()
+    {
         ((ScrollPane) ((AnchorPane) anchorPane.getChildren().get(7)).getChildren().
                 get(0)).setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.UP && selectedAnchorPane != null) {
                         int index = ((VBox) selectedAnchorPane.getParent()).
                                 getChildren().indexOf(selectedAnchorPane);
-                        if (index != 2) {
-                            ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
-                                    getChildren().get(index)).
-                                    setStyle("-fx-background-color:  " +
-                                            "#C0C0C0; -fx-background-radius:  15; "+
-                                            "-fx-border-color: transparent;");
-
-                            selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
-                                    getParent()).getChildren().get(index - 1));
-                        }
+                        if (index != 2) keyUpCard(index);
                     }
-                    if (event.getCode() == KeyCode.DOWN && selectedAnchorPane != null) {
+                    else if (event.getCode() == KeyCode.DOWN && selectedAnchorPane != null) {
                         int index = ((VBox) selectedAnchorPane.getParent()).
                                 getChildren().indexOf(selectedAnchorPane);
                         if (index != ((VBox) selectedAnchorPane.getParent()).
-                                getChildren().size() - 2) {
-                            ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
-                                    getChildren().get(index)).
-                                    setStyle("-fx-background-color:  " +
-                                            "#C0C0C0; -fx-background-radius:  15; " +
-                                            "-fx-border-color: transparent;");
-
-                            selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
-                                    getParent()).getChildren().get(index + 1));
-                        }
+                                getChildren().size() - 2) keyDownCard(index);
                     }
-                    if(event.getCode() == KeyCode.DELETE && selectedAnchorPane != null)
+                    else if(event.getCode() == KeyCode.DELETE && selectedAnchorPane != null)
                     {
                         server.deleteCardServer(server.getBoardById(id),
                                 Long.valueOf(((AnchorPane) selectedAnchorPane).getParent().
@@ -1177,10 +1166,91 @@ public class BoardOverviewCtrl implements Initializable {
                                                 getParent().getParent()) + 1, id);
                         columnsRefresh();
                     }
+                    else if(event.getCode() == KeyCode.LEFT && selectedAnchorPane != null)
+                    {
+                        int index = hbox.getChildren().
+                                indexOf(selectedAnchorPane.getParent().getParent());
+                        if(index != 0)
+                            keyLeftCard(index);
+                    }
+                    else if(event.getCode() == KeyCode.RIGHT && selectedAnchorPane != null)
+                    {
+                        int index = hbox.getChildren().
+                                indexOf(selectedAnchorPane.getParent().getParent());
+                        if(index != hbox.getChildren().size()-1)
+                            keyRightCard(index);
+                    }
                 }
 
         );
+    }
 
+    /**
+     * A method for a functionality to shift right between cards!
+     * @param index index of the card
+     */
+    public void keyRightCard(int index)
+    {
+        int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                getChildren().indexOf(selectedAnchorPane);
+        resetAnchorPane(selectedAnchorPane);
+        selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                get(index+1)).getChildren().get(0)).getChildren().get(cardIndex));
+    }
+    /**
+     * A method for a functionality to shift left between cards!
+     * @param index index of the card
+     */
+    public void keyLeftCard(int index)
+    {
+        int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                getChildren().indexOf(selectedAnchorPane);
+        resetAnchorPane(selectedAnchorPane);
+        selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
+                get(index-1)).getChildren().get(0)).getChildren().get(cardIndex));
+    }
+    /**
+     * A method to handle when down pressed in focus of card.
+     * @param index index of the card
+     */
+    public void keyDownCard(int index)
+    {
+        ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
+                getChildren().get(index)).
+                setStyle("-fx-background-color:  " +
+                        "#C0C0C0; -fx-background-radius:  15; " +
+                        "-fx-border-color: transparent;");
+
+        selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
+                getParent()).getChildren().get(index + 1));
+    }
+    /**
+     * A method to handle when up pressed in focus of card.
+     * @param index index of the card
+     */
+    public void keyUpCard(int index)
+    {
+        ((AnchorPane) ((VBox) selectedAnchorPane.getParent()).
+                getChildren().get(index)).
+                setStyle("-fx-background-color:  " +
+                        "#C0C0C0; -fx-background-radius:  15; "+
+                        "-fx-border-color: transparent;");
+
+        selectAnchorPane((AnchorPane) ((VBox) selectedAnchorPane.
+                getParent()).getChildren().get(index - 1));
+    }
+
+    /**
+     * A method to handle when up pressed in focus of card.
+     */
+    public  void keyECard()
+    {
+        ((TextField) ((HBox) (((VBox) selectedAnchorPane.
+                getChildren().get(0)).getChildren().get(1))).
+                getChildren().get(0)).requestFocus();
+        ((TextField) ((HBox) (((VBox) selectedAnchorPane.
+                getChildren().get(0)).getChildren().get(1))).
+                getChildren().get(0)).setPromptText("");
     }
 
     /**
