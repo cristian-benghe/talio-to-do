@@ -931,13 +931,16 @@ public class BoardOverviewCtrl implements Initializable {
 
 
                 Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
-                anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) + "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
                 anchorPane1.getChildren().get(0).
-                        setStyle("-fx-background-color: " + toRgbCode(color) + "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                        setStyle("-fx-background-color: " + toRgbCode(color) +
+                                "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
                 VBox child1= (VBox) anchorPane1.getChildren().get(0);
                 HBox child2= (HBox) child1.getChildren().get(1);
                 TextField child3=(TextField) child2.getChildren().get(0);
-                child3.setStyle("-fx-background-color: " + toRgbCode(color) + "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                child3.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
                 
 
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
