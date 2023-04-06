@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import com.google.inject.Key;
 import commons.Board;
 import commons.Card;
 import commons.Column;
@@ -1188,7 +1187,8 @@ public class BoardOverviewCtrl implements Initializable {
                             event.consume();
                         }
                     }
-                    else if((event.getCode() == KeyCode.DELETE || event.getCode() == KeyCode.BACK_SPACE) && selectedAnchorPane != null)
+                    else if((event.getCode() == KeyCode.DELETE ||
+                            event.getCode() == KeyCode.BACK_SPACE) && selectedAnchorPane != null)
                     {
                         server.deleteCardServer(server.getBoardById(id),
                                 Long.valueOf(((AnchorPane) selectedAnchorPane).getParent().

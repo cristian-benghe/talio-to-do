@@ -55,6 +55,17 @@ public class TagViewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * Function implemented to use/load certain functions when the TagView scene is shown
+     *
+     * @param location
+     * The location used to resolve relative paths for the root object, or
+     * {@code null} if the location is not known.
+     *
+     * @param resources
+     * The resources used to localize the root object, or {@code null} if
+     * the root object was not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Set up the dialog for the help button
