@@ -2,10 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Board;
-import commons.Card;
-import commons.Column;
-import commons.Task;
+import commons.*;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -18,8 +15,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
@@ -599,8 +598,48 @@ public class CardViewCtrl implements Initializable {
      * instance in the scene.
      */
     public void displayTags() {
-           
+        HBox hBox=new HBox();
+        for(Tag t :card.getTags()){
+            if(card.hasTagWithId(t.getTagID())) {
+                AnchorPane anchorPane=new AnchorPane();
+                TextField textField = new TextField(t.getTitle());
+                textField.setEditable(false);
+                textField.setMaxWidth(Double.MAX_VALUE);
+                // set the maximum width of the text field
+                textField.setMaxHeight(Double.MAX_VALUE);
+                // set the maximum height of the text field
+                Color color = Color.color(t.getFontRed(), t.getFontGreen(), t.getFontBlue());
+                String rgbCode = toRgbCode(color);
+                Color color2 = Color.color(t.getHighlightRed(),
+                        t.getHighlightGreen(), t.getHighlightBlue());
+                String rgbCode2 = toRgbCode(color2);
+                textField.setStyle("-fx-text-fill: " + rgbCode +
+                        "; -fx-background-color: " + rgbCode2 + ";");
+                anchorPane.getChildren().add(textField);
+                hBox.getChildren().add(anchorPane);
+
+
+
+            }
+        }
+
+        mainCtrl.getcardViewCtrl().setCardViewCtrl(hBox);
+
     }
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+
+
+
 
 
     /**
