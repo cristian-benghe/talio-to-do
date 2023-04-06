@@ -175,6 +175,13 @@ public class CardViewCtrl implements Initializable {
             {
                 getBackCard();
             }
+            if (event.getCode() == KeyCode.T && !(event.getTarget() instanceof TextArea)){
+                try {
+                    getTagView();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         });
     }
 
