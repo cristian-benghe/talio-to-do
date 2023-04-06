@@ -1077,6 +1077,8 @@ public class BoardOverviewCtrl implements Initializable {
         // Set up the dialog for the help button
         helpPopUp();
         setScrollPaneShortcuts();
+
+        showCardCustomization();
     }
 
     /**
@@ -1210,9 +1212,42 @@ public class BoardOverviewCtrl implements Initializable {
                 }
                 event.consume();
             }
+            else if (event.getCode() == KeyCode.C && selectedAnchorPane != null){
+                cardCustomization.showAndWait();
+            }
         });
-
     }
+
+    public void showCardCustomization() {
+        cardCustomization = new Dialog<>();
+        cardCustomization.setTitle("Card Customization");
+
+        // Create a ColorPicker control for the background color
+        ColorPicker colorPicker = new ColorPicker();
+        colorPicker.setValue(Color.WHITE);
+        colorPicker.getStyleClass().add("button");
+
+        VBox content = new VBox();
+
+        Label cardColor = new Label("New card colour:");
+        HBox NewColourBox = new HBox(10, cardColor, colorPicker);
+        content.getChildren().add(NewColourBox);
+
+        // Add a Save & Quit button to the dialog
+        ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
+        cardCustomization.getDialogPane().getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
+
+        cardCustomization.getDialogPane().setContent(content);
+
+        // Return the chosen color when the Save & Quit button is clicked
+        cardCustomization.setResultConverter(buttonType -> {
+            if (buttonType == saveQuitButtonType) {
+                return colorPicker.getValue();
+            }
+            return null;
+        });
+    }
+
 
     /**
      * A method that sets the shortcuts of the scrollPane
