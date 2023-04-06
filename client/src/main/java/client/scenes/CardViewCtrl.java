@@ -223,6 +223,17 @@ public class CardViewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
+            if(event.getCode() == KeyCode.ESCAPE && !(event.getTarget() instanceof TextArea))
+            {
+                getBackCard();
+            }
+            if (event.getCode() == KeyCode.T && !(event.getTarget() instanceof TextArea)){
+                try {
+                    getTagView();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         });
 
     }
