@@ -60,6 +60,8 @@ public class BoardOverviewCtrl implements Initializable {
 
     //Help box for the help functionality
     private Dialog helpDialog;
+
+    private Dialog cardCustomization;
     //id of the board
     private Long id = (long) -1;
     @FXML
@@ -1098,14 +1100,14 @@ public class BoardOverviewCtrl implements Initializable {
 
     /**
      * A method to return the list of labels to represent the help information for the drag and drop
-     * @return list of labels which includes informations
+     * @return list of labels which includes information
      */
     public ArrayList<Label> helpDragDrop()
     {
         ArrayList<Label> labels = new ArrayList<>();
         // Add each keyboard shortcut to the VBox
         labels.add(new Label("Note, it's a template!!"));
-        labels.add(new Label("To delete the card you can drag and rop it to the BIN"));
+        labels.add(new Label("To delete the card you can drag and drop it to the BIN"));
         labels.add(new Label("To rearrange cards you can drag and drop"));
         labels.add(new Label("To enter the card views you can press to the ===== sign"));
         return labels;
@@ -1142,7 +1144,7 @@ public class BoardOverviewCtrl implements Initializable {
         Tab shortcutsTab = new Tab("Keyboard Shortcuts", shortcutsList);
         tabPane.getTabs().add(shortcutsTab);
 
-        Tab dragTab = new Tab("Drag and Drop Informations", dragAndDropList);
+        Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
         tabPane.getTabs().add(dragTab);
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
 

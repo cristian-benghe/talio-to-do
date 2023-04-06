@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -26,6 +27,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -128,9 +130,42 @@ public class CardViewCtrl implements Initializable {
     }
 
     /**
+     * A method that creates the labels for the ? button and shortcut
+     * @return list of labels
+     */
+    public ArrayList<Label> helpLabel()
+    {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Up/Down/Left/Right -> select tasks"));
+        labels.add(new Label("Shift+Up/Down -> change order of cards in the column"));
+        labels.add(new Label("E -> edit the card title"));
+        labels.add(new Label("Del/Backspace -> delete a card"));
+        labels.add(new Label("Enter -> open card details"));
+        labels.add(new Label("Esc -> close card details"));
+        labels.add(new Label("T -> open popup for adding tags"));
+        labels.add(new Label("C -> open popup for color preset selection"));
+        return labels;
+    }
+
+    /**
+     * A method to return the list of labels to represent the help information for the drag and drop
+     * @return list of labels which includes information
+     */
+    public ArrayList<Label> helpDragDrop()
+    {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Note, it's a template!!"));
+        labels.add(new Label("To delete a subtask you can drag and drop it to the BIN"));
+        labels.add(new Label("To rearrange subtasks you can drag and drop"));
+        return labels;
+    }
+
+    /**
      * Set up the dialog for the help button
      */
-    public void helpPopUp(){
+    public void helpPopUp() {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
@@ -139,50 +174,57 @@ public class CardViewCtrl implements Initializable {
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
 
-        // Create a VBox to hold the keyboard shortcuts list
+// Create a TabPane to hold the keyboard shortcuts list and other tabs
+        TabPane tabPane = new TabPane();
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(50);
+        tabPane.setTabMaxHeight(50);
+
         VBox shortcutsList = new VBox();
         shortcutsList.setSpacing(5);
+        shortcutsList.setPadding(new Insets(15.0,5.0,5.0,5.0));
+        shortcutsList.getChildren().addAll(helpLabel());
+        VBox dragAndDropList = new VBox();
+        dragAndDropList.setSpacing(5);
+        dragAndDropList.setPadding(new Insets(15.0,5.0,5.0,5.0));
+        dragAndDropList.getChildren().addAll(helpDragDrop());
 
-        // Add each keyboard shortcut to the VBox
-        Label upDownLeftRight = new Label("Up/Down/Left/Right -> select tasks");
-        Label shiftUpDown = new Label("Shift+Up/Down -> change order of cards in the column");
-        Label editCardTitle = new Label("E -> edit the card title");
-        Label deleteCard = new Label("Del/Backspace -> delete a card");
-        Label openCardDetails = new Label("Enter -> open card details");
-        Label closeCardDetails = new Label("Esc -> close card details");
-        Label addTags = new Label("T -> open popup for adding tags");
-        Label colorPresetSelection = new Label("C -> open popup for color preset selection");
+        Tab shortcutsTab = new Tab("Keyboard Shortcuts", shortcutsList);
+        tabPane.getTabs().add(shortcutsTab);
 
-        // Add the keyboard shortcuts to the VBox
-        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
-                openCardDetails, closeCardDetails, addTags, colorPresetSelection);
+        Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
+        tabPane.getTabs().add(dragTab);
+        tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
 
-        // Add the VBox to the dialog's content
-        helpDialog.getDialogPane().setContent(shortcutsList);
 
-        // Add an OK button to the dialog
+// Center and fill the TabPane
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabMinWidth(100);
+        tabPane.setTabMaxWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(30);
+        tabPane.setTabMaxHeight(30);
+
+
+
+        VBox.setVgrow(tabPane, Priority.ALWAYS);
+
+// Add the TabPane to the dialog's content
+        helpDialog.getDialogPane().setContent(tabPane);
+
+// Add an OK button to the dialog
         ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
         helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
-
         // Add a listener to the scene to detect when the Shift+/ key combination is pressed
         anchorPane.setOnKeyPressed(event -> {
+            int shiftColumnIndex = -1;
             if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
                 if (!(event.getTarget() instanceof TextField)) {
                     helpDialog.showAndWait();
                 }
             }
-            if(event.getCode() == KeyCode.ESCAPE && !(event.getTarget() instanceof TextArea))
-            {
-                getBackCard();
-            }
-            if (event.getCode() == KeyCode.T && !(event.getTarget() instanceof TextArea)){
-                try {
-                    getTagView();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         });
+
     }
 
     /**
