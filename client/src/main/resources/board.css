@@ -1,0 +1,61 @@
+#anchorPane {
+    background-color: #f2f2f2;
+}
+
+#boardTitle {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-font-size: 20px;
+}
+
+#boardTitleLabel {
+    -fx-text-fill: #ff0000;
+}
+
+#binImage {
+    -fx-opacity: 1;
+}
+
+.hbox {
+    -fx-spacing: 10px;
+}
+
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-padding: 0 20px;
+    -fx-border-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #3e8e41;
+}
+
+#keyID {
+    -fx-font-size: 20px;
+    -fx-opacity: 0.36;
+}
+
+.label {
+    -fx-text-fill: #333333;
+    -fx-font-size: 16px;
+}
+
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-font-size: 17px;
+}
+
+.scroll-pane {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: #ffffff;
+}

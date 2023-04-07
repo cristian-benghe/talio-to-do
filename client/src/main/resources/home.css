@@ -1,0 +1,71 @@
+/* Set the background color of the AnchorPane */
+.anchor-pane {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Style the "Enter board by ID" button */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+/* Style the "Create a board" button */
+#createBoard {
+    -fx-background-color: #ff9800;
+    -fx-text-fill: #331313;
+    -fx-font-size: 15px;
+}
+
+/* Style the "Disconnect" button */
+#disconnectButton {
+    -fx-background-color: #ef5144;
+    -fx-text-fill: #490c0c;
+    -fx-font-size: 15px;
+}
+
+/* Style the text fields */
+.text-field {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 3px;
+    -fx-padding: 5px;
+    -fx-font-size: 13px;
+}
+
+/* Style the ListView */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 3px;
+    -fx-padding: 5px;
+    -fx-font-size: 13px;
+}
+
+/* Style the Label */
+.label {
+    -fx-font-size: 20px;
+    -fx-text-fill: #331313;
+}
+
+/* Style the empty board list message */
+#emptyBoardListMsg {
+    -fx-font-size: 40px;
+    -fx-text-fill: #989898;
+}
+
+/* Style the search constraint text */
+#searchConstraintText {
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* Style the boards text */
+#boardsText {
+    -fx-font-size: 10px;
+}
+
+/* Style the label message */
+#labelMessage {
+    -fx-font-size: 13px;
+}
