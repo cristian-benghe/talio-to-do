@@ -145,7 +145,6 @@ public class TagViewCtrl implements Initializable {
                 // set the maximum height of the text field
                 anchorPane.getChildren().add(textField);
                 hBox.getChildren().add(anchorPane);
-
                 card = server.addTagtoCard(card.getId(),
                         server.getTagById(tagTemplateCtrl.getTagId()) );
 

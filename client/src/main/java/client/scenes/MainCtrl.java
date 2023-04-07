@@ -168,6 +168,7 @@ public class MainCtrl {
         cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
         cardViewCtrl.setCard(card);
+        this.card = card;
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
         primaryStage.centerOnScreen();
