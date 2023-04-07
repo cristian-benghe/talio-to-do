@@ -302,7 +302,7 @@ public class BoardOverviewCtrl implements Initializable {
         hbox1.setAlignment(Pos.CENTER);
         hbox1.setPrefSize(150, 80);
         TextField textField = new TextField("Card");
-        textField.setStyle("-fx-background-color: #C0C0C0");
+        textField.setStyle("-fx-background-color: #ffffff");
         textField.setAlignment(Pos.BASELINE_CENTER);
         hbox1.getChildren().add(textField);
         vbox.getChildren().addAll(myLabel, hbox1);
@@ -310,14 +310,14 @@ public class BoardOverviewCtrl implements Initializable {
         anchorPane1.getChildren().add(vbox);
         textField.setFont(new Font("System", 18));
 
-        anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
+        anchorPane1.setStyle("-fx-background-color:  #ffffff; -fx-background-radius:  15");
         anchorPane1.setPrefSize(150, 80);
 
         anchorPane1.setOnMouseEntered(e -> {
             if (anchorPane1 != selectedAnchorPane) {
-                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; " +
+                anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
                         "-fx-background-radius:  15; " +
-                        "-fx-border-color: lightblue; " +
+                        "-fx-border-color: #ffffff; " +
                         "-fx-border-radius: 15; " +
                         "-fx-border-width: 4; " +
                         "-fx-margin: -2;");
