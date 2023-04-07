@@ -19,7 +19,7 @@
          </font>
       </Button>
       <Button layoutX="625.0" layoutY="49.0" mnemonicParsing="false" onAction="#addColumn" prefHeight="35.0" prefWidth="128.0" text="Add column" />
-      <Button layoutX="487.0" layoutY="49.0" mnemonicParsing="false" onAction="#editTitleEnter" prefHeight="35.0" prefWidth="114.0" text="Copy ID" />
+      <Button layoutX="487.0" layoutY="49.0" mnemonicParsing="false" onAction="#copyID" prefHeight="35.0" prefWidth="114.0" text="Copy ID" />
       <ImageView fx:id="binImage" fitHeight="51.0" fitWidth="57.0" layoutX="880.0" layoutY="614.0" onDragDropped="#contractBin" onDragEntered="#expandBin" onDragExited="#contractBin" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../BinImage.png" />
@@ -58,7 +58,6 @@
       <!--Below you can see the Delete Board button-->
       <Button layoutX="31.0" layoutY="639.0" mnemonicParsing="false" onAction="#deleteBoard" prefHeight="35.0" prefWidth="158.0" text="Delete Board" />
       <Label fx:id="boardTitleLabel" layoutX="110.0" layoutY="22.0" prefHeight="18.0" prefWidth="178.0" text="Press enter to save!" visible="false" />
-      <Button layoutX="487.0" layoutY="49.0" mnemonicParsing="false" onAction="#editTitleEnter" prefHeight="35.0" prefWidth="114.0" text="Copy ID" />
       <Button layoutX="886.0" layoutY="49.0" mnemonicParsing="false" onAction="#showHelp" prefHeight="35.0" prefWidth="41.0" text="?">
          <font>
             <Font size="13.0" />
