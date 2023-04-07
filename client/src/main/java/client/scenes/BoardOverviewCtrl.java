@@ -5,8 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
-import javafx.animation.Interpolator;
-import javafx.animation.ScaleTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -80,6 +79,9 @@ public class BoardOverviewCtrl implements Initializable {
     private Text keyID;
     @FXML
     private ImageView binImage;
+
+    @FXML
+    private Label copyLabel;
 
     private AnchorPane selectedAnchorPane;
 
@@ -1080,7 +1082,6 @@ public class BoardOverviewCtrl implements Initializable {
 
         showCardCustomization();
     }
-
     /**
      * A method that creates the labels for the ? button and shortcut
      * @return list of labels
@@ -1255,7 +1256,7 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void setScrollPaneShortcuts()
     {
-        ((ScrollPane) ((AnchorPane) anchorPane.getChildren().get(7)).getChildren().
+        ((ScrollPane) ((AnchorPane) anchorPane.getChildren().get(8)).getChildren().
                 get(0)).setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.UP &&
                             selectedAnchorPane != null && !event.isShiftDown()) {
@@ -1515,7 +1516,37 @@ public class BoardOverviewCtrl implements Initializable {
         ClipboardContent content = new ClipboardContent();
         content.putString(String.valueOf(id));
         clipboard.setContent(content);
+
+        copyLabel.setVisible(true);
+        // Start confirmation animation
+        copyIDLabelInOut();
     }
+
+    /**
+     * Animation that starts when the user wants to copy the id of the current board
+     * a timeline object is created that animates the opacity of the label
+     * from 1 (fully visible) to 0 (fully transparent)
+     * the duration of the animation is 3 seconds
+     * when the animation is done, the visibility of the label is set to false and
+     * resets the opacity to 1
+     */
+    public void copyIDLabelInOut() {
+        // create a timeline animation to fade out the label after 3 seconds
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.ZERO, new KeyValue(copyLabel.opacityProperty(), 1)),
+                new KeyFrame(Duration.seconds(3), new KeyValue(copyLabel.opacityProperty(), 0))
+        );
+
+        // when the animation finishes, hide the label and set the opacity to 1
+        timeline.setOnFinished(event -> {
+            copyLabel.setVisible(false);
+            copyLabel.setOpacity(1);
+        });
+
+        timeline.play();
+    }
+
 
     /**
      * changes scene to board customization
