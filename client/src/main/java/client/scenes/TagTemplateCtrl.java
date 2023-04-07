@@ -17,6 +17,8 @@ import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -58,15 +60,19 @@ public class TagTemplateCtrl implements Initializable {
         this.fontGreen=font.getValue().getGreen();
         Tag tag=server.getTagById(tagId);
         tag.setFontColor(fontRed, fontGreen, fontBlue);
+        List<Card> cardsToUpdate = new ArrayList<>();
         for (Column column : server.getBoardById(boardId).getColumns()) {
             for (Card c : column.getCards()) {
                 for (Tag t : c.getTags()) {
                     if (Objects.equals(t.getTagID(), tagId)) {
-                        c=server.updateTagInCard(t.getTagID(),c.getId(),c,tag);
+                        cardsToUpdate.add(c);
                     }
                 }
-
             }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.updateTagInCard(tagId, c.getId(), c, tag);
         }
         //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
         server.updateTag(tagId, tag);
@@ -80,15 +86,19 @@ public class TagTemplateCtrl implements Initializable {
         this.highlightGreen=highlight.getValue().getGreen();
         Tag tag=server.getTagById(tagId);
         tag.setHighlightColor(highlightBlue, highlightGreen, highlightRed);
+        List<Card> cardsToUpdate = new ArrayList<>();
         for (Column column : server.getBoardById(boardId).getColumns()) {
             for (Card c : column.getCards()) {
                 for (Tag t : c.getTags()) {
                     if (Objects.equals(t.getTagID(), tagId)) {
-                        c=server.updateTagInCard(t.getTagID(),c.getId(),c,tag);
+                        cardsToUpdate.add(c);
                     }
                 }
-
             }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.updateTagInCard(tagId, c.getId(), c, tag);
         }
         //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
         server.updateTag(tagId, tag);
@@ -270,15 +280,19 @@ public class TagTemplateCtrl implements Initializable {
         this.titlee.setOnKeyTyped(event -> {
             Tag tag=server.getTagById(tagId);
             tag.setTitle(this.titlee.getText());
+            List<Card> cardsToUpdate = new ArrayList<>();
             for (Column column : server.getBoardById(boardId).getColumns()) {
                 for (Card c : column.getCards()) {
                     for (Tag t : c.getTags()) {
                         if (Objects.equals(t.getTagID(), tagId)) {
-                            c=server.updateTagInCard(t.getTagID(),c.getId(),c,tag);
+                            cardsToUpdate.add(c);
                         }
                     }
-
                 }
+            }
+
+            for (Card c : cardsToUpdate) {
+                c = server.updateTagInCard(tagId, c.getId(), c, tag);
             }
             //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
             server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
