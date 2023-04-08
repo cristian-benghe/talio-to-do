@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
+import commons.Tag;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -287,6 +288,7 @@ public class BoardOverviewCtrl implements Initializable {
         return anchorPane1;
     }
 
+
     /**
      * A method to create a new card
      *
@@ -311,6 +313,8 @@ public class BoardOverviewCtrl implements Initializable {
         vbox.getChildren().addAll(myLabel, hbox1);
         vbox.setAlignment(Pos.CENTER);
         anchorPane1.getChildren().add(vbox);
+
+
         textField.setFont(new Font("System", 18));
 
         anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
@@ -1039,12 +1043,38 @@ public class BoardOverviewCtrl implements Initializable {
             Button button =
                     createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
             setVBoxDragDrop(button, vBox);
+
             button.setAlignment(Pos.BOTTOM_CENTER);
             vBox.getChildren().addAll(columnLabel, textField);
+
             for (Card kard : c.getCards()) {
                 vBox.getChildren().add(button);
                 AnchorPane anchorPane1 = addCard(vBox);
+                HBox tagColors=new HBox();
+                tagColors.setAlignment(Pos.BOTTOM_CENTER);
+                tagColors.setPrefSize(150, 10);
+                List<Tag> tags = new ArrayList<>(kard.getTags());
+                //int a =0;
+                for (int i = 0; i < kard.getTags().size(); i++) {
+                    Tag tag = tags.get(i);
+                    if (tag.getHighlightRed() != 1.0 || tag.getHighlightGreen() != 1.0
+                            || tag.getHighlightBlue() != 1.0) {
+                        AnchorPane colorPane = new AnchorPane();
+                        Color color = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(),
+                                tag.getHighlightBlue());
+                        String rgbCode = toRgbCode(color);
+                        colorPane.setStyle("-fx-background-color: " + rgbCode + ";");
+                        colorPane.setPrefSize(20, 10);
+                        tagColors.getChildren().add(colorPane);
+                        if (tagColors.getChildren().size() == 3) {
+                            break;
+                        }
+                    }
+                }
 
+
+                AnchorPane.setBottomAnchor(tagColors, 0.0);
+                anchorPane1.getChildren().addAll(tagColors);
 
                 Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
                 anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) +

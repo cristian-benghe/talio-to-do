@@ -6,13 +6,16 @@ import commons.Card;
 import commons.Column;
 import commons.Tag;
 import javafx.fxml.FXML;
+//import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+//import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+//import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
@@ -51,6 +54,7 @@ public class TagTemplateCtrl implements Initializable {
     @FXML
     private TextField titlee;
     private Card card;
+    //private Pane pane;
 
 
     @FXML
@@ -188,12 +192,46 @@ public class TagTemplateCtrl implements Initializable {
         this.tagId = tagID;
         //this.titlee.setText(server.getTagById(tagID).getTitle());
     }
+
+//    public void setPane(Pane pane) {
+//        this.pane = pane;
+//    }
     @FXML
     private void deleteTag() throws IOException {
-        System.out.println(tagId);
+        List<Card> cardsToUpdate = new ArrayList<>();
+        for (Column column : server.getBoardById(boardId).getColumns()) {
+            for (Card c : column.getCards()) {
+                for (Tag t : c.getTags()) {
+                    if (Objects.equals(t.getTagID(), tagId)) {
+                        cardsToUpdate.add(c);
+                    }
+                }
+            }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.deleteTagFromCard(tagId, c.getId());
+        }
 
         Node tagNode = deleteButton.getParent();
         AnchorPane parent = (AnchorPane) tagNode.getParent();
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("TagTemplate.fxml"));
+//        Parent child = loader.load();
+//        TagTemplateCtrl tagTemplateCtrl = loader.getController();
+//        for (Node node : parent.getChildren()) {
+//            if (node instanceof AnchorPane) {
+//                AnchorPane childPane = (AnchorPane) node;
+//                CheckBox checkBox = (CheckBox) childPane.lookup("#checkbox");
+//                checkBox.setSelected(true);
+//
+//                tagTemplateCtrl.setPane(childPane);
+//                Long tagId = tagTemplateCtrl.getTagId();
+//                System.out.println("Tag id of child: " + tagId);
+//            }
+//        }
+
+        
         int index = parent.getChildren().indexOf(tagNode);
         parent.getChildren().remove(index);    //remove the tag from the scene
         server.deleteTagFromBoard(tagId, boardId);  //remove tag from server

@@ -183,7 +183,7 @@ public class TagViewCtrl implements Initializable {
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
-        Tag tag = new Tag("New tag");
+        Tag tag = new Tag();
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
         //add tag to database
         Board board=server.getBoardById(mainCtrl.getBoardId());
