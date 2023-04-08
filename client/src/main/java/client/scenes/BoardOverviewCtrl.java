@@ -1201,7 +1201,6 @@ public class BoardOverviewCtrl implements Initializable {
         helpDialog.setHeaderText("Help zone");
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
-
 // Create a TabPane to hold the keyboard shortcuts list and other tabs
         TabPane tabPane = new TabPane();
         tabPane.setTabMinWidth(Double.MAX_VALUE);
@@ -1224,8 +1223,6 @@ public class BoardOverviewCtrl implements Initializable {
         Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
         tabPane.getTabs().add(dragTab);
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-
-
 // Center and fill the TabPane
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabMinWidth(100);
@@ -1326,12 +1323,6 @@ public class BoardOverviewCtrl implements Initializable {
 
 
     }
-
-    public void keyboardCPopup(ButtonType button)
-    {
-
-    }
-
 
     /**
      * A method that sets the shortcuts of the scrollPane
