@@ -7,7 +7,6 @@ import commons.Task;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -299,7 +298,7 @@ public class CardViewCtrl implements Initializable {
 
         //Reset the title label
         titleLabel.setText(card.getTitle());
-
+        System.out.println(card.getTitle());
         //Reset the long description text area
         longDescription.setText(card.getDescription());
         //Reset the task and tag lists
@@ -806,23 +805,45 @@ public class CardViewCtrl implements Initializable {
         this.taglist.getChildren().addAll(tagList);
     }
 
-
+    /**
+     * This method set-ups the long polling tasks necessary
+     * for auto-synchronization.
+     */
     public void setUpLongPolling(){
 
         server.registerForCardUpdates(card.getId(),card1 -> {
             Platform.runLater(()->{
-                setCard(card1);
+                if(card1.getTitle() == null) {
+                    mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
+                }else{
+                    setCard(card1);
+                    refresh();
+                }
+
+            });
+        });
+        server.registerForTaskUpdates(card.getId(), list -> {
+            Platform.runLater(()->{
+                System.out.println("updated: " + list);
+                card.setTaskList(list);
+                System.out.println("card updated: " + card.getTaskList());
                 refresh();
             });
         });
-
     }
 
-
+    /**
+     * This method halts all currently running tasks in
+     * the executor instance.
+     */
     public void resetLongPolling(){
         server.clearExecutor();
     }
 
+    /**
+     * This method shutdowns the executor instance that
+     * handles long polling.
+     */
     public void stopLongPolling(){
         server.stopCardUpdates();
     }

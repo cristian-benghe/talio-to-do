@@ -389,22 +389,25 @@ public class BoardOverviewCtrl implements Initializable {
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
             Card mycard = new Card("Card", null, null, null);
-            server.addCardToColumn(id, columnid, mycard,
+            var column = server.addCardToColumn(id, columnid, mycard,
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                     getChildren().get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
                         ((Label) (((VBox) anchorPane1.getChildren().get(0))
                         .getChildren().get(0))).setText("Press enter to save!!");
                         if (event1.getCode() == KeyCode.ENTER) {
-                            server.updateCardTitle((long) vBox
-                                    .getChildren().indexOf(anchorPane1) - 1,
+                            int cardPosition = (vBox.getChildren().indexOf(anchorPane1) - 1);
+                            server.updateCardTitle((long) cardPosition,
                                 columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                     .getChildren().get(0)).
                                     getChildren().get(1)).getChildren().get(0)).
                                     getText(), id);
                             ((Label) (((VBox) anchorPane1.getChildren().get(0))
-                            .getChildren().get(0))).setText("=====");
-                            server.send("/app/update-labels-in-board", server.getBoardById(id));
+                            .getChildren().get(0))).setText(""+cardPosition);
+                            Board tempBoard = server.getBoardById(id);
+                            server.send("/app/update-labels-in-board", tempBoard);
+                            server.pingCardUpdate(tempBoard.getColumns()
+                                    .get((int)(columnid-1)).getCards().get(cardPosition-1).getId());
                         }
                     });
             vBox.getChildren().remove(button);
@@ -428,14 +431,25 @@ public class BoardOverviewCtrl implements Initializable {
                     ((Label) (((VBox) anchorPane1.getChildren().get(0))
                     .getChildren().get(0))).setText("Press enter to save!!");
                     if (event1.getCode() == KeyCode.ENTER) {
-                        server.updateCardTitle((long) vBox.getChildren().
-                                indexOf(anchorPane1) - 1, columnid,
+
+                        int cardPosition = vBox.getChildren().
+                                indexOf(anchorPane1) - 1;
+                        server.updateCardTitle((long) (cardPosition), columnid,
                             ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).getChildren().get(1)).
                                 getChildren().get(0)).getText(), id);
                         ((Label) (((VBox) anchorPane1.getChildren().get(0))
                         .getChildren().get(0))).setText("=====");
-                        server.send("/app/update-in-board", server.getBoardById(id));
+
+                        Board tempBoard = server.getBoardById(id);
+                        server.send("/app/update-in-board",tempBoard);
+
+
+                        long cardId = tempBoard.getColumns()
+                                .get((int)(columnid-1))
+                                .getCards().get(cardPosition-1).getId();
+
+                        server.pingCardUpdate(cardId);
                     }
                 });
     }
@@ -968,6 +982,7 @@ public class BoardOverviewCtrl implements Initializable {
                             indexOf(((AnchorPane) event.getGestureSource()).
                                     getParent().getParent()) + 1, id);
             server.send("/app/update-in-board", server.getBoardById(id));
+            server.pingCardDeletion(cardId);
             // System.out.println(server.deleteCardFromCardApi(cardId));
 
             vBox.getChildren().remove(event.getGestureSource());
@@ -1181,7 +1196,8 @@ public class BoardOverviewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
-            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null) {
+            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null
+                && !(event.getTarget() instanceof TextField)) {
                 labelActionGeneral((Label) (((VBox) selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }

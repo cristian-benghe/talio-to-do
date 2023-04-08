@@ -29,7 +29,8 @@ public class Card implements Serializable {
     @JsonIgnore
     private List<Task> taskList;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
     private Set<Tag> tags;
 
 

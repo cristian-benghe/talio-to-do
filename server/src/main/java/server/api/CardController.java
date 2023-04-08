@@ -221,7 +221,13 @@ public class CardController {
 
     }
 
-
+    /**
+     * Handles the GET request that handles long polling for Card instances.
+     * @param id the identifier of the Card instance that will be listened to.
+     *           An identifier of -1 will listen to all cards.
+     * @return The corresponding Card instance. If the Card instance was deleted,
+     * then its title field will be null.
+     */
     @GetMapping(path="/getUpdates")
     public DeferredResult<ResponseEntity<Card>> getCardUpdates(@RequestParam("id")long id){
 
@@ -243,6 +249,55 @@ public class CardController {
 
         return results;
     }
+
+    /**
+     * Handles the GET request that pings the server on
+     * deletion of a particular Card instance.
+     * @param id the identifier of the Card instance that was deleted.
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path="/pingCardDeletion")
+    public ResponseEntity<Void> pingCardDeletion(@RequestParam("id")long id){
+
+        var dummyCard = new Card(null,null,null,null);
+        dummyCard.setId(id);
+
+        cardListners.forEach((k,l)->{
+            l.accept(dummyCard);
+        });
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Handles the GET request that pings the server on
+     * a particular update of a card instance.
+     * @param id the identifier of the Card instance that has been updated.
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path="/pingCardUpdate")
+    public ResponseEntity<Void> pingCardUpdate(@RequestParam("id")long id){
+
+        try {
+            Optional<Card> optCard = cardservice.getById(id);
+
+            if (optCard.isPresent()) {
+                Card card = optCard.get();
+                cardListners.forEach((k, l) -> {
+                    l.accept(card);
+                });
+            }
+
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+
+
 }
 
 
