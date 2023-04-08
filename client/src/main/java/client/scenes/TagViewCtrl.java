@@ -139,7 +139,8 @@ public class TagViewCtrl implements Initializable {
                 AnchorPane anchorPane=new AnchorPane();
                 TextField textField = new TextField(tagTemplateCtrl.getText());
                 textField.setEditable(false);
-                textField.setMaxWidth(Double.MAX_VALUE);
+                //textField.setMaxWidth(Double.MAX_VALUE);
+                textField.setPrefWidth(100);
                 // set the maximum width of the text field
                 textField.setMaxHeight(Double.MAX_VALUE);
                 // set the maximum height of the text field
@@ -183,7 +184,7 @@ public class TagViewCtrl implements Initializable {
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
-        Tag tag = new Tag("New tag");
+        Tag tag = new Tag();
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
         //add tag to database
         Board board=server.getBoardById(mainCtrl.getBoardId());

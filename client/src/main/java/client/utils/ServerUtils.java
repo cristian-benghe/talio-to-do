@@ -273,6 +273,31 @@ public class ServerUtils {
     }
 
     /**
+     * Deletes a tag with the specified ID from the card with the specified ID.
+     *
+     * @param tagId the ID of the tag to be deleted
+     * @param cardId the ID of the card from which the tag should be deleted
+     * @return the updated card object after the tag has been deleted
+     */
+
+    public Card deleteTagFromCard(Long tagId, Long cardId) {
+        Card card = getCardById(cardId);
+        Set<Tag> tagSet = card.getTags();
+        for (Tag t : tagSet) {
+            if (Objects.equals(t.getTagID(), tagId)) {
+                tagSet.remove(t);
+                break;
+            }
+        }
+
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+    }
+
+    /**
      * Retrieves using an HTTP GET request a board with a certain id
      *
      * @param boardId the id of the board we are looking for
