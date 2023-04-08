@@ -40,8 +40,10 @@ import javafx.scene.input.TransferMode;
 import java.net.URL;
 import java.util.*;
 
+import static java.lang.Long.parseLong;
+
 public class BoardOverviewCtrl implements Initializable {
-    private Long nrCol = Long.valueOf(0);
+    private Long nrCol = 0L;
     private String title;
 
     private final ServerUtils server;
@@ -103,13 +105,6 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
     }
 
-    /**
-     * This changes the scene to the Board Overview
-     */
-    public void showOverview() {
-        mainCtrl.showBoardOverview("", (double) 255, (double) 255, (double) 255);
-    }
-
 
     /**
      * @param idd   the id of the board
@@ -120,7 +115,7 @@ public class BoardOverviewCtrl implements Initializable {
     public void setBoardTitle(String idd, Double blue, Double green, Double red) {
         boardTitleLabel.setVisible(false);
         this.title = idd;
-        Long nr = Long.parseLong(idd.split("--")[1].trim());
+        long nr = parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
         columnsRefresh();
@@ -226,7 +221,7 @@ public class BoardOverviewCtrl implements Initializable {
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
         Label columnLabel = new Label("...");
-        vBox.setMargin(textField, new Insets(2));
+        VBox.setMargin(textField, new Insets(2));
 
         anchorPaneVBox.getChildren().add(vBox);
         //to set the functionality of the drag and drop of the new column.
@@ -455,8 +450,8 @@ public class BoardOverviewCtrl implements Initializable {
      * @param columnid    id of the specific column
      */
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
-        ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
-                get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+        ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
+                get(1)).getChildren().get(0).setOnKeyPressed(event1 -> {
                     ((Label) (((VBox) anchorPane1.getChildren().get(0))
                     .getChildren().get(0))).setText("Press enter to save!!");
                     if (event1.getCode() == KeyCode.ENTER) {
@@ -564,9 +559,9 @@ public class BoardOverviewCtrl implements Initializable {
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
-                server.cardDragDropUpdate(Long.valueOf(((AnchorPane) event.getGestureSource()).
+                server.cardDragDropUpdate((long) ((AnchorPane) event.getGestureSource()).
                         getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
-                                getGestureSource())), (long) hbox.getChildren()
+                                getGestureSource()), (long) hbox.getChildren()
                         .indexOf(((AnchorPane) event.
                                 getGestureSource()).getParent().
                                 getParent()), (long) hbox.getChildren().
@@ -892,8 +887,6 @@ public class BoardOverviewCtrl implements Initializable {
         columnTmp = column.copyCards(column, columnTmp);
         Card sourceCard = column.getCards()
                 .get(vBox.getChildren().indexOf(event.getGestureSource()) - 2);
-        Card targetCard = column.getCards().get(vBox.getChildren().indexOf(card) - 2);
-        int indexSource = vBox.getChildren().indexOf(event.getGestureSource()) - 2;
         int indexTarget = vBox.getChildren().indexOf(card) - 2;
         column.getCards().clear();
         columnTmp.getCards()
@@ -1593,7 +1586,6 @@ public class BoardOverviewCtrl implements Initializable {
         if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
 
             //server.deleteBoard(id);
-
             server.send("/app/delete-board", id);
             mainCtrl.showMainOverview();
 
@@ -1620,6 +1612,7 @@ public class BoardOverviewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
+
     /**
      * method which copies the id of the accessed board to the clipboard
      */
@@ -1633,6 +1626,7 @@ public class BoardOverviewCtrl implements Initializable {
         // Start confirmation animation
         copyIDLabelInOut();
     }
+
 
     /**
      * Animation that starts when the user wants to copy the id of the current board
@@ -1705,14 +1699,14 @@ public class BoardOverviewCtrl implements Initializable {
     public void socketsCall() {
         server.registerForMessages("/topic/update-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id))
-                Platform.runLater(() -> columnsRefresh());
+                Platform.runLater(this::columnsRefresh);
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
             Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
         });
         server.registerForMessages("/topic/update-title-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)) {
-                Platform.runLater(() -> refreshTitle());
+                Platform.runLater(this::refreshTitle);
             }
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
@@ -1721,7 +1715,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         server.registerForMessages("/topic/update-labels-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)) {
-                Platform.runLater(() -> columnsRefresh());
+                Platform.runLater(this::columnsRefresh);
             }
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));

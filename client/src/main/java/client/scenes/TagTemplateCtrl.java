@@ -59,10 +59,10 @@ public class TagTemplateCtrl implements Initializable {
 
     @FXML
     void setFont() {
-        this.fontRed=font.getValue().getRed();
-        this.fontBlue=font.getValue().getBlue();
-        this.fontGreen=font.getValue().getGreen();
-        Tag tag=server.getTagById(tagId);
+        this.fontRed = font.getValue().getRed();
+        this.fontBlue = font.getValue().getBlue();
+        this.fontGreen = font.getValue().getGreen();
+        Tag tag = server.getTagById(tagId);
         tag.setFontColor(fontRed, fontGreen, fontBlue);
         List<Card> cardsToUpdate = new ArrayList<>();
         for (Column column : server.getBoardById(boardId).getColumns()) {
@@ -85,11 +85,12 @@ public class TagTemplateCtrl implements Initializable {
 
     @FXML
     void setHighlight() {
-        this.highlightRed=highlight.getValue().getRed();
-        this.highlightBlue=highlight.getValue().getBlue();
-        this.highlightGreen=highlight.getValue().getGreen();
-        Tag tag=server.getTagById(tagId);
+        this.highlightRed = highlight.getValue().getRed();
+        this.highlightBlue = highlight.getValue().getBlue();
+        this.highlightGreen = highlight.getValue().getGreen();
+        Tag tag = server.getTagById(tagId);
         tag.setHighlightColor(highlightBlue, highlightGreen, highlightRed);
+
         List<Card> cardsToUpdate = new ArrayList<>();
         for (Column column : server.getBoardById(boardId).getColumns()) {
             for (Card c : column.getCards()) {
@@ -107,14 +108,15 @@ public class TagTemplateCtrl implements Initializable {
         //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
         server.updateTag(tagId, tag);
         //server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+
         setHighlightColor(highlightBlue, highlightGreen, highlightRed);
 
     }
 
     /**
-     * @param blue value in rgb of the font
-     * @param green   value in rgb of the font
-     * @param red value in rgb of the font
+     * @param blue  value in rgb of the font
+     * @param green value in rgb of the font
+     * @param red   value in rgb of the font
      */
     public void setFontColors(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
@@ -129,9 +131,9 @@ public class TagTemplateCtrl implements Initializable {
     }
 
     /**
-     * @param blue value in rgb of the font
+     * @param blue  value in rgb of the font
      * @param green value in rgb of the font
-     * @param red value in rgb of the font
+     * @param red   value in rgb of the font
      */
     public void setHighlightColor(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
@@ -144,6 +146,7 @@ public class TagTemplateCtrl implements Initializable {
         titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
         setFont(red, blue, green);
     }
+
     /**
      * @param color conversion from rfb
      * @return the rgb code
@@ -154,6 +157,7 @@ public class TagTemplateCtrl implements Initializable {
         int b = (int) Math.round(color.getBlue() * 255);
         return String.format("#%02X%02X%02X", r, g, b);
     }
+
     @FXML
     void setTitle() {
     }
@@ -164,10 +168,10 @@ public class TagTemplateCtrl implements Initializable {
     }
 
 
-
     /**
      * Initialize the controller and the scene
-     * @param server server parameter
+     *
+     * @param server   server parameter
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
@@ -184,6 +188,7 @@ public class TagTemplateCtrl implements Initializable {
         this.tagId = tagID;
         //this.titlee.setText(server.getTagById(tagID).getTitle());
     }
+
 
 //    public void setPane(Pane pane) {
 //        this.pane = pane;
@@ -246,7 +251,7 @@ public class TagTemplateCtrl implements Initializable {
      * @param boardId id of the board
      */
     public void setBoardId(Long boardId) {
-        this.boardId=boardId;
+        this.boardId = boardId;
     }
 
     /**
@@ -279,7 +284,7 @@ public class TagTemplateCtrl implements Initializable {
      * @param card the card of the tag
      */
     public void setCard(Card card) {
-        this.card=card;
+        this.card = card;
     }
 
     /**
@@ -310,8 +315,9 @@ public class TagTemplateCtrl implements Initializable {
      */
     public void addTitle() {
         this.titlee.setOnKeyTyped(event -> {
-            Tag tag=server.getTagById(tagId);
+            Tag tag = server.getTagById(tagId);
             tag.setTitle(this.titlee.getText());
+
             List<Card> cardsToUpdate = new ArrayList<>();
             for (Column column : server.getBoardById(boardId).getColumns()) {
                 for (Card c : column.getCards()) {
@@ -333,13 +339,13 @@ public class TagTemplateCtrl implements Initializable {
     }
 
     /**
-     * @param fontRed value in rgb of the font
-     * @param fontBlue   value in rgb of the font
-     * @param fontGreen  value in rgb of the font
+     * @param fontRed   value in rgb of the font
+     * @param fontBlue  value in rgb of the font
+     * @param fontGreen value in rgb of the font
      */
-    public void setFont(Double fontRed, Double fontBlue, Double fontGreen){
-        this.fontGreen=fontGreen;
-        this.fontBlue=fontBlue;
-        this.fontRed=fontRed;
+    public void setFont(Double fontRed, Double fontBlue, Double fontGreen) {
+        this.fontGreen = fontGreen;
+        this.fontBlue = fontBlue;
+        this.fontRed = fontRed;
     }
 }
