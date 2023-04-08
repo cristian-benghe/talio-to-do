@@ -130,6 +130,9 @@ public class TagViewCtrl implements Initializable {
         }
     }
 
+    /**
+     * get to card from tagview
+     */
     @FXML
     public void gettoCard()
     {
@@ -234,14 +237,17 @@ public class TagViewCtrl implements Initializable {
             }
         }
     }
+    /**
+     * @param tagTemplateCtrl the tagtemplatectrl deleted
+     * @throws IOException geenrated by failed io operations
+     */
     public void refreshtaglistDelete(TagTemplateCtrl tagTemplateCtrl) throws IOException {
         List<TagTemplateCtrl> tagsupdate=new ArrayList<>();
         for(int i=0;i<tags.size();i++){
-                if(tags.get(i).equals(tagTemplateCtrl)){
-                    tags.remove(i);
-                    System.out.println(i+" there are "+tags.size()+" tags left");
-                    break;
-                }
+            if(tags.get(i).equals(tagTemplateCtrl)){
+                tags.remove(i);
+                break;
+            }
         }
         for(int i=0;i<tags.size();i++)  {
             tagsupdate.add(tags.get(i));
