@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -1312,12 +1313,53 @@ public class BoardOverviewCtrl implements Initializable {
         content.getChildren().add(newColourBox);
 
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
-        AnchorPane anchorPane1 = new AnchorPane();
-        cardCustomization.getDialogPane().getButtonTypes().
-                addAll(saveQuitButtonType, ButtonType.CANCEL);
+        cardCustomization.getDialogPane().getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
+        Node saveQuitButton = cardCustomization.getDialogPane().lookupButton(saveQuitButtonType);
+        saveQuitButton.setDisable(true);
+        colorPicker.setOnAction(event -> {
+            saveQuitButton.setDisable(false);
+        });
 
+        ((Button)saveQuitButton).setOnAction(event -> {
+            // Code to be executed when the button is clicked
+            Color newColor = colorPicker.getValue();
+            System.out.println("New color selected: " + newColor);
+            // Add more code here to perform specific actions when the button is clicked
+            cardCustomization.close(); // Close the dialog
+            int indexColumnCurrent = hbox.getChildren().
+                    indexOf(selectedAnchorPane.getParent().getParent());
+            int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                    getChildren().indexOf(selectedAnchorPane);
+            Board board = server.getBoardById(id);
+            Column column = board.getColumns().get(indexColumnCurrent);
+            Card card = column.getCards().get(cardIndex-2);
+            saveColor(card, newColor);
+            saveQuitButton.setDisable(true);
+        });
         cardCustomization.getDialogPane().setContent(content);
     }
+
+    /**
+     * Zort
+     * @param card
+     * @param color
+     */
+    public void saveColor(Card card, Color color) {
+        card.setColor(color.getBlue(), color.getGreen(), color.getRed());
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        Long colId= Long.valueOf(-1);
+        for(Column c:board.getColumns()){
+            for(Card cardCheck:c.getCards()){
+                if(cardCheck.getId()==card.getId()){
+                    colId=c.getId();
+                    break;
+                }
+            }
+        }
+        server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
+        server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
+    }
+
 
     /**
      * A method that sets the shortcuts of the scrollPane
