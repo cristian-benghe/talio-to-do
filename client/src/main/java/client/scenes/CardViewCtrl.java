@@ -50,6 +50,7 @@ public class CardViewCtrl implements Initializable {
     @FXML
     private HBox taglist;
 
+    private Dialog kickedDialog;
     /**
      * @return the list of tags
      */
@@ -131,6 +132,21 @@ public class CardViewCtrl implements Initializable {
         //Set up the long description text area
         setUpLongDescription();
         longDescIcon.setImage(new Image("EditMode.png"));
+
+        //Set up the Dialog Box for being kicked out of Card Overview
+        kickedDialog = new Dialog<String>();
+        kickedDialog.initModality(Modality.APPLICATION_MODAL);
+        kickedDialog.setTitle("Card Was Deleted!");
+
+        kickedDialog.setHeaderText("The card you were viewing was deleted!");
+        kickedDialog.setContentText("You have been forcibly returned to the Board Overview!");
+
+        Stage dialogStage = (Stage) kickedDialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(new Image("BinImage.png"));
+
+        ButtonType confirmBT = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+
+        kickedDialog.getDialogPane().getButtonTypes().addAll(confirmBT);
 
         // Set up the dialog for the help button
         helpPopUp();
@@ -814,6 +830,7 @@ public class CardViewCtrl implements Initializable {
         server.registerForCardUpdates(card.getId(),card1 -> {
             Platform.runLater(()->{
                 if(card1.getTitle() == null) {
+                    kickedDialog.show();
                     mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
                 }else{
                     setCard(card1);
