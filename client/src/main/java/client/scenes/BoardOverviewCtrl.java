@@ -1198,7 +1198,6 @@ public class BoardOverviewCtrl implements Initializable {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
-
         helpDialog.setHeaderText("Help zone");
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
@@ -1253,7 +1252,8 @@ public class BoardOverviewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
-            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null && !(event.getTarget() instanceof TextField)) {
+            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null &&
+                    !(event.getTarget() instanceof TextField)) {
                 labelActionGeneral((Label) (((VBox) selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }
