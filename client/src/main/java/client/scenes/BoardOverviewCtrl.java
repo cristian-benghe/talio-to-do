@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
+import commons.Tag;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -287,6 +288,7 @@ public class BoardOverviewCtrl implements Initializable {
         return anchorPane1;
     }
 
+
     /**
      * A method to create a new card
      *
@@ -304,25 +306,43 @@ public class BoardOverviewCtrl implements Initializable {
         hbox1.setAlignment(Pos.CENTER);
         hbox1.setPrefSize(150, 80);
         TextField textField = new TextField("Card");
-        textField.setStyle("-fx-background-color: #C0C0C0");
+        textField.setStyle("-fx-background-color: #ffffff");
+        textField.setStyle("-fx-border-color: #ffffff;");
         textField.setAlignment(Pos.BASELINE_CENTER);
         hbox1.getChildren().add(textField);
         vbox.getChildren().addAll(myLabel, hbox1);
         vbox.setAlignment(Pos.CENTER);
         anchorPane1.getChildren().add(vbox);
+
+
         textField.setFont(new Font("System", 18));
 
-        anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
+        anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
+                "-fx-background-radius:  15; -fx-border-color: #cccccc;" );
         anchorPane1.setPrefSize(150, 80);
+        // create a FadeTransition for the anchorPane
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(700), anchorPane1);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.8);
+
+// create a ScaleTransition for the anchorPane
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(700), anchorPane1);
+        scaleTransition.setFromX(1.0);
+        scaleTransition.setFromY(1.0);
+        scaleTransition.setToX(1.02);
+        scaleTransition.setToY(1.08);
 
         anchorPane1.setOnMouseEntered(e -> {
             if (anchorPane1 != selectedAnchorPane) {
-                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; " +
-                        "-fx-background-radius:  15; " +
-                        "-fx-border-color: lightblue; " +
-                        "-fx-border-radius: 15; " +
-                        "-fx-border-width: 4; " +
-                        "-fx-margin: -2;");
+//                anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
+//                        "-fx-background-radius:  15; " +
+//                        "-fx-border-color: #cccccc; " +
+//                        "-fx-border-radius: 15; " +
+//                        "-fx-border-width: 4; " +
+//                        "-fx-margin: -2;");
+                // start the animations
+                fadeTransition.play();
+                scaleTransition.play();
             }
         });
 
@@ -333,6 +353,17 @@ public class BoardOverviewCtrl implements Initializable {
                         "-fx-border-color: transparent; " +
                         "-fx-margin: 0;");
             }
+            scaleTransition.playFrom(scaleTransition.getTotalDuration());
+            scaleTransition.stop();
+            fadeTransition.stop();
+            anchorPane1.setScaleX(1.0);
+            anchorPane1.setScaleY(1.0);
+
+            // create a new FadeTransition to reset the opacity to its original value
+            FadeTransition resetFadeTran = new FadeTransition(Duration.millis(800), anchorPane1);
+            resetFadeTran.setFromValue(0.8);
+            resetFadeTran.setToValue(1.0);
+            resetFadeTran.play();
         });
 
         return anchorPane1;
@@ -990,8 +1021,10 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.setPrefHeight(380);
             vBox.setPrefWidth(150);
 
+
             TextField textField = new TextField(c.getTitle());
             textField.setAlignment(Pos.CENTER);
+            textField.setStyle("-fx-border-color: #cccccc;");
             Label columnLabel = new Label("...");
             vBox.setMargin(textField, new Insets(2));
 
@@ -1010,11 +1043,52 @@ public class BoardOverviewCtrl implements Initializable {
             Button button =
                     createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
             setVBoxDragDrop(button, vBox);
+
             button.setAlignment(Pos.BOTTOM_CENTER);
             vBox.getChildren().addAll(columnLabel, textField);
+
             for (Card kard : c.getCards()) {
                 vBox.getChildren().add(button);
                 AnchorPane anchorPane1 = addCard(vBox);
+                HBox tagColors=new HBox();
+                tagColors.setAlignment(Pos.BOTTOM_CENTER);
+                tagColors.setPrefSize(150, 10);
+                List<Tag> tags = new ArrayList<>(kard.getTags());
+                //int a =0;
+                for (int i = 0; i < kard.getTags().size(); i++) {
+                    Tag tag = tags.get(i);
+                    if (tag.getHighlightRed() != 1.0 || tag.getHighlightGreen() != 1.0
+                            || tag.getHighlightBlue() != 1.0) {
+                        AnchorPane colorPane = new AnchorPane();
+                        Color color = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(),
+                                tag.getHighlightBlue());
+                        String rgbCode = toRgbCode(color);
+                        colorPane.setStyle("-fx-background-color: " + rgbCode + ";");
+                        colorPane.setPrefSize(20, 10);
+                        tagColors.getChildren().add(colorPane);
+                        if (tagColors.getChildren().size() == 5) {
+                            break;
+                        }
+                    }
+                }
+
+
+                AnchorPane.setBottomAnchor(tagColors, 10.0);
+                anchorPane1.getChildren().addAll(tagColors);
+
+                Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
+                anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                anchorPane1.getChildren().get(0).
+                        setStyle("-fx-background-color: " + toRgbCode(color) +
+                                "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                VBox child1= (VBox) anchorPane1.getChildren().get(0);
+                HBox child2= (HBox) child1.getChildren().get(1);
+                TextField child3=(TextField) child2.getChildren().get(0);
+                child3.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                
+
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,

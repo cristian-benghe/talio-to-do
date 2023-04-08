@@ -2,8 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Card;
-import commons.Task;
+import commons.*;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -20,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -34,10 +34,15 @@ import java.util.ResourceBundle;
 
 public class CardViewCtrl implements Initializable {
 
+    private Double blue;
+    private Double green;
+    private Double red;
+
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private Card card;
     private String text;
+    @FXML private ColorPicker cardColor;
     @FXML
     private Label titleLabel;
     @FXML
@@ -727,8 +732,49 @@ public class CardViewCtrl implements Initializable {
      * instance in the scene.
      */
     public void displayTags() {
-           
+        HBox hBox=new HBox();
+        for(Tag t :card.getTags()){
+            if(card.hasTagWithId(t.getTagID())) {
+                AnchorPane anchorPane=new AnchorPane();
+                TextField textField = new TextField(t.getTitle());
+                textField.setEditable(false);
+                textField.setPrefWidth(100);
+                //textField.setMaxWidth(Double.MAX_VALUE);
+                // set the maximum width of the text field
+                textField.setMaxHeight(Double.MAX_VALUE);
+                // set the maximum height of the text field
+                Color color = Color.color(t.getFontRed(), t.getFontGreen(), t.getFontBlue());
+                String rgbCode = toRgbCode(color);
+                Color color2 = Color.color(t.getHighlightRed(),
+                        t.getHighlightGreen(), t.getHighlightBlue());
+                String rgbCode2 = toRgbCode(color2);
+                textField.setStyle("-fx-text-fill: " + rgbCode +
+                        "; -fx-background-color: " + rgbCode2 + ";");
+                anchorPane.getChildren().add(textField);
+                hBox.getChildren().add(anchorPane);
+
+
+
+            }
+        }
+
+        mainCtrl.getcardViewCtrl().setCardViewCtrl(hBox);
+
     }
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+
+
+
+
 
 
     /**
@@ -795,5 +841,35 @@ public class CardViewCtrl implements Initializable {
     public void setCardViewCtrl(HBox tagList) {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);
+    }
+
+    /**
+     * get color from card
+     */
+    @FXML
+    public void getColor() {
+        this.blue=cardColor.getValue().getBlue();
+        this.red=cardColor.getValue().getRed();
+        this.green=cardColor.getValue().getGreen();
+    }
+
+    /**
+     * save color in the db
+     */
+    @FXML
+    void saveColor() {
+        card.setColor(this.blue, this.green, this.red);
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        Long colId= Long.valueOf(-1);
+        for(Column c:board.getColumns()){
+            for(Card cardCheck:c.getCards()){
+                if(cardCheck.getId()==card.getId()){
+                    colId=c.getId();
+                    break;
+                }
+            }
+        }
+        server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
+
     }
 }

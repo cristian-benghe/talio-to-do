@@ -23,7 +23,7 @@
             </AnchorPane>
          </content>
       </ScrollPane>
-      <Button fx:id="createTag" layoutX="25.0" layoutY="360.0" mnemonicParsing="false" text="Add Tag" />
+      <Button fx:id="createTag" layoutX="25.0" layoutY="360.0" mnemonicParsing="false" onAction="#addTag" text="Add Tag" />
       <Button layoutX="9.0" layoutY="15.0" mnemonicParsing="false" onMousePressed="#gettoCard" prefHeight="29.0" prefWidth="39.0" text="&lt;-">
          <font>
             <Font size="14.0" />

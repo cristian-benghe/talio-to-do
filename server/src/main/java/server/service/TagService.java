@@ -61,6 +61,9 @@ public class TagService {
      */
     public Tag update(Tag existing, Tag updated) {
         existing.setTitle(updated.getTitle());
+        existing.setFontColor(updated.getFontRed(), updated.getFontGreen(), updated.getFontBlue());
+        existing.setHighlightColor(updated.getHighlightBlue(),
+                updated.getHighlightGreen(), updated.getHighlightRed());
 //        Set<Card> existingCards = existing.getCards();
 //        Set<Card> updatedCards = updated.getCards();
 //        existingCards.clear();
