@@ -1253,7 +1253,7 @@ public class BoardOverviewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
-            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null) {
+            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null && !(event.getTarget() instanceof TextField)) {
                 labelActionGeneral((Label) (((VBox) selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }
