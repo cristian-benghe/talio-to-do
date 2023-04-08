@@ -235,6 +235,7 @@ public class TagViewCtrl implements Initializable {
             if(card.hasTagWithId(c.getTagID())){
                 controller.setCheckBox(true);
             }
+            server.deleteTagsFromCard(card.getId());
         }
     }
     /**
