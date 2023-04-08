@@ -1313,15 +1313,10 @@ public class BoardOverviewCtrl implements Initializable {
 
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
         AnchorPane anchorPane1 = new AnchorPane();
-
-
-        keyboardCPopup(saveQuitButtonType);
         cardCustomization.getDialogPane().getButtonTypes().
                 addAll(saveQuitButtonType, ButtonType.CANCEL);
 
         cardCustomization.getDialogPane().setContent(content);
-
-
     }
 
     /**
