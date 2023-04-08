@@ -62,5 +62,15 @@
             <Image url="@../../EditMode.png" />
          </image>
       </ImageView>
+      <Label fx:id="longDescConstraint" alignment="CENTER_RIGHT" layoutX="212.0" layoutY="189.0" prefHeight="17.0" prefWidth="259.0" text="CONSTRAINT" textAlignment="RIGHT">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="taskListCounter" alignment="CENTER_RIGHT" layoutX="154.0" layoutY="388.0" prefHeight="17.0" prefWidth="314.0" text="Label" textAlignment="RIGHT">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

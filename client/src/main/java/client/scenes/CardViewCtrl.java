@@ -40,6 +40,8 @@ public class CardViewCtrl implements Initializable {
     private Card card;
     private String text;
     @FXML
+    private Label longDescConstraint;
+    @FXML
     private Label titleLabel;
     @FXML
     private TextArea longDescription;
@@ -49,7 +51,8 @@ public class CardViewCtrl implements Initializable {
     private Label emptyTaskList;
     @FXML
     private HBox taglist;
-
+    @FXML
+    private Label taskListCounter;
     private Dialog kickedDialog;
     /**
      * @return the list of tags
@@ -78,7 +81,7 @@ public class CardViewCtrl implements Initializable {
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
     private ScaleTransition binExpansion;
-
+    private final int maximumLongDescriptionLength = 150;
 
     /**
      * Initialize the controller and the scene
@@ -320,7 +323,8 @@ public class CardViewCtrl implements Initializable {
         //Reset the task and tag lists
         displayTasks();
         displayTags();
-
+        //Hide Long Description aiding visual elements
+        longDescConstraint.setVisible(false);
         longDescIcon.setVisible(false);
     }
 
@@ -329,6 +333,9 @@ public class CardViewCtrl implements Initializable {
      * instance in the scene.
      */
     public void displayTasks() {
+
+        //Update the counter label
+        updateTaskListCounter();
 
         //Clear the task list
         taskList.getChildren().clear();
@@ -867,16 +874,20 @@ public class CardViewCtrl implements Initializable {
     private void setUpLongDescription(){
 
         longDescription.setOnKeyTyped(event ->{
+            updateLongDescConstraintText();
             longDescIcon.setVisible(!longDescription.getText().equals(card.getDescription()));
+            longDescConstraint.setVisible(!longDescription.getText().equals(card.getDescription()));
         });
-
         longDescription.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER){
 
 
                 //System.getProperty("line.separator") doesn't work here
-                longDescription.setText(longDescription.getText()
-                        .replace("\n", ""));
+                var temp = longDescription.getText()
+                        .replace("\n", "");
+                longDescription.setText(
+                        temp.substring(0,Math.min(temp.length(),maximumLongDescriptionLength)));
+                longDescConstraint.setVisible(false);
 
                 if(!longDescription.getText().equals(card.getDescription())){
                     card.setDescription(longDescription.getText());
@@ -887,5 +898,39 @@ public class CardViewCtrl implements Initializable {
 
             }
         });
+    }
+
+    private void updateLongDescConstraintText() {
+        //Find the length of the current
+        int length = longDescription.getText().length();
+
+        //Update the SearchConstraintText label
+        if (length < maximumLongDescriptionLength) {
+            longDescConstraint.setText(
+                    (maximumLongDescriptionLength - length) + " Characters Remaining.");
+            longDescConstraint.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
+        } else if (length == maximumLongDescriptionLength) {
+            longDescConstraint.setText("Reached Maximum Length.");
+            longDescConstraint.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
+        } else {
+            longDescConstraint.setText("Exceeded Maximum Length");
+            longDescConstraint.setStyle("-fx-text-fill: red;");
+
+        }
+
+    }
+
+    private void updateTaskListCounter(){
+        if(card.getTaskList() == null || card.getTaskList().isEmpty()){
+
+            taskListCounter.setText("No tasks are available.");
+
+        }else if (card.getTaskList().size() == 1){
+
+            taskListCounter.setText("1 task is available.");
+        }else{
+            taskListCounter.setText(card.getTaskList().size()+ " tasks are available.");
+        }
+
     }
 }
