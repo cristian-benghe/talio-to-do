@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="72.0" prefWidth="333.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <CheckBox fx:id="checkbox" layoutX="1.0" layoutY="31.0" mnemonicParsing="false" onAction="#setCheckbox" prefHeight="17.0" prefWidth="22.0" />
+      <CheckBox fx:id="checkBox" layoutX="1.0" layoutY="31.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="22.0" />
       <Button fx:id="deleteButton" layoutX="280.0" layoutY="27.0" mnemonicParsing="false" onAction="#deleteTag" prefHeight="17.0" prefWidth="22.0" text="x" />
       <TextField fx:id="titlee" layoutX="19.0" layoutY="27.0" onAction="#setTitle" prefHeight="17.0" prefWidth="121.0" text="New Tag" />
       <ColorPicker fx:id="font" layoutX="148.0" layoutY="27.0" onAction="#setFont" prefHeight="25.0" prefWidth="53.0" promptText="tytrt" />
