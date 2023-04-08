@@ -1313,7 +1313,8 @@ public class BoardOverviewCtrl implements Initializable {
         content.getChildren().add(newColourBox);
 
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
-        cardCustomization.getDialogPane().getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
+        cardCustomization.getDialogPane().
+                getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
         Node saveQuitButton = cardCustomization.getDialogPane().lookupButton(saveQuitButtonType);
         saveQuitButton.setDisable(true);
         colorPicker.setOnAction(event -> {
