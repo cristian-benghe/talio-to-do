@@ -2,8 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Card;
-import commons.Task;
+import commons.*;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.fxml.FXML;
@@ -16,22 +15,35 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CardViewCtrl implements Initializable {
+
+    private Double blue;
+    private Double green;
+    private Double red;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
     private String text;
+    @FXML
+    private ColorPicker cardColor;
     @FXML
     private Label titleLabel;
     @FXML
@@ -58,6 +70,12 @@ public class CardViewCtrl implements Initializable {
     private boolean isTaskDragged;
     private boolean isDraggedOverBin;
 
+
+    @FXML
+    private AnchorPane anchorPane;
+
+    //Help box for the help functionality
+    private Dialog helpDialog;
 
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
@@ -113,6 +131,127 @@ public class CardViewCtrl implements Initializable {
 
         binImage.setImage(new Image("BinImage.png"));
         setDragForBin(binImage);
+
+        // Set up the dialog for the help button
+        helpPopUp();
+    }
+
+    /**
+     * A method that creates the labels for the ? button and shortcut
+     *
+     * @return list of labels
+     */
+    public ArrayList<Label> helpLabel() {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Up/Down/Left/Right -> select tasks"));
+        labels.add(new Label("Shift+Up/Down -> change order of cards in the column"));
+        labels.add(new Label("E -> edit the card title"));
+        labels.add(new Label("Del/Backspace -> delete a card"));
+        labels.add(new Label("Enter -> open card details"));
+        labels.add(new Label("Esc -> close card details"));
+        labels.add(new Label("T -> open popup for adding tags"));
+        labels.add(new Label("C -> open popup for color preset selection"));
+        return labels;
+    }
+
+    /**
+     * A method to return the list of labels to represent the help information for the drag and drop
+     *
+     * @return list of labels which includes information
+     */
+    public ArrayList<Label> helpDragDrop() {
+        ArrayList<Label> labels = new ArrayList<>();
+        // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Note, it's a template!!"));
+        labels.add(new Label("To delete a subtask you can drag and drop it to the BIN"));
+        labels.add(new Label("To rearrange subtasks you can drag and drop"));
+        return labels;
+    }
+
+    /**
+     * Set up the dialog for the help button
+     */
+    public void helpPopUp() {
+        helpDialog = new Dialog<String>();
+        helpDialog.initModality(Modality.APPLICATION_MODAL);
+        helpDialog.setTitle("Help");
+
+        helpDialog.setHeaderText("Help zone");
+
+        Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
+
+// Create a TabPane to hold the keyboard shortcuts list and other tabs
+        TabPane tabPane = new TabPane();
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(50);
+        tabPane.setTabMaxHeight(50);
+
+        VBox shortcutsList = new VBox();
+        shortcutsList.setSpacing(5);
+        shortcutsList.setPadding(new Insets(15.0, 5.0, 5.0, 5.0));
+        shortcutsList.getChildren().addAll(helpLabel());
+        VBox dragAndDropList = new VBox();
+        dragAndDropList.setSpacing(5);
+        dragAndDropList.setPadding(new Insets(15.0, 5.0, 5.0, 5.0));
+        dragAndDropList.getChildren().addAll(helpDragDrop());
+
+        Tab shortcutsTab = new Tab("Keyboard Shortcuts", shortcutsList);
+        tabPane.getTabs().add(shortcutsTab);
+
+        Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
+        tabPane.getTabs().add(dragTab);
+        tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
+
+
+// Center and fill the TabPane
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabMinWidth(100);
+        tabPane.setTabMaxWidth(Double.MAX_VALUE);
+        tabPane.setTabMinHeight(30);
+        tabPane.setTabMaxHeight(30);
+
+
+        VBox.setVgrow(tabPane, Priority.ALWAYS);
+
+// Add the TabPane to the dialog's content
+        helpDialog.getDialogPane().setContent(tabPane);
+
+// Add an OK button to the dialog
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        helpDialog.getDialogPane().getButtonTypes().add(okButtonType);
+        // Add a listener to the scene to detect when the Shift+/ key combination is pressed
+        anchorPane.setOnKeyPressed(event -> {
+            int shiftColumnIndex = -1;
+            if (event.isShiftDown() && event.getCode() == KeyCode.SLASH) {
+                if (!(event.getTarget() instanceof TextField)) {
+                    helpDialog.showAndWait();
+                }
+            }
+            if (event.getCode() == KeyCode.ESCAPE && !(event.getTarget() instanceof TextArea)) {
+                getBackCard();
+            }
+            if (event.getCode() == KeyCode.T && !(event.getTarget() instanceof TextArea)) {
+                try {
+                    getTagView();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    /**
+     * This method shows the help dialog when the "?" button is clicked
+     */
+    public void showHelp() {
+        Optional<ButtonType> result = helpDialog.showAndWait();
+
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
+            mainCtrl.showMainOverview();
+        }
     }
 
     /**
@@ -253,7 +392,7 @@ public class CardViewCtrl implements Initializable {
 
         //Create the title label for the task
         TextField titleField = new TextField();
-        titleField.setText(""+task.getTitle());
+        titleField.setText("" + task.getTitle());
         titleField.setFont(new Font(18d));
         titleField.setPadding(new Insets(0, 0, 0, 10));
         recordTitleOnChange(titleField);
@@ -272,12 +411,10 @@ public class CardViewCtrl implements Initializable {
         setTaskDraggable(task, taskRoot);
 
 
-
-
         return taskRoot;
     }
 
-    private void recordTitleOnChange(TextField field){
+    private void recordTitleOnChange(TextField field) {
 
         field.setOnKeyTyped(event -> {
 
@@ -286,7 +423,7 @@ public class CardViewCtrl implements Initializable {
                     .getChildrenUnmodifiable().indexOf(
                             field.getParent()
                     );
-            taskIndex = (taskIndex-1)/2;
+            taskIndex = (taskIndex - 1) / 2;
 
             field.getParent().getChildrenUnmodifiable().get(3).setVisible(
                     !field.getText().equals(card.getTaskList().get(taskIndex).getTitle()));
@@ -295,15 +432,15 @@ public class CardViewCtrl implements Initializable {
         });
 
         field.setOnMouseClicked(event -> {
-            if(event.getTarget() != field){
+            if (event.getTarget() != field) {
 
                 int taskIndex = field.getParent().getParent()
                         .getChildrenUnmodifiable().indexOf(
                                 field.getParent()
                         );
-                taskIndex = (taskIndex-1)/2;
+                taskIndex = (taskIndex - 1) / 2;
 
-                if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
+                if (!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     field.setText(card.getTaskList().get(taskIndex).getTitle());
                     event.consume();
                 }
@@ -312,16 +449,16 @@ public class CardViewCtrl implements Initializable {
         });
 
         field.setOnKeyPressed(event -> {
-            if(event.getCode() == KeyCode.ENTER){
+            if (event.getCode() == KeyCode.ENTER) {
 
                 int taskIndex = field.getParent().getParent()
                         .getChildrenUnmodifiable().indexOf(
                                 field.getParent()
                         );
-                taskIndex = (taskIndex-1)/2;
+                taskIndex = (taskIndex - 1) / 2;
 
 
-                if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
+                if (!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     card.getTaskList().get(taskIndex).setTitle(field.getText());
                     server.updateTask(card.getTaskList().get(taskIndex));
                     event.consume();
@@ -331,7 +468,7 @@ public class CardViewCtrl implements Initializable {
         });
     }
 
-    private void recordSelectedOnChange(CheckBox checkBox){
+    private void recordSelectedOnChange(CheckBox checkBox) {
 
         checkBox.setOnAction(event -> {
 
@@ -341,7 +478,7 @@ public class CardViewCtrl implements Initializable {
                     .getChildrenUnmodifiable().indexOf(
                             checkBox.getParent()
                     );
-            taskIndex = (taskIndex-1)/2;
+            taskIndex = (taskIndex - 1) / 2;
 
 
             //Record the change in the status of the task, and ensure it persists in the server
@@ -391,7 +528,7 @@ public class CardViewCtrl implements Initializable {
                 if (taskIndex + 1 != markerIndex) {
 
                     //Swap the list positions
-                    addTaskBeforeInList((taskIndex-1)/2,markerIndex/2);
+                    addTaskBeforeInList((taskIndex - 1) / 2, markerIndex / 2);
 
                     Node temp = deleteTaskFromList(taskBox);
                     markerIndex = taskList.getChildren().indexOf(closestMarker);
@@ -399,9 +536,6 @@ public class CardViewCtrl implements Initializable {
                     taskList.getChildren().add(markerIndex + 1, temp);
                     taskList.getChildren().add(markerIndex + 2, createTaskDropMarker());
                 }
-
-
-
 
 
                 //Remove the dragged visual to the taskBox separator
@@ -593,7 +727,44 @@ public class CardViewCtrl implements Initializable {
      * instance in the scene.
      */
     public void displayTags() {
-           
+        HBox hBox = new HBox();
+        for (Tag t : card.getTags()) {
+            if (card.hasTagWithId(t.getTagID())) {
+                AnchorPane anchorPane = new AnchorPane();
+                TextField textField = new TextField(t.getTitle());
+                textField.setEditable(false);
+                textField.setPrefWidth(100);
+                //textField.setMaxWidth(Double.MAX_VALUE);
+                // set the maximum width of the text field
+                textField.setMaxHeight(Double.MAX_VALUE);
+                // set the maximum height of the text field
+                Color color = Color.color(t.getFontRed(), t.getFontGreen(), t.getFontBlue());
+                String rgbCode = toRgbCode(color);
+                Color color2 = Color.color(t.getHighlightRed(),
+                        t.getHighlightGreen(), t.getHighlightBlue());
+                String rgbCode2 = toRgbCode(color2);
+                textField.setStyle("-fx-text-fill: " + rgbCode +
+                        "; -fx-background-color: " + rgbCode2 + ";");
+                anchorPane.getChildren().add(textField);
+                hBox.getChildren().add(anchorPane);
+
+
+            }
+        }
+
+        mainCtrl.getcardViewCtrl().setCardViewCtrl(hBox);
+
+    }
+
+    /**
+     * @param color conversion from rfb
+     * @return the rgb code
+     */
+    private String toRgbCode(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02X%02X%02X", r, g, b);
     }
 
 
@@ -604,31 +775,29 @@ public class CardViewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
-    private void addTaskBeforeInList(int current, int before){
+    private void addTaskBeforeInList(int current, int before) {
 
-        for(Task task : card.getTaskList()){
-            if(task.getPosition() == current){
-                if(current < before){
-                    task.setPosition(before-1);
-                }else {
+        for (Task task : card.getTaskList()) {
+            if (task.getPosition() == current) {
+                if (current < before) {
+                    task.setPosition(before - 1);
+                } else {
                     task.setPosition(before);
                 }
-            }
-            else if(task.getPosition() >= before && task.getPosition() < current){
-                task.setPosition(task.getPosition()+1);
-            }
-            else if(task.getPosition() < before && task.getPosition() > current){
-                task.setPosition(task.getPosition()-1);
+            } else if (task.getPosition() >= before && task.getPosition() < current) {
+                task.setPosition(task.getPosition() + 1);
+            } else if (task.getPosition() < before && task.getPosition() > current) {
+                task.setPosition(task.getPosition() - 1);
             }
 
         }
         sortTasksByPosition();
-        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        this.setCard(server.updateTaskList(card.getId(), card.getTaskList()));
         mainCtrl.setCard(card);
 
     }
 
-    private void deleteCardInList(int position){
+    private void deleteCardInList(int position) {
 
         //Remove the specified card
         card.getTaskList().remove(position);
@@ -642,11 +811,12 @@ public class CardViewCtrl implements Initializable {
 
         //Make changes persist in the DB
         sortTasksByPosition();
-        this.setCard(server.updateTaskList(card.getId(),card.getTaskList()));
+        this.setCard(server.updateTaskList(card.getId(), card.getTaskList()));
         mainCtrl.setCard(card);
 
     }
-    private void sortTasksByPosition(){
+
+    private void sortTasksByPosition() {
         List<Task> sortedList = card.getTaskList();
         sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ?
                 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
@@ -844,52 +1014,87 @@ public class CardViewCtrl implements Initializable {
     }
 
     /**
-     *
      * Sets the closest marker to the specified separator object.
+     *
      * @param closestMarker the separator object to set as the closest marker
      */
     public void setClosestMarker(Separator closestMarker) {
         this.closestMarker = closestMarker;
     }
-    /**
 
-     Sets whether a task is currently being dragged or not.
-     @param taskDragged true if a task is being dragged, false otherwise
+    /**
+     * Sets whether a task is currently being dragged or not.
+     *
+     * @param taskDragged true if a task is being dragged, false otherwise
      */
     public void setTaskDragged(boolean taskDragged) {
         isTaskDragged = taskDragged;
     }
-    /**
 
-     Sets whether a task is currently being dragged over the bin or not.
-     @param draggedOverBin true if a task is being dragged over the bin, false otherwise
+    /**
+     * Sets whether a task is currently being dragged over the bin or not.
+     *
+     * @param draggedOverBin true if a task is being dragged over the bin, false otherwise
      */
     public void setDraggedOverBin(boolean draggedOverBin) {
         isDraggedOverBin = draggedOverBin;
     }
-    /**
 
-     Sets the bin contraction scale transition.
-     @param binContraction the bin contraction scale transition to set
+    /**
+     * Sets the bin contraction scale transition.
+     *
+     * @param binContraction the bin contraction scale transition to set
      */
     public void setBinContraction(ScaleTransition binContraction) {
         this.binContraction = binContraction;
     }
-    /**
 
-     Sets the bin expansion scale transition.
-     @param binExpansion the bin expansion scale transition to set
+    /**
+     * Sets the bin expansion scale transition.
+     *
+     * @param binExpansion the bin expansion scale transition to set
      */
     public void setBinExpansion(ScaleTransition binExpansion) {
         this.binExpansion = binExpansion;
     }
-    /**
 
-     Sets the bin image to the specified image view.
-     @param binImage the image view to set as the bin image
+    /**
+     * Sets the bin image to the specified image view.
+     *
+     * @param binImage the image view to set as the bin image
      */
     public void setBinImage(ImageView binImage) {
         this.binImage = binImage;
     }
 
+    /**
+     * setter for colors
+     */
+    @FXML
+    public void getColor() {
+        this.blue = cardColor.getValue().getBlue();
+        this.red = cardColor.getValue().getRed();
+        this.green = cardColor.getValue().getGreen();
+    }
+
+    /**
+     * save color in the db
+     */
+    @FXML
+    void saveColor() {
+        card.setColor(this.blue, this.green, this.red);
+        Board board = server.getBoardById(mainCtrl.getBoardId());
+        Long colId = Long.valueOf(-1);
+        for (Column c : board.getColumns()) {
+            for (Card cardCheck : c.getCards()) {
+                if (cardCheck.getId() == card.getId()) {
+                    colId = c.getId();
+                    break;
+                }
+            }
+        }
+        server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
+        server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
+
+    }
 }

@@ -23,13 +23,15 @@ public class Card implements Serializable {
     private Long id;
     private String title;
     private String description;
-
+    private Double red;
+    private Double green;
+    private Double blue;
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Task> taskList;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany()
     private Set<Tag> tags;
 
 
@@ -37,6 +39,8 @@ public class Card implements Serializable {
      * empty constructor
      */
     public Card() {
+        setColor(1.0, 1.0, 1.0);
+
     }
 
     /**
@@ -53,6 +57,16 @@ public class Card implements Serializable {
         this.description = description;
         this.taskList = taskList;
         this.tags = tags;
+        setColor(1.0, 1.0, 1.0);
+    }
+
+    /**
+     * add a new tag to the card
+     * @param newTag
+     */
+
+    public void addTag(Tag newTag) {
+        tags.add(newTag);
     }
 
 
@@ -189,4 +203,54 @@ public class Card implements Serializable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, SIMPLE_STYLE);
     }
+
+    /**
+     * @param blue value in the rgb
+     * @param green value in the rgb
+     * @param red value in the rgb
+     */
+    public void setColor(Double blue, Double green, Double red) {
+        this.blue=blue;
+        this.red=red;
+        this.green=green;
+    }
+
+    /**
+     * @return value in the rgb
+     */
+    public Double getRed() {
+        return red;
+    }
+
+    /**
+     * @return value in the rgb
+     */
+    public Double getGreen() {
+        return green;
+    }
+
+    /**
+     * @return value in the rgb
+     */
+    public Double getBlue() {
+        return blue;
+    }
+//    public void removeTag(int i) {
+//        tags.remove(i);
+//    }
+
+    /**
+     * Verify if the tag has a tag with a certain id
+     * @param tagId id of the card
+     * @return true if the card has the specific tag
+     */
+    public boolean hasTagWithId(Long tagId) {
+        for (Tag tag : tags) {
+            if (Objects.equals(tag.getTagID(), tagId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

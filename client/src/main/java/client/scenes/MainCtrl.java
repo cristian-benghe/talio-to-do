@@ -110,9 +110,15 @@ public class MainCtrl {
        // System.out.println(text);
 
         boardOverviewCtrl.socketsCall();
+        
+        String css = getClass().getResource("/board.css").toExternalForm();
 
+        //add stylsheet
+        boardOverview.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Board View");
+
         primaryStage.setScene(boardOverview);
+
         primaryStage.centerOnScreen();
         boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
@@ -121,6 +127,9 @@ public class MainCtrl {
      * This method changes the scene to the MainOverview scene.
      */
     public void showMainOverview() {
+        //add stylsheet
+        String css = getClass().getResource("/home.css").toExternalForm();
+        mainOverview.getStylesheets().add(css);
 
         if(!shownMainOverviewOneTime)
             mainOverviewCtrl.socketsCall();
@@ -139,6 +148,8 @@ public class MainCtrl {
      * This method changes the scene to the ClientConnectScene.
      */
     public void showClientConnect() {
+        String css = getClass().getResource("/client.css").toExternalForm();
+        clientConnect.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Connect to a Server");
 
         primaryStage.setScene(clientConnect);
@@ -152,10 +163,12 @@ public class MainCtrl {
      * @param card the card instance that will be inspected
      */
     public void showCardView(Card card) {
-
+        String css = getClass().getResource("/card.css").toExternalForm();
+        cardView.getStylesheets().add(css);
         cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
         cardViewCtrl.setCard(card);
+        this.card = card;
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
         primaryStage.centerOnScreen();
@@ -164,9 +177,12 @@ public class MainCtrl {
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
+        String css = getClass().getResource("/tagview.css").toExternalForm();
+        tagView.getStylesheets().add(css);
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
+        System.out.println(card.getTags().size()+"fg ");
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
         primaryStage.centerOnScreen();
@@ -247,6 +263,8 @@ public class MainCtrl {
      * changes the scene to board customization
      */
     public void showBoardCustomization() {
+        String css = getClass().getResource("/board_cust.css").toExternalForm();
+        boardCustomization.getStylesheets().add(css);
         primaryStage.setTitle("Board Customization");
         primaryStage.setScene(boardCustomization);
     }

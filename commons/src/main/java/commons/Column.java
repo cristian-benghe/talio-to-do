@@ -163,7 +163,15 @@ public class Column implements Serializable {
     }
 
 
-
-
-
+    /**
+     * @param i index of the card
+     * @param red value in the rgb
+     * @param blue value in the rgb
+     * @param green value in the rgb
+     */
+    public void updateColorInCard(int i, Double red, Double blue, Double green) {
+        Card card=cards.get(i);
+        card.setColor(blue, green, red);
+        cards.set(i, card);
+    }
 }

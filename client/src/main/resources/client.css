@@ -1,0 +1,41 @@
+/* Set the default font and text color for all labels */
+.label {
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+}
+
+/* Set the default font and text color for all checkboxes */
+.check-box {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+/* Set the default font and text color for all text fields */
+.text-field {
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+/* Style the error message label */
+#errorMsg {
+    -fx-text-fill: #ff0e0e; /* set text color to red */
+    -fx-font-size: 10px;
+}
+
+/* Style the error password label */
+#errorPassword {
+    -fx-text-fill: #ff0e0e; /* set text color to red */
+    -fx-font-size: 10px;
+}
+
+/* Style the connect button */
+.button {
+    -fx-background-color: #3cb371; /* set background color to green */
+    -fx-text-fill: white; /* set text color to white */
+    -fx-font-size: 14px;
+}
+
+/* Style the anchor pane background */
+.anchor-pane {
+    -fx-background-color: #f8f8f8; /* set background color to light gray */
+}
