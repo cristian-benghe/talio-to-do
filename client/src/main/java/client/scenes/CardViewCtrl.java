@@ -6,6 +6,8 @@ import commons.Card;
 import commons.Task;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -67,6 +69,8 @@ public class CardViewCtrl implements Initializable {
 
     @FXML
     private AnchorPane anchorPane;
+    @FXML
+    private ImageView longDescIcon;
 
     //Help box for the help functionality
     private Dialog helpDialog;
@@ -124,6 +128,10 @@ public class CardViewCtrl implements Initializable {
 
         binImage.setImage(new Image("BinImage.png"));
         setDragForBin(binImage);
+
+        //Set up the long description text area
+        setUpLongDescription();
+        longDescIcon.setImage(new Image("EditMode.png"));
 
         // Set up the dialog for the help button
         helpPopUp();
@@ -290,14 +298,15 @@ public class CardViewCtrl implements Initializable {
     public void refresh() {
 
         //Reset the title label
-        //titleLabel.setText(card.getTitle());
+        titleLabel.setText(card.getTitle());
 
         //Reset the long description text area
-
         longDescription.setText(card.getDescription());
         //Reset the task and tag lists
         displayTasks();
         displayTags();
+
+        longDescIcon.setVisible(false);
     }
 
     /**
@@ -795,5 +804,50 @@ public class CardViewCtrl implements Initializable {
     public void setCardViewCtrl(HBox tagList) {
         taglist.getChildren().clear();
         this.taglist.getChildren().addAll(tagList);
+    }
+
+
+    public void setUpLongPolling(){
+
+        server.registerForCardUpdates(card.getId(),card1 -> {
+            Platform.runLater(()->{
+                setCard(card1);
+                refresh();
+            });
+        });
+
+    }
+
+
+    public void resetLongPolling(){
+        server.clearExecutor();
+    }
+
+    public void stopLongPolling(){
+        server.stopCardUpdates();
+    }
+    private void setUpLongDescription(){
+
+        longDescription.setOnKeyTyped(event ->{
+            longDescIcon.setVisible(!longDescription.getText().equals(card.getDescription()));
+        });
+
+        longDescription.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+
+
+                //System.getProperty("line.separator") doesn't work here
+                longDescription.setText(longDescription.getText()
+                        .replace("\n", ""));
+
+                if(!longDescription.getText().equals(card.getDescription())){
+                    card.setDescription(longDescription.getText());
+                    server.updateCard(card);
+                    event.consume();
+                    longDescIcon.setVisible(false);
+                }
+
+            }
+        });
     }
 }

@@ -89,6 +89,11 @@ public class MainCtrl {
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
+        primaryStage.setOnCloseRequest(event -> {
+            cardViewCtrl.stopLongPolling();
+        });
+
+
         //Set the stage icon
         //TODO Replace the temporary icon
         primaryStage.getIcons().add(new Image("RandomIcon.png"));
@@ -170,6 +175,8 @@ public class MainCtrl {
         cardViewCtrl.setCard(card);
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
+        cardViewCtrl.resetLongPolling();
+        cardViewCtrl.setUpLongPolling();
         primaryStage.centerOnScreen();
     }
     /**

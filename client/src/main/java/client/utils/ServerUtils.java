@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 
@@ -849,5 +852,53 @@ public class ServerUtils {
                     .get(new GenericType<List<Task>>(){});
     }
 
+
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private Future cardFuture;
+    public void registerForCardUpdates(long cardId, Consumer<Card> consumer){
+
+        cardFuture = executor.submit(()->{
+            while(!Thread.interrupted()){
+                var response = ClientBuilder.newClient(new ClientConfig())
+                        .target(server)
+                        .path("api/cards/getUpdates")
+                        .queryParam("id", cardId)
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get(Response.class);
+
+                if(response.getStatus() == 204) {
+                    continue;
+                }
+
+                consumer.accept(response.readEntity(Card.class));
+            }
+
+        });
+    }
+
+    public void clearExecutor(){
+        if(cardFuture != null){
+            cardFuture.cancel(true);
+        }
+    }
+    public void stopCardUpdates(){
+        executor.shutdownNow();
+    }
+
+
+    public void updateCard(Card card){
+        try {
+            ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("api/cards/" + card.getId())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .put(Entity.entity(card, APPLICATION_JSON));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
     
 }

@@ -72,6 +72,7 @@ public class CardService {
         if (existing.isPresent()) {
             Card updated = existing.get();
             updated.setTitle(card.getTitle());
+            updated.setDescription(card.getDescription());
             updated.setTags(card.getTags());
             return repo.save(updated);
         } else {

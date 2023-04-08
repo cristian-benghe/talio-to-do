@@ -1,8 +1,10 @@
 package server.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 
 import commons.Task;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import commons.Card;
 
+import org.springframework.web.context.request.async.DeferredResult;
 import server.service.CardService;
 
 
@@ -22,6 +25,9 @@ public class CardController {
 
 
     private final CardService cardservice;
+
+    private HashMap<Object, Consumer<Card>> cardListners = new HashMap<Object, Consumer<Card>>();
+
 
     /**
      * Constructs a new CardController with the specified service.
@@ -133,6 +139,7 @@ public class CardController {
     @PutMapping("/{id}")
     public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
         Card updated = cardservice.update(id, card);
+        cardListners.forEach((k,l) -> l.accept(updated));
         return ResponseEntity.ok(updated);
     }
 
@@ -185,7 +192,12 @@ public class CardController {
     public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id,
                                                @RequestBody List<Task> taskList) {
         try {
-            return ResponseEntity.ok(cardservice.updateTaskList(id, taskList));
+            var card = cardservice.updateTaskList(id, taskList);
+            var response = ResponseEntity.ok(card);
+            cardListners.forEach((k,l) -> l.accept(card));
+
+            return response;
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -207,6 +219,29 @@ public class CardController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+
+    @GetMapping(path="/getUpdates")
+    public DeferredResult<ResponseEntity<Card>> getCardUpdates(@RequestParam("id")long id){
+
+        var results = new DeferredResult<ResponseEntity<Card>>(10000L,
+                ResponseEntity.noContent().build());
+
+        var key = new Object();
+        cardListners.put(key, card -> {
+
+            if(id == -1 || id == card.getId()) {
+                results.setResult(ResponseEntity.ok(card));
+            }
+        });
+
+        results.onCompletion(() ->{
+            cardListners.remove(key);
+        });
+
+
+        return results;
     }
 }
 
