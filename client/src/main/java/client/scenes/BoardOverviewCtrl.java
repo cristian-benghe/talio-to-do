@@ -1066,14 +1066,14 @@ public class BoardOverviewCtrl implements Initializable {
                         colorPane.setStyle("-fx-background-color: " + rgbCode + ";");
                         colorPane.setPrefSize(20, 10);
                         tagColors.getChildren().add(colorPane);
-                        if (tagColors.getChildren().size() == 3) {
+                        if (tagColors.getChildren().size() == 5) {
                             break;
                         }
                     }
                 }
 
 
-                AnchorPane.setBottomAnchor(tagColors, 0.0);
+                AnchorPane.setBottomAnchor(tagColors, 10.0);
                 anchorPane1.getChildren().addAll(tagColors);
 
                 Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());

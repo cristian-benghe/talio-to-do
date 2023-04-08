@@ -738,7 +738,8 @@ public class CardViewCtrl implements Initializable {
                 AnchorPane anchorPane=new AnchorPane();
                 TextField textField = new TextField(t.getTitle());
                 textField.setEditable(false);
-                textField.setMaxWidth(Double.MAX_VALUE);
+                textField.setPrefWidth(100);
+                //textField.setMaxWidth(Double.MAX_VALUE);
                 // set the maximum width of the text field
                 textField.setMaxHeight(Double.MAX_VALUE);
                 // set the maximum height of the text field
