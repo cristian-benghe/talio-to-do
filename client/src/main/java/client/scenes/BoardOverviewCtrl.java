@@ -1201,7 +1201,6 @@ public class BoardOverviewCtrl implements Initializable {
         helpDialog.setHeaderText("Help zone");
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
-
 // Create a TabPane to hold the keyboard shortcuts list and other tabs
         TabPane tabPane = new TabPane();
         tabPane.setTabMinWidth(Double.MAX_VALUE);
@@ -1224,8 +1223,6 @@ public class BoardOverviewCtrl implements Initializable {
         Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
         tabPane.getTabs().add(dragTab);
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-
-
 // Center and fill the TabPane
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabMinWidth(100);
@@ -1262,6 +1259,7 @@ public class BoardOverviewCtrl implements Initializable {
             if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
                     !(event.getTarget() instanceof TextField)) {
                 keyECard(event);
+
             }
             else if(event.isShiftDown()&&event.getCode()==KeyCode.UP && selectedAnchorPane != null)
             {
@@ -1272,6 +1270,7 @@ public class BoardOverviewCtrl implements Initializable {
                     selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
                         get(shiftColumnIndex)).getChildren().get(0)).getChildren().get(index-1));
                 }
+                server.send("/app/update-in-board", server.getBoardById(id));
                 event.consume();
 
             }
@@ -1285,9 +1284,11 @@ public class BoardOverviewCtrl implements Initializable {
                             get(shiftColumnIndex)).getChildren().
                             get(0)).getChildren().get(index+1));
                 }
+                server.send("/app/update-in-board", server.getBoardById(id));
                 event.consume();
             }
             else if (event.getCode() == KeyCode.C && selectedAnchorPane != null){
+
                 cardCustomization.showAndWait();
             }
         });
@@ -1311,19 +1312,12 @@ public class BoardOverviewCtrl implements Initializable {
         content.getChildren().add(newColourBox);
 
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
+        AnchorPane anchorPane1 = new AnchorPane();
         cardCustomization.getDialogPane().getButtonTypes().
                 addAll(saveQuitButtonType, ButtonType.CANCEL);
 
         cardCustomization.getDialogPane().setContent(content);
-
-//        cardCustomization.setResultConverter(buttonType -> {
-//            if (buttonType == saveQuitButtonType) {
-//                return colorPicker.getValue();
-//            }
-//            return null;
-//        });
     }
-
 
     /**
      * A method that sets the shortcuts of the scrollPane
@@ -1359,6 +1353,7 @@ public class BoardOverviewCtrl implements Initializable {
                                         indexOf(((AnchorPane) selectedAnchorPane).
                                                 getParent().getParent()) + 1, id);
                         columnsRefresh();
+                        server.send("/app/update-in-board", server.getBoardById(id));
                         event.consume();
                     }
                     else if(event.getCode() == KeyCode.LEFT && selectedAnchorPane != null)

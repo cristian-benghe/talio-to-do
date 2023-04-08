@@ -870,6 +870,7 @@ public class CardViewCtrl implements Initializable {
             }
         }
         server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
+        server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
 
     }
 }
