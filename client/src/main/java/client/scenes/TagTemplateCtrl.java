@@ -31,7 +31,7 @@ public class TagTemplateCtrl implements Initializable {
 
     private final MainCtrl mainCtrl;
 
-    private Long tagId= Long.valueOf(0);
+    private Long tagId= 0L;
     private Long boardId;
     private Double fontRed;
     private Double fontBlue;
@@ -40,7 +40,7 @@ public class TagTemplateCtrl implements Initializable {
     private Double highlightBlue;
     private Double highlightGreen;
     @FXML
-    private CheckBox checkbox;
+    private CheckBox checkBox;
 
     @FXML
     private Button deleteButton;
@@ -159,16 +159,8 @@ public class TagTemplateCtrl implements Initializable {
     }
 
     @FXML
-    void setCheckbox() {
-//        HBox tagList = mainCtrl.getcardViewCtrl().getTagList();
-//        System.out.println(title.getText());
-//        if (checkbox.isSelected()) {
-//            TextField tagTitle = new TextField(title.getText());
-//            tagList.getChildren().add(tagTitle);
-//        } else {
-//            tagList.getChildren().removeIf(node -> node instanceof TextField);
-//        }
-//        mainCtrl.getcardViewCtrl().setCardViewCtrl(tagList);
+    void setCheckbox(boolean checkBox) {
+        this.checkBox.setSelected(checkBox);
     }
 
 
@@ -231,14 +223,14 @@ public class TagTemplateCtrl implements Initializable {
 //            }
 //        }
 
-        
+
+
         int index = parent.getChildren().indexOf(tagNode);
         parent.getChildren().remove(index);    //remove the tag from the scene
         server.deleteTagFromBoard(tagId, boardId);  //remove tag from server
         //first delete tag from board, then from tags(convention)
         server.deleteTag(tagId);
-
-        mainCtrl.getTagViewCtrl().refreshtaglist();
+        mainCtrl.getTagViewCtrl().refreshtaglistDelete(this);
         //when deleting a tag, refresh the list of tags from tagviewctrl
         //so that it sets them in the right position
     }
@@ -280,6 +272,7 @@ public class TagTemplateCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //this.titlee.setText("New Tag");
+        this.checkBox.setSelected(false);
     }
 
     /**
@@ -300,7 +293,7 @@ public class TagTemplateCtrl implements Initializable {
      * @return if the tag is done or not in the tagoverview
      */
     public boolean getCheckBox() {
-        return checkbox.isSelected();
+        return this.checkBox.isSelected();
     }
 
     /**
@@ -308,8 +301,9 @@ public class TagTemplateCtrl implements Initializable {
      * @param selected
      */
     public void setCheckBox(boolean selected) {
-        checkbox.setSelected(selected);
+        checkBox.setSelected(selected);
     }
+
 
     /**
      * event listener for any modification to the title
@@ -348,5 +342,4 @@ public class TagTemplateCtrl implements Initializable {
         this.fontBlue=fontBlue;
         this.fontRed=fontRed;
     }
-
 }

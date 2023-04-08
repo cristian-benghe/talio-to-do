@@ -177,6 +177,8 @@ public class MainCtrl {
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
+        String css = getClass().getResource("/tagview.css").toExternalForm();
+        tagView.getStylesheets().add(css);
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
