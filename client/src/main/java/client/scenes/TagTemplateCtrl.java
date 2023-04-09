@@ -151,7 +151,7 @@ public class TagTemplateCtrl implements Initializable {
      * @param color conversion from rfb
      * @return the rgb code
      */
-    private String toRgbCode(Color color) {
+    public String toRgbCode(Color color) {
         int r = (int) Math.round(color.getRed() * 255);
         int g = (int) Math.round(color.getGreen() * 255);
         int b = (int) Math.round(color.getBlue() * 255);

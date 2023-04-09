@@ -1678,7 +1678,7 @@ public class BoardOverviewCtrl implements Initializable {
      * @param color conversion from rfb
      * @return the rgb code
      */
-    private String toRgbCode(Color color) {
+    public String toRgbCode(Color color) {
         int r = (int) Math.round(color.getRed() * 255);
         int g = (int) Math.round(color.getGreen() * 255);
         int b = (int) Math.round(color.getBlue() * 255);
@@ -1726,6 +1726,134 @@ public class BoardOverviewCtrl implements Initializable {
     private void refreshTitle() {
         Board board1 = server.getBoardById(id);
         boardTitle.setText(board1.getTitle());
+    }
+
+    public Long getNrCol() {
+        return nrCol;
+    }
+
+    public ServerUtils getServer() {
+        return server;
+    }
+
+    public MainCtrl getMainCtrl() {
+        return mainCtrl;
+    }
+
+    public Dialog getDeleteBoardDialog() {
+        return deleteBoardDialog;
+    }
+
+    public Dialog getHelpDialog() {
+        return helpDialog;
+    }
+
+    public Dialog getCardCustomization() {
+        return cardCustomization;
+    }
+
+    public AnchorPane getAnchorPane() {
+        return anchorPane;
+    }
+
+    public Label getBoardTitleLabel() {
+        return boardTitleLabel;
+    }
+
+    public TextField getBoardTitle() {
+        return boardTitle;
+    }
+
+    public HBox getHbox() {
+        return hbox;
+    }
+
+    public Text getKeyID() {
+        return keyID;
+    }
+
+    public ImageView getBinImage() {
+        return binImage;
+    }
+
+    public Label getCopyLabel() {
+        return copyLabel;
+    }
+
+    public AnchorPane getSelectedAnchorPane() {
+        return selectedAnchorPane;
+    }
+
+    public ScaleTransition getBinContraction() {
+        return binContraction;
+    }
+
+    public ScaleTransition getBinExpansion() {
+        return binExpansion;
+    }
+
+    public void setNrCol(Long nrCol) {
+        this.nrCol = nrCol;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDeleteBoardDialog(Dialog deleteBoardDialog) {
+        this.deleteBoardDialog = deleteBoardDialog;
+    }
+
+    public void setHelpDialog(Dialog helpDialog) {
+        this.helpDialog = helpDialog;
+    }
+
+    public void setCardCustomization(Dialog cardCustomization) {
+        this.cardCustomization = cardCustomization;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAnchorPane(AnchorPane anchorPane) {
+        this.anchorPane = anchorPane;
+    }
+
+    public void setBoardTitleLabel(Label boardTitleLabel) {
+        this.boardTitleLabel = boardTitleLabel;
+    }
+
+    public void setBoardTitle(TextField boardTitle) {
+        this.boardTitle = boardTitle;
+    }
+
+    public void setHbox(HBox hbox) {
+        this.hbox = hbox;
+    }
+
+    public void setKeyID(Text keyID) {
+        this.keyID = keyID;
+    }
+
+    public void setBinImage(ImageView binImage) {
+        this.binImage = binImage;
+    }
+
+    public void setCopyLabel(Label copyLabel) {
+        this.copyLabel = copyLabel;
+    }
+
+    public void setSelectedAnchorPane(AnchorPane selectedAnchorPane) {
+        this.selectedAnchorPane = selectedAnchorPane;
+    }
+
+    public void setBinContraction(ScaleTransition binContraction) {
+        this.binContraction = binContraction;
+    }
+
+    public void setBinExpansion(ScaleTransition binExpansion) {
+        this.binExpansion = binExpansion;
     }
 
 }

@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,36 @@ class CardViewCtrlTest {
         card.setId((long) -1);
         cardViewCtrl = new CardViewCtrl(server, mainCtrl);
         mockCardViewCtrl = new CardViewCtrlTester(server, mainCtrl);
+    }
+
+    @Test
+    void toRgbCode() {
+
+        // Test with black color
+        String expected = "#000000";
+        String actual = cardViewCtrl.toRgbCode(javafx.scene.paint.Color.BLACK);
+        assertEquals(expected, actual);
+
+// Test with white color
+        expected = "#FFFFFF";
+        actual = cardViewCtrl.toRgbCode(javafx.scene.paint.Color.WHITE);
+        assertEquals(expected, actual);
+
+// Test with red color
+        expected = "#FF0000";
+        actual = cardViewCtrl.toRgbCode(javafx.scene.paint.Color.RED);
+        assertEquals(expected, actual);
+
+// Test with green color
+        expected = "#008000";
+        actual = cardViewCtrl.toRgbCode(javafx.scene.paint.Color.GREEN);
+        assertEquals(expected, actual);
+
+// Test with blue color
+        expected = "#0000FF";
+        actual = cardViewCtrl.toRgbCode(Color.BLUE);
+        assertEquals(expected, actual);
+
     }
 
     @Test
