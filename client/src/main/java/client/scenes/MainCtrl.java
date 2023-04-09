@@ -56,6 +56,7 @@ public class MainCtrl {
      * @param cardView an injection of the CardView scene and controller
      * @param boardCustomization on injection of the boardCustomization scene and controller
      * @param tagView an injection of the CardView scene and controller
+     * @param colorManagement an injection of the colormanagement scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -67,7 +68,7 @@ public class MainCtrl {
                            Pair<CardViewCtrl, Parent> cardView,
                            Pair<BoardCustomizationCtrl, Parent> boardCustomization,
                            Pair<TagViewCtrl, Parent> tagView,
-                                    Pair<ColorManagementCtrl, Parent>colorManagement) throws Exception {
+                           Pair<ColorManagementCtrl, Parent>colorManagement) throws Exception {
 
 
         this.isAdmin = false;
@@ -315,9 +316,16 @@ public class MainCtrl {
         return cardViewCtrl;
     }
 
+    /**
+     * @return boardcontroller
+     */
     public BoardOverviewCtrl getBoardCtrl() {
         return boardOverviewCtrl;
     }
+
+    /**
+     * show color management
+     */
     public void showColorManagment(){
         colorManagementCtrl.setColorPick();
         String css = getClass().getResource("/colorMcss.css").toExternalForm();

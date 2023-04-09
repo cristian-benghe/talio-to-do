@@ -305,20 +305,34 @@ public class Board implements Serializable {
         tags.set(ind, tag);
     }
 
+    /**
+     * @param red rgb value of red
+     * @param green  rgb value of green
+     * @param blue rgb value of blue
+     */
     public void setColorColumn(double red, double green, double blue) {
         this.columnRed=red;
         this.columnGreen=green;
         this.columnBlue=blue;
     }
 
+    /**
+     * @return rgb value of red
+     */
     public double getColumnRed() {
         return columnRed;
     }
 
+    /**
+     * @return rgb value of green
+     */
     public double getColumnGreen() {
         return columnGreen;
     }
 
+    /**
+     * @return rgb value of blue
+     */
     public double getColumnBlue() {
         return columnBlue;
     }

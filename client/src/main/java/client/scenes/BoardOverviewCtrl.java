@@ -1033,7 +1033,6 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void columnsRefresh() {
         hbox.getChildren().clear();
-
         var progressionHash = server.getProgressionHashMap(id);
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
@@ -1836,6 +1835,10 @@ public class BoardOverviewCtrl implements Initializable {
     public void stopLongPolling(){
         server.stopCardUpdates();
     }
+
+    /**
+     * open colors
+     */
     public void openColors() {
         mainCtrl.showColorManagment();
     }

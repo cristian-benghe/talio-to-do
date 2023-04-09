@@ -1081,6 +1081,13 @@ public class ServerUtils {
                 .get(new GenericType<HashMap<Long, Double>>() {});
     }
 
+    /**
+     * @param red rgb value of red
+     * @param green rgb value of green
+     * @param blue  rgb value of blue
+     * @param boardId id of the board
+     * @return updated board
+     */
     public Board updateAllColumnsInBoard(double red, double green, double blue, Long boardId) {
         Board board=getBoardById(boardId);
         for(int i=0;i<board.getColumns().size();i++) {
@@ -1093,6 +1100,13 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+    /**
+     * @param red rgb value of red
+     * @param green rgb value of green
+     * @param blue rgb value of blue
+     * @param boardId id of the board
+     * @return updated board
+     */
     public Board updateColumnColorBoard(double red, double green, double blue, Long boardId) {
         Board board=getBoardById(boardId);
         board.setColorColumn(red, green, blue);

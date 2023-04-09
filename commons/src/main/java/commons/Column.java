@@ -178,20 +178,34 @@ public class Column implements Serializable {
         cards.set(i, card);
     }
 
+    /**
+     * @param red rgb value of red
+     * @param green rgb value of green
+     * @param blue rgb value of blue
+     */
     public void updateColors(double red, double green, double blue) {
         this.red=red;
         this.green=green;
         this.blue=blue;
     }
 
+    /**
+     * @return rgb value of green
+     */
     public Double getGreen() {
         return green;
     }
 
+    /**
+     * @return rgb value of blue
+     */
     public Double getBlue() {
         return blue;
     }
 
+    /**
+     * @return rgb value of red
+     */
     public double getRed() {
         return red;
     }
