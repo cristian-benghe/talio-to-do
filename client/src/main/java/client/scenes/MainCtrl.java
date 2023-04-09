@@ -128,7 +128,6 @@ public class MainCtrl {
 
         primaryStage.setScene(boardOverview);
 
-        primaryStage.centerOnScreen();
         boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
@@ -146,7 +145,6 @@ public class MainCtrl {
 
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
-        primaryStage.centerOnScreen();
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
         shownMainOverviewOneTime = true;
@@ -183,13 +181,13 @@ public class MainCtrl {
         cardViewCtrl.refresh();
         cardViewCtrl.resetLongPolling();
         cardViewCtrl.setUpLongPolling();
-        primaryStage.centerOnScreen();
     }
     /**
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
         String css = getClass().getResource("/tagview.css").toExternalForm();
+        cardViewCtrl.resetLongPolling();
         tagView.getStylesheets().add(css);
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
@@ -197,14 +195,8 @@ public class MainCtrl {
         System.out.println(card.getTags().size()+"fg ");
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
-        primaryStage.centerOnScreen();
-
     }
 
-
-    /**
-     * A method to switch the scene to the TagView
-     */
 
 
     /**
@@ -216,7 +208,6 @@ public class MainCtrl {
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
         primaryStage.setScene(popupStage);
-        primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }

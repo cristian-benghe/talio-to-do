@@ -137,8 +137,10 @@ public class TagViewCtrl implements Initializable {
     public void gettoCard()
     {
         HBox hBox=new HBox();
-        for(TagTemplateCtrl tagTemplateCtrl:tags){
+        for(TagTemplateCtrl tagTemplateCtrl : tags){
             if(tagTemplateCtrl.getCheckBox()) {
+
+
                 AnchorPane anchorPane=new AnchorPane();
                 TextField textField = new TextField(tagTemplateCtrl.getText());
                 textField.setEditable(false);
@@ -149,8 +151,9 @@ public class TagViewCtrl implements Initializable {
                 // set the maximum height of the text field
                 anchorPane.getChildren().add(textField);
                 hBox.getChildren().add(anchorPane);
-                card = server.addTagtoCard(card.getId(),
-                        server.getTagById(tagTemplateCtrl.getTagId()) );
+
+                var tagInstance = server.getTagById(tagTemplateCtrl.getTagId());
+                card = server.addTagtoCard(card.getId(), tagInstance);
 
             }
         }
@@ -178,7 +181,7 @@ public class TagViewCtrl implements Initializable {
         loader.setController(controller);
         Node node = loader.load();
         controller.setConnection(server.getServer());
-        //sets connection of every card to the server so you can delete tags
+        //sets connection of every card to the server, so you can delete tags
         controller.setBoardId(mainCtrl.getBoardId());
         //sets the board id for deletion of tag from board
         controller.addTitle();

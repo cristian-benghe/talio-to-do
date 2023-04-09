@@ -29,7 +29,7 @@ public class Card implements Serializable {
     private List<Task> taskList;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     private Set<Tag> tags;
 
 
