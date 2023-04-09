@@ -3,13 +3,19 @@ package client.scenes;
 import client.utils.ServerUtils;
 import commons.Board;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.catalina.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,12 +41,21 @@ class BoardOverviewCtrlTest {
     }
 
     @Test
-    void socketsCall() {
-        ServerUtils server = mock(ServerUtils.class);
-        Board board = new Board();
-        board.setId(1L);
+    void setConnection() {
 
-        boardOverviewCtrl.setId(1L);
+
+        // call the showHelp method
+        boardOverviewCtrl.setConnection("");
+
+        // verify that the mainCtrl's showMainOverview method was called
+        verify(server, times(1));
+    }
+
+
+
+    @Test
+    void socketsCall() {
+
 
         boardOverviewCtrl.socketsCall();
 
