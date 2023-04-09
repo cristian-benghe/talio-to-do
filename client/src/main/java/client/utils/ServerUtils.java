@@ -1080,4 +1080,25 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .get(new GenericType<HashMap<Long, Double>>() {});
     }
+
+    public Board updateAllColumnsInBoard(double red, double green, double blue, Long boardId) {
+        Board board=getBoardById(boardId);
+        for(int i=0;i<board.getColumns().size();i++) {
+            Column column = board.getColumns().get(i);
+            column.updateColors(red, green, blue);
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    public Board updateColumnColorBoard(double red, double green, double blue, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColorColumn(red, green, blue);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
 }

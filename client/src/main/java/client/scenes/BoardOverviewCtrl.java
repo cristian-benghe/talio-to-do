@@ -229,8 +229,13 @@ public class BoardOverviewCtrl implements Initializable {
         setColumnDragDrop(anchorPaneVBox);
         hbox.getChildren().add(anchorPaneVBox);
         nrCol++;
-        server.addColumnToBoard(id, new Column(("New column" + nrCol),
-                new ArrayList<>()), hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+        Column column=new Column(("New column" + nrCol),
+                new ArrayList<>());
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        column.updateColors(board.getColumnRed(),
+                board.getColumnGreen(),
+                board.getColumnBlue());
+        server.addColumnToBoard(id, column, hbox.getChildren().indexOf(anchorPaneVBox) + 1);
         textField.setOnKeyPressed(e ->
         {
             columnLabel.setText("Press enter to save!!");
@@ -1036,8 +1041,13 @@ public class BoardOverviewCtrl implements Initializable {
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.TOP_CENTER);
             scrollPane.setContent(vBox);
-            vBox.setPrefHeight(380);
+            vBox.setPrefHeight(500);
             vBox.setPrefWidth(150);
+            Color colorColumn=Color.color(c.getRed(), c.getGreen(), c.getBlue());
+            vBox.setStyle("-fx-background-color: " + toRgbCode(colorColumn) +
+                    "; -fx-background-radius: 15px; -fx-border-radius: 10px;" +
+                    " -fx-border-color: #000000;");
+
 
 
             TextField textField = new TextField(c.getTitle());
@@ -1826,6 +1836,8 @@ public class BoardOverviewCtrl implements Initializable {
     public void stopLongPolling(){
         server.stopCardUpdates();
     }
-
+    public void openColors() {
+        mainCtrl.showColorManagment();
+    }
 
 }

@@ -67,9 +67,12 @@ public class Main extends Application {
         var tagView = FXML.load(TagViewCtrl.class,
                 "client", "scenes", "TagView.fxml");
 
+        var colorManagement=FXML.load(ColorManagementCtrl.class,
+                "client", "scenes", "ColorManagement.fxml");
 
         mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
-                clientCtrl, popUpStage, cardView, boardCustomization, tagView);
+                clientCtrl, popUpStage, cardView, boardCustomization, tagView, colorManagement);
 
     }
-}
+
+    }

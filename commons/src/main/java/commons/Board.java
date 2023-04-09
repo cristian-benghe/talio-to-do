@@ -23,6 +23,9 @@ public class Board implements Serializable {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE,
         CascadeType.REFRESH, CascadeType.DETACH})
     private List<Tag> tags = new ArrayList<>();
+    private double columnRed=1.0;
+    private double columnGreen=1.0;
+    private double columnBlue=1.0;
 
     /**
      * Constructs a new Board object with the specified title, columns, and tags.
@@ -300,5 +303,23 @@ public class Board implements Serializable {
      */
     public void updateTag(int ind, Tag tag) {
         tags.set(ind, tag);
+    }
+
+    public void setColorColumn(double red, double green, double blue) {
+        this.columnRed=red;
+        this.columnGreen=green;
+        this.columnBlue=blue;
+    }
+
+    public double getColumnRed() {
+        return columnRed;
+    }
+
+    public double getColumnGreen() {
+        return columnGreen;
+    }
+
+    public double getColumnBlue() {
+        return columnBlue;
     }
 }

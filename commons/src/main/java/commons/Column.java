@@ -10,6 +10,9 @@ import java.util.List;
 @Entity
 public class Column implements Serializable {
     private int idInBoard=-1;
+    private Double red=1.0;
+    private Double green=1.0;
+    private Double blue=1.0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -173,5 +176,23 @@ public class Column implements Serializable {
         Card card=cards.get(i);
         card.setColor(blue, green, red);
         cards.set(i, card);
+    }
+
+    public void updateColors(double red, double green, double blue) {
+        this.red=red;
+        this.green=green;
+        this.blue=blue;
+    }
+
+    public Double getGreen() {
+        return green;
+    }
+
+    public Double getBlue() {
+        return blue;
+    }
+
+    public double getRed() {
+        return red;
     }
 }
