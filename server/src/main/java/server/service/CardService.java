@@ -72,6 +72,7 @@ public class CardService {
         if (existing.isPresent()) {
             Card updated = existing.get();
             updated.setTitle(card.getTitle());
+            updated.setDescription(card.getDescription());
             updated.setTags(card.getTags());
             updated.setColor(card.getBlue(), card.getGreen(), card.getRed());
             updated.setTaskList(card.getTaskList());
@@ -107,20 +108,15 @@ public class CardService {
      */
     public Card addTask(long id, Task task){
 
-        System.out.println("ping");
         Optional<Card> optCard = this.getById(id);
         if(optCard.isEmpty()){
             throw new IllegalArgumentException();
         }
-        System.out.println("ping");
         Card card = optCard.get();
         if(card.getTaskList()==null){
             card.setTaskList(new ArrayList<Task>());
         }
-        System.out.println("ping");
-        task.setCard(card);
         card.getTaskList().add(task);
-        System.out.println("ping");
         return repo.save(card);
     }
 
@@ -141,9 +137,6 @@ public class CardService {
         Card card = optCard.get();
         card.setTaskList(taskList);
 
-        for(Task task : card.getTaskList()){
-            task.setCard(card);
-        }
 
         return repo.save(card);
     }

@@ -415,23 +415,26 @@ public class BoardOverviewCtrl implements Initializable {
 
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
-            Card mycard = new Card("Card", null, null, null);
-            server.addCardToColumn(id, columnid, mycard,
+            Card mycard = new Card("Card", null, null, null );
+            var column = server.addCardToColumn(id, columnid, mycard,
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                     getChildren().get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
                         ((Label) (((VBox) anchorPane1.getChildren().get(0))
                         .getChildren().get(0))).setText("Press enter to save!!");
                         if (event1.getCode() == KeyCode.ENTER) {
-                            server.updateCardTitle((long) vBox
-                                    .getChildren().indexOf(anchorPane1) - 1,
+                            int cardPosition = (vBox.getChildren().indexOf(anchorPane1) - 1);
+                            server.updateCardTitle((long) cardPosition,
                                 columnid, ((TextField) ((HBox) ((VBox) anchorPane1
                                     .getChildren().get(0)).
                                     getChildren().get(1)).getChildren().get(0)).
                                     getText(), id);
                             ((Label) (((VBox) anchorPane1.getChildren().get(0))
-                            .getChildren().get(0))).setText("=====");
-                            server.send("/app/update-labels-in-board", server.getBoardById(id));
+                            .getChildren().get(0))).setText(""+cardPosition);
+                            Board tempBoard = server.getBoardById(id);
+                            server.send("/app/update-labels-in-board", tempBoard);
+                            server.pingCardUpdate(tempBoard.getColumns()
+                                    .get((int)(columnid-1)).getCards().get(cardPosition-1).getId());
                         }
                     });
             vBox.getChildren().remove(button);
@@ -455,14 +458,25 @@ public class BoardOverviewCtrl implements Initializable {
                     ((Label) (((VBox) anchorPane1.getChildren().get(0))
                     .getChildren().get(0))).setText("Press enter to save!!");
                     if (event1.getCode() == KeyCode.ENTER) {
-                        server.updateCardTitle((long) vBox.getChildren().
-                                indexOf(anchorPane1) - 1, columnid,
+
+                        int cardPosition = vBox.getChildren().
+                                indexOf(anchorPane1) - 1;
+                        server.updateCardTitle((long) (cardPosition), columnid,
                             ((TextField) ((HBox) ((VBox) anchorPane1
                                 .getChildren().get(0)).getChildren().get(1)).
                                 getChildren().get(0)).getText(), id);
                         ((Label) (((VBox) anchorPane1.getChildren().get(0))
                         .getChildren().get(0))).setText("=====");
-                        server.send("/app/update-in-board", server.getBoardById(id));
+
+                        Board tempBoard = server.getBoardById(id);
+                        server.send("/app/update-in-board",tempBoard);
+
+
+                        long cardId = tempBoard.getColumns()
+                                .get((int)(columnid-1))
+                                .getCards().get(cardPosition-1).getId();
+
+                        server.pingCardUpdate(cardId);
                     }
                 });
     }
@@ -962,7 +976,14 @@ public class BoardOverviewCtrl implements Initializable {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
             //server.deleteColumn(colInd, id);
+            var tempBoard = server.getBoardById(id);
+            List<Card> cardList = tempBoard.getColumns().get(colInd).getCards();
             server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd, id)));
+
+            //Ping server for the deleted cards.
+            for(Card c : cardList){
+                server.pingCardDeletion(c.getId());
+            }
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
@@ -993,6 +1014,7 @@ public class BoardOverviewCtrl implements Initializable {
                             indexOf(((AnchorPane) event.getGestureSource()).
                                     getParent().getParent()) + 1, id);
             server.send("/app/update-in-board", server.getBoardById(id));
+            server.pingCardDeletion(cardId);
             // System.out.println(server.deleteCardFromCardApi(cardId));
 
             vBox.getChildren().remove(event.getGestureSource());
@@ -1006,6 +1028,8 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void columnsRefresh() {
         hbox.getChildren().clear();
+
+        var progressionHash = server.getProgressionHashMap(id);
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
@@ -1042,7 +1066,7 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.getChildren().addAll(columnLabel, textField);
 
             for (Card kard : c.getCards()) {
-                vBox.getChildren().add(button);
+
                 AnchorPane anchorPane1 = addCard(vBox);
                 HBox tagColors=new HBox();
                 tagColors.setAlignment(Pos.BOTTOM_CENTER);
@@ -1087,14 +1111,54 @@ public class BoardOverviewCtrl implements Initializable {
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,
                         (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+                ((VBox) anchorPane1.getChildren().get(0))
+                        .getChildren()
+                        .add(cardProgressionVisual(progressionHash.get(kard.getId()),kard));
                 vBox.getChildren().add(anchorPane1);
 
-                vBox.getChildren().remove(button);
 
             }
             vBox.getChildren().add(button);
         }
         setHBoxDrop(hbox);
+    }
+
+    /**
+     * This method creates a new container pane that displays the progression in
+     * the Tasks of the given Card instance, and whether the Card contains
+     * further description
+     * @param progression the percentage of progression in the completion of
+     *                    Tasks. Input -1 if there are no tasks at all.
+     * @param card the current Card instance.
+     * @return the container pane HBox.
+     */
+    private HBox cardProgressionVisual(double progression, Card card){
+
+        //Create a main pane
+        HBox mainPane = new HBox();
+        mainPane.setAlignment(Pos.CENTER);
+        mainPane.setPadding(new Insets(2,0,2,0));
+
+        //Create a description images
+        ImageView descriptionIcon = new ImageView();
+        descriptionIcon.setImage(new Image("DescriptionIcon.png"));
+        descriptionIcon.setVisible(card.getDescription()!=null
+                && !card.getDescription().isBlank());
+        descriptionIcon.setFitHeight(15);
+        descriptionIcon.setFitWidth(15);
+        mainPane.getChildren().add(descriptionIcon);
+        VBox.setMargin(descriptionIcon, new Insets(5,10,5,10));
+
+        //Create a progress bar
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setPrefHeight(15);
+        progressBar.setVisible(progression != -1.0);
+        progressBar.setProgress(progression);
+        mainPane.getChildren().add(progressBar);
+        VBox.setMargin(progressBar, new Insets(5,10,5,10));
+
+        return mainPane;
+
     }
 
     /**
@@ -1727,5 +1791,41 @@ public class BoardOverviewCtrl implements Initializable {
         Board board1 = server.getBoardById(id);
         boardTitle.setText(board1.getTitle());
     }
+
+    /**
+     * This method set-ups the long polling tasks necessary
+     * for auto-synchronization.
+     */
+    public void setUpLongPolling(){
+
+        server.registerForCardUpdates(-1,card1 -> {
+            Platform.runLater(()->{
+                columnsRefresh();
+
+            });
+        });
+        server.registerForTaskUpdates(-1, list -> {
+            Platform.runLater(()->{
+                columnsRefresh();
+            });
+        });
+    }
+
+    /**
+     * This method halts all currently running tasks in
+     * the executor instance.
+     */
+    public void resetLongPolling(){
+        server.clearExecutor();
+    }
+
+    /**
+     * This method shutdowns the executor instance that
+     * handles long polling.
+     */
+    public void stopLongPolling(){
+        server.stopCardUpdates();
+    }
+
 
 }

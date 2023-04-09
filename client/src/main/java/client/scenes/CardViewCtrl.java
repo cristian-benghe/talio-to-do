@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import commons.*;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -43,6 +44,7 @@ public class CardViewCtrl implements Initializable {
 
     private String text;
     @FXML
+    private Label longDescConstraint;
     private ColorPicker cardColor;
     @FXML
     private Label titleLabel;
@@ -54,6 +56,9 @@ public class CardViewCtrl implements Initializable {
     private Label emptyTaskList;
     @FXML
     private HBox taglist;
+    @FXML
+    private Label taskListCounter;
+    private Dialog kickedDialog;
 
     private Card card;
 
@@ -73,6 +78,8 @@ public class CardViewCtrl implements Initializable {
 
     @FXML
     private AnchorPane anchorPane;
+    @FXML
+    private ImageView longDescIcon;
 
     //Help box for the help functionality
     private Dialog helpDialog;
@@ -80,6 +87,7 @@ public class CardViewCtrl implements Initializable {
     //Scale Transition for BinImage contraction and expansion
     private ScaleTransition binContraction;
     private ScaleTransition binExpansion;
+    private final int maximumLongDescriptionLength = 150;
     @FXML
     private ImageView binImage;
 
@@ -131,6 +139,25 @@ public class CardViewCtrl implements Initializable {
 
         binImage.setImage(new Image("BinImage.png"));
         setDragForBin(binImage);
+
+        //Set up the long description text area
+        setUpLongDescription();
+        longDescIcon.setImage(new Image("EditMode.png"));
+
+        //Set up the Dialog Box for being kicked out of Card Overview
+        kickedDialog = new Dialog<String>();
+        kickedDialog.initModality(Modality.APPLICATION_MODAL);
+        kickedDialog.setTitle("Card Was Deleted!");
+
+        kickedDialog.setHeaderText("The card you were viewing was deleted!");
+        kickedDialog.setContentText("You have been forcibly returned to the Board Overview!");
+
+        Stage dialogStage = (Stage) kickedDialog.getDialogPane().getScene().getWindow();
+        dialogStage.getIcons().add(new Image("BinImage.png"));
+
+        ButtonType confirmBT = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+
+        kickedDialog.getDialogPane().getButtonTypes().addAll(confirmBT);
 
         // Set up the dialog for the help button
         helpPopUp();
@@ -295,14 +322,16 @@ public class CardViewCtrl implements Initializable {
     public void refresh() {
 
         //Reset the title label
-        //titleLabel.setText(card.getTitle());
-
+        titleLabel.setText(card.getTitle());
+        System.out.println(card.getTitle());
         //Reset the long description text area
-
         longDescription.setText(card.getDescription());
         //Reset the task and tag lists
         displayTasks();
         displayTags();
+        //Hide Long Description aiding visual elements
+        longDescConstraint.setVisible(false);
+        longDescIcon.setVisible(false);
     }
 
     /**
@@ -310,6 +339,9 @@ public class CardViewCtrl implements Initializable {
      * instance in the scene.
      */
     public void displayTasks() {
+
+        //Update the counter label
+        updateTaskListCounter();
 
         //Clear the task list
         taskList.getChildren().clear();
@@ -460,7 +492,7 @@ public class CardViewCtrl implements Initializable {
 
                 if (!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     card.getTaskList().get(taskIndex).setTitle(field.getText());
-                    server.updateTask(card.getTaskList().get(taskIndex));
+                    server.updateTask(card.getId(),card.getTaskList().get(taskIndex));
                     event.consume();
                 }
 
@@ -483,7 +515,7 @@ public class CardViewCtrl implements Initializable {
 
             //Record the change in the status of the task, and ensure it persists in the server
             card.getTaskList().get(taskIndex).setStatus(checkBox.isSelected());
-            server.updateTask(card.getTaskList().get(taskIndex));
+            server.updateTask(card.getId(), card.getTaskList().get(taskIndex));
 
         });
 
@@ -833,6 +865,111 @@ public class CardViewCtrl implements Initializable {
         this.taglist.getChildren().addAll(tagList);
     }
 
+    /**
+     * This method set-ups the long polling tasks necessary
+     * for auto-synchronization.
+     */
+    public void setUpLongPolling(){
+
+        server.registerForCardUpdates(card.getId(),card1 -> {
+            Platform.runLater(()->{
+                if(card1.getTitle() == null) {
+                    kickedDialog.show();
+                    mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
+                }else{
+                    setCard(card1);
+                    refresh();
+                }
+
+            });
+        });
+        server.registerForTaskUpdates(card.getId(), list -> {
+            Platform.runLater(()->{
+                System.out.println("updated: " + list);
+                card.setTaskList(list);
+                System.out.println("card updated: " + card.getTaskList());
+                refresh();
+            });
+        });
+    }
+
+    /**
+     * This method halts all currently running tasks in
+     * the executor instance.
+     */
+    public void resetLongPolling(){
+        server.clearExecutor();
+    }
+
+    /**
+     * This method shutdowns the executor instance that
+     * handles long polling.
+     */
+    public void stopLongPolling(){
+        server.stopCardUpdates();
+    }
+    private void setUpLongDescription(){
+
+        longDescription.setOnKeyTyped(event ->{
+            updateLongDescConstraintText();
+            longDescIcon.setVisible(!longDescription.getText().equals(card.getDescription()));
+            longDescConstraint.setVisible(!longDescription.getText().equals(card.getDescription()));
+        });
+        longDescription.setOnKeyPressed(event -> {
+            if(event.getCode() == KeyCode.ENTER){
+
+
+                //System.getProperty("line.separator") doesn't work here
+                var temp = longDescription.getText()
+                        .replace("\n", "");
+                longDescription.setText(
+                        temp.substring(0,Math.min(temp.length(),maximumLongDescriptionLength)));
+                longDescConstraint.setVisible(false);
+
+                if(!longDescription.getText().equals(card.getDescription())){
+                    card.setDescription(longDescription.getText());
+                    server.updateCard(card);
+                    event.consume();
+                    longDescIcon.setVisible(false);
+                }
+
+            }
+        });
+    }
+
+    private void updateLongDescConstraintText() {
+        //Find the length of the current
+        int length = longDescription.getText().length();
+
+        //Update the SearchConstraintText label
+        if (length < maximumLongDescriptionLength) {
+            longDescConstraint.setText(
+                    (maximumLongDescriptionLength - length) + " Characters Remaining.");
+            longDescConstraint.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
+        } else if (length == maximumLongDescriptionLength) {
+            longDescConstraint.setText("Reached Maximum Length.");
+            longDescConstraint.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
+        } else {
+            longDescConstraint.setText("Exceeded Maximum Length");
+            longDescConstraint.setStyle("-fx-text-fill: red;");
+
+        }
+
+    }
+
+    private void updateTaskListCounter() {
+        if (card.getTaskList() == null || card.getTaskList().isEmpty()) {
+
+            taskListCounter.setText("No tasks are available.");
+
+        } else if (card.getTaskList().size() == 1) {
+
+            taskListCounter.setText("1 task is available.");
+        } else {
+            taskListCounter.setText(card.getTaskList().size() + " tasks are available.");
+        }
+    }
+    
     /**
      * Getter for the long description TextArea.
      *

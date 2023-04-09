@@ -89,6 +89,11 @@ public class MainCtrl {
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
 
+        primaryStage.setOnCloseRequest(event -> {
+            cardViewCtrl.stopLongPolling();
+        });
+
+
         //Set the stage icon
         //TODO Replace the temporary icon
         primaryStage.getIcons().add(new Image("RandomIcon.png"));
@@ -116,6 +121,10 @@ public class MainCtrl {
         //add stylsheet
         boardOverview.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Board View");
+
+        //Set the long-polling
+        boardOverviewCtrl.resetLongPolling();
+        boardOverviewCtrl.setUpLongPolling();
 
         primaryStage.setScene(boardOverview);
 
@@ -151,6 +160,7 @@ public class MainCtrl {
         String css = getClass().getResource("/client.css").toExternalForm();
         clientConnect.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Connect to a Server");
+        boardOverviewCtrl.resetLongPolling();
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
@@ -171,6 +181,8 @@ public class MainCtrl {
         this.card = card;
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
+        cardViewCtrl.resetLongPolling();
+        cardViewCtrl.setUpLongPolling();
         primaryStage.centerOnScreen();
     }
     /**
