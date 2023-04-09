@@ -1728,130 +1728,261 @@ public class BoardOverviewCtrl implements Initializable {
         boardTitle.setText(board1.getTitle());
     }
 
+    /**
+
+     Gets the number of columns in the board.
+     @return the number of columns in the board.
+     */
     public Long getNrCol() {
         return nrCol;
     }
+    /**
 
+     Gets the server utility class.
+     @return the ServerUtils object.
+     */
     public ServerUtils getServer() {
         return server;
     }
+    /**
 
+     Gets the MainCtrl object associated with this BoardCtrl.
+     @return the MainCtrl object.
+     */
     public MainCtrl getMainCtrl() {
         return mainCtrl;
     }
+    /**
 
+     Gets the Dialog for deleting a board.
+     @return the Dialog object for deleting a board.
+     */
     public Dialog getDeleteBoardDialog() {
         return deleteBoardDialog;
     }
+    /**
 
+     Gets the Dialog for displaying help information.
+     @return the Dialog object for displaying help information.
+     */
     public Dialog getHelpDialog() {
         return helpDialog;
     }
+    /**
 
+     Gets the Dialog for customizing a card.
+     @return the Dialog object for customizing a card.
+     */
     public Dialog getCardCustomization() {
         return cardCustomization;
     }
+    /**
 
+     Gets the AnchorPane object associated with this BoardCtrl.
+     @return the AnchorPane object.
+     */
     public AnchorPane getAnchorPane() {
         return anchorPane;
     }
+    /**
 
+     Gets the Label for the board title.
+     @return the Label object for the board title.
+     */
     public Label getBoardTitleLabel() {
         return boardTitleLabel;
     }
+    /**
 
+     Gets the TextField for the board title.
+     @return the TextField object for the board title.
+     */
     public TextField getBoardTitle() {
         return boardTitle;
     }
+    /**
 
+     Gets the HBox for the board.
+     @return the HBox object for the board.
+     */
     public HBox getHbox() {
         return hbox;
     }
+    /**
 
+     Gets the Text object for the board's key ID.
+     @return the Text object for the board's key ID.
+     */
     public Text getKeyID() {
         return keyID;
     }
+    /**
 
+     Gets the ImageView object for the board's bin image.
+     @return the ImageView object for the board's bin image.
+     */
     public ImageView getBinImage() {
         return binImage;
     }
 
+    /**
+
+     Returns the copy label.
+     @return the copy label
+     */
     public Label getCopyLabel() {
         return copyLabel;
     }
+    /**
 
+     Returns the selected anchor pane.
+     @return the selected anchor pane
+     */
     public AnchorPane getSelectedAnchorPane() {
         return selectedAnchorPane;
     }
+    /**
 
+     Returns the bin contraction scale transition.
+     @return the bin contraction scale transition
+     */
     public ScaleTransition getBinContraction() {
         return binContraction;
     }
+    /**
 
+     Returns the bin expansion scale transition.
+     @return the bin expansion scale transition
+     */
     public ScaleTransition getBinExpansion() {
         return binExpansion;
     }
+    /**
 
+     Sets the number of columns to be displayed on the board.
+     @param nrCol the number of columns to be displayed on the board
+     */
     public void setNrCol(Long nrCol) {
         this.nrCol = nrCol;
     }
+    /**
 
+     Sets the title of the board.
+     @param title the title of the board
+     */
     public void setTitle(String title) {
         this.title = title;
     }
+    /**
 
+     Sets the delete board dialog.
+     @param deleteBoardDialog the delete board dialog
+     */
     public void setDeleteBoardDialog(Dialog deleteBoardDialog) {
         this.deleteBoardDialog = deleteBoardDialog;
     }
+    /**
 
+     Sets the help dialog.
+     @param helpDialog the help dialog
+     */
     public void setHelpDialog(Dialog helpDialog) {
         this.helpDialog = helpDialog;
     }
+    /**
 
+     Sets the card customization dialog.
+     @param cardCustomization the card customization dialog
+     */
     public void setCardCustomization(Dialog cardCustomization) {
         this.cardCustomization = cardCustomization;
     }
+    /**
 
+     Sets the ID of the board.
+     @param id the ID of the board
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
+    /**
+
+     Sets the AnchorPane of the BoardCard.
+     @param anchorPane the AnchorPane of the BoardCard
+     */
     public void setAnchorPane(AnchorPane anchorPane) {
         this.anchorPane = anchorPane;
     }
+    /**
 
+     Sets the Label that displays the board title of the BoardCard.
+     @param boardTitleLabel the Label that displays the board title of the BoardCard
+     */
     public void setBoardTitleLabel(Label boardTitleLabel) {
         this.boardTitleLabel = boardTitleLabel;
     }
+    /**
 
+     Sets the TextField that allows the user to edit the board title of the BoardCard.
+     @param boardTitle the TextField that allows the user to edit the board title of the BoardCard
+     */
     public void setBoardTitle(TextField boardTitle) {
         this.boardTitle = boardTitle;
     }
+    /**
 
+     Sets the HBox that contains the board key and copy button of the BoardCard.
+     @param hbox the HBox that contains the board key and copy button of the BoardCard
+     */
     public void setHbox(HBox hbox) {
         this.hbox = hbox;
     }
+    /**
 
+     Sets the Text that displays the board key of the BoardCard.
+     @param keyID the Text that displays the board key of the BoardCard
+     */
     public void setKeyID(Text keyID) {
         this.keyID = keyID;
     }
+    /**
 
+     Sets the ImageView that displays the bin icon of the BoardCard.
+     @param binImage the ImageView that displays the bin icon of the BoardCard
+     */
     public void setBinImage(ImageView binImage) {
         this.binImage = binImage;
     }
+    /**
 
+     Sets the Label that displays the copy status of the BoardCard.
+     @param copyLabel the Label that displays the copy status of the BoardCard
+     */
     public void setCopyLabel(Label copyLabel) {
         this.copyLabel = copyLabel;
     }
+    /**
 
+     Sets the AnchorPane of the selected BoardCard.
+     @param selectedAnchorPane the AnchorPane of the selected BoardCard
+     */
     public void setSelectedAnchorPane(AnchorPane selectedAnchorPane) {
         this.selectedAnchorPane = selectedAnchorPane;
     }
+    /**
 
+     Sets the ScaleTransition for the contraction animation of the bin icon.
+     @param binContraction the ScaleTransition for the contraction animation of the bin icon
+     */
     public void setBinContraction(ScaleTransition binContraction) {
         this.binContraction = binContraction;
     }
+    /**
 
+     Sets the ScaleTransition for the expansion animation of the bin icon.
+     @param binExpansion the ScaleTransition for the expansion animation of the bin icon
+     */
     public void setBinExpansion(ScaleTransition binExpansion) {
         this.binExpansion = binExpansion;
     }

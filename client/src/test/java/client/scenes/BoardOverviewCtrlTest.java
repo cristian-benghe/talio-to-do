@@ -48,7 +48,7 @@ class BoardOverviewCtrlTest {
         boardOverviewCtrl.setConnection("");
 
         // verify that the mainCtrl's showMainOverview method was called
-        verify(server, times(1));
+        verify(server, times(1)).setServerAddress("");
     }
 
 
@@ -56,10 +56,9 @@ class BoardOverviewCtrlTest {
     @Test
     void socketsCall() {
 
-
         boardOverviewCtrl.socketsCall();
 
-        verify(server, times(3));
+        verify(server, times(3)).registerForMessages(any(),any(),any());
     }
 
     @Test
