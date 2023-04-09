@@ -1091,7 +1091,7 @@ public class BoardOverviewCtrl implements Initializable {
                 }
 
 
-                AnchorPane.setBottomAnchor(tagColors, 10.0);
+                AnchorPane.setBottomAnchor(tagColors, 25.0);
                 anchorPane1.getChildren().addAll(tagColors);
 
                 Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
