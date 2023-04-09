@@ -496,7 +496,7 @@ public class ServerUtils {
     }
 
     /**
-     * A ,ethod to delete the column from api/columns
+     * A method to delete the column from api/columns
      *
      * @param columnId Id of the column that will be deleted
      * @return Response of the server/request
@@ -587,8 +587,10 @@ public class ServerUtils {
      */
     public Card addTagtoCard(Long id, Tag newTag) {
         Card card = getCardById(id);
-        card.addTag(newTag);
 
+        card.addTag(newTag);
+        System.out.println("\n"+newTag+"\n");
+        System.out.println("\n"+card+"\n");
         return ClientBuilder.newClient(new ClientConfig())
                 .target(server).path("api/cards/" + id)
                 .request(MediaType.APPLICATION_JSON)

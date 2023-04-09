@@ -323,7 +323,6 @@ public class CardViewCtrl implements Initializable {
 
         //Reset the title label
         titleLabel.setText(card.getTitle());
-        System.out.println(card.getTitle());
         //Reset the long description text area
         longDescription.setText(card.getDescription());
         //Reset the task and tag lists
@@ -504,7 +503,6 @@ public class CardViewCtrl implements Initializable {
 
         checkBox.setOnAction(event -> {
 
-            System.out.println("ping");
             //Find the index of the corresponding task instance
             int taskIndex = checkBox.getParent().getParent()
                     .getChildrenUnmodifiable().indexOf(
@@ -760,6 +758,10 @@ public class CardViewCtrl implements Initializable {
      */
     public void displayTags() {
         HBox hBox = new HBox();
+        if(card.getTags() == null){
+            return;
+        }
+
         for (Tag t : card.getTags()) {
             if (card.hasTagWithId(t.getTagID())) {
                 AnchorPane anchorPane = new AnchorPane();
@@ -853,8 +855,6 @@ public class CardViewCtrl implements Initializable {
         sortedList.sort((o1, o2) -> (o1.getPosition() > o2.getPosition()) ?
                 1 : (o1.getPosition() > o2.getPosition()) ? 0 : -1);
         card.setTaskList(sortedList);
-        System.out.println(card.getTaskList().toString());
-
     }
 
     /**
@@ -885,9 +885,7 @@ public class CardViewCtrl implements Initializable {
         });
         server.registerForTaskUpdates(card.getId(), list -> {
             Platform.runLater(()->{
-                System.out.println("updated: " + list);
                 card.setTaskList(list);
-                System.out.println("card updated: " + card.getTaskList());
                 refresh();
             });
         });
