@@ -1,6 +1,6 @@
 # <span style="color:Yellow">Agenda</span>
 
-### <span style="color:LightBlue">Agenda for the 7th Mandatory Lab Meeting</span>
+### <span style="color:LightBlue">Agenda for the 8th Mandatory Lab Meeting</span>
 
 
 Location:       {DW, PC1}\
