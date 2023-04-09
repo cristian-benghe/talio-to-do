@@ -1,8 +1,11 @@
 package server.api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Optional;
+import java.util.function.Consumer;
+
 
 import commons.Task;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import commons.Card;
 
+import org.springframework.web.context.request.async.DeferredResult;
 import server.service.CardService;
 
 
@@ -21,6 +25,9 @@ public class CardController {
 
 
     private final CardService cardservice;
+
+    private HashMap<Object, Consumer<Card>> cardListners = new HashMap<Object, Consumer<Card>>();
+
 
     /**
      * Constructs a new CardController with the specified service.
@@ -122,6 +129,19 @@ public class CardController {
 //        }
 //    }
 
+    /**
+     * PUT request for updating a card with that specific id
+     * @param id - the id of the card to be updated
+     * @param card - the new card which will replace the already existing card
+     * @return - status 200 if the card has been successfully
+     * updated in the database or NOT FOUND (error 404) if the card is not found in the database
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Card> update(@PathVariable("id") long id, @RequestBody Card card) {
+        Card updated = cardservice.update(id, card);
+        cardListners.forEach((k,l) -> l.accept(updated));
+        return ResponseEntity.ok(updated);
+    }
 
 
 
@@ -172,7 +192,12 @@ public class CardController {
     public ResponseEntity<Card> updateTaskList(@RequestParam("id")long id,
                                                @RequestBody List<Task> taskList) {
         try {
-            return ResponseEntity.ok(cardservice.updateTaskList(id, taskList));
+            var card = cardservice.updateTaskList(id, taskList);
+            var response = ResponseEntity.ok(card);
+            cardListners.forEach((k,l) -> l.accept(card));
+
+            return response;
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -195,6 +220,84 @@ public class CardController {
         }
 
     }
+
+    /**
+     * Handles the GET request that handles long polling for Card instances.
+     * @param id the identifier of the Card instance that will be listened to.
+     *           An identifier of -1 will listen to all cards.
+     * @return The corresponding Card instance. If the Card instance was deleted,
+     * then its title field will be null.
+     */
+    @GetMapping(path="/getUpdates")
+    public DeferredResult<ResponseEntity<Card>> getCardUpdates(@RequestParam("id")long id){
+
+        var results = new DeferredResult<ResponseEntity<Card>>(10000L,
+                ResponseEntity.noContent().build());
+
+        var key = new Object();
+        cardListners.put(key, card -> {
+
+            if(id == -1 || id == card.getId()) {
+                results.setResult(ResponseEntity.ok(card));
+            }
+        });
+
+        results.onCompletion(() ->{
+            cardListners.remove(key);
+        });
+
+
+        return results;
+    }
+
+    /**
+     * Handles the GET request that pings the server on
+     * deletion of a particular Card instance.
+     * @param id the identifier of the Card instance that was deleted.
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path="/pingCardDeletion")
+    public ResponseEntity<Void> pingCardDeletion(@RequestParam("id")long id){
+
+        var dummyCard = new Card(null,null,null,null);
+        dummyCard.setId(id);
+
+        cardListners.forEach((k,l)->{
+            l.accept(dummyCard);
+        });
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Handles the GET request that pings the server on
+     * a particular update of a card instance.
+     * @param id the identifier of the Card instance that has been updated.
+     * @return the task list corresponding to the Card instance
+     */
+    @GetMapping(path="/pingCardUpdate")
+    public ResponseEntity<Void> pingCardUpdate(@RequestParam("id")long id){
+
+        try {
+            Optional<Card> optCard = cardservice.getById(id);
+
+            if (optCard.isPresent()) {
+                Card card = optCard.get();
+                cardListners.forEach((k, l) -> {
+                    l.accept(card);
+                });
+            }
+
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+
+
 }
 
 

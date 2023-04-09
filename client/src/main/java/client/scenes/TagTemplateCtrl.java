@@ -3,19 +3,26 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Card;
+import commons.Column;
 import commons.Tag;
 import javafx.fxml.FXML;
+//import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+//import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+//import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 
@@ -23,7 +30,8 @@ public class TagTemplateCtrl implements Initializable {
     private final ServerUtils server;
 
     private final MainCtrl mainCtrl;
-    private Long tagId= Long.valueOf(0);
+
+    private Long tagId= 0L;
     private Long boardId;
     private Double fontRed;
     private Double fontBlue;
@@ -32,7 +40,7 @@ public class TagTemplateCtrl implements Initializable {
     private Double highlightBlue;
     private Double highlightGreen;
     @FXML
-    private CheckBox checkbox;
+    private CheckBox checkBox;
 
     @FXML
     private Button deleteButton;
@@ -46,37 +54,69 @@ public class TagTemplateCtrl implements Initializable {
     @FXML
     private TextField titlee;
     private Card card;
+    //private Pane pane;
 
 
     @FXML
     void setFont() {
-        this.fontRed=font.getValue().getRed();
-        this.fontBlue=font.getValue().getBlue();
-        this.fontGreen=font.getValue().getGreen();
-        Tag tag=server.getTagById(tagId);
+        this.fontRed = font.getValue().getRed();
+        this.fontBlue = font.getValue().getBlue();
+        this.fontGreen = font.getValue().getGreen();
+        Tag tag = server.getTagById(tagId);
         tag.setFontColor(fontRed, fontGreen, fontBlue);
-        server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+        List<Card> cardsToUpdate = new ArrayList<>();
+        for (Column column : server.getBoardById(boardId).getColumns()) {
+            for (Card c : column.getCards()) {
+                for (Tag t : c.getTags()) {
+                    if (Objects.equals(t.getTagID(), tagId)) {
+                        cardsToUpdate.add(c);
+                    }
+                }
+            }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.updateTagInCard(tagId, c.getId(), c, tag);
+        }
+        //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
         server.updateTag(tagId, tag);
         setFontColors(fontBlue, fontGreen, fontRed);
     }
 
     @FXML
     void setHighlight() {
-        this.highlightRed=highlight.getValue().getRed();
-        this.highlightBlue=highlight.getValue().getBlue();
-        this.highlightGreen=highlight.getValue().getGreen();
-        Tag tag=server.getTagById(tagId);
+        this.highlightRed = highlight.getValue().getRed();
+        this.highlightBlue = highlight.getValue().getBlue();
+        this.highlightGreen = highlight.getValue().getGreen();
+        Tag tag = server.getTagById(tagId);
         tag.setHighlightColor(highlightBlue, highlightGreen, highlightRed);
-        server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
-        server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+
+        List<Card> cardsToUpdate = new ArrayList<>();
+        for (Column column : server.getBoardById(boardId).getColumns()) {
+            for (Card c : column.getCards()) {
+                for (Tag t : c.getTags()) {
+                    if (Objects.equals(t.getTagID(), tagId)) {
+                        cardsToUpdate.add(c);
+                    }
+                }
+            }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.updateTagInCard(tagId, c.getId(), c, tag);
+        }
+        //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+        server.updateTag(tagId, tag);
+        //server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+
         setHighlightColor(highlightBlue, highlightGreen, highlightRed);
 
     }
 
     /**
-     * @param blue value in rgb of the font
-     * @param green   value in rgb of the font
-     * @param red value in rgb of the font
+     * @param blue  value in rgb of the font
+     * @param green value in rgb of the font
+     * @param red   value in rgb of the font
      */
     public void setFontColors(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
@@ -91,9 +131,9 @@ public class TagTemplateCtrl implements Initializable {
     }
 
     /**
-     * @param blue value in rgb of the font
+     * @param blue  value in rgb of the font
      * @param green value in rgb of the font
-     * @param red value in rgb of the font
+     * @param red   value in rgb of the font
      */
     public void setHighlightColor(Double blue, Double green, Double red) {
         Tag tag = server.getTagById(tagId);
@@ -106,6 +146,7 @@ public class TagTemplateCtrl implements Initializable {
         titlee.setStyle("-fx-text-fill: " + rgbCode + "; -fx-background-color: " + rgbCode2 + ";");
         setFont(red, blue, green);
     }
+
     /**
      * @param color conversion from rfb
      * @return the rgb code
@@ -116,28 +157,21 @@ public class TagTemplateCtrl implements Initializable {
         int b = (int) Math.round(color.getBlue() * 255);
         return String.format("#%02X%02X%02X", r, g, b);
     }
+
     @FXML
     void setTitle() {
     }
 
     @FXML
-    void setCheckbox() {
-//        HBox tagList = mainCtrl.getcardViewCtrl().getTagList();
-//        System.out.println(title.getText());
-//        if (checkbox.isSelected()) {
-//            TextField tagTitle = new TextField(title.getText());
-//            tagList.getChildren().add(tagTitle);
-//        } else {
-//            tagList.getChildren().removeIf(node -> node instanceof TextField);
-//        }
-//        mainCtrl.getcardViewCtrl().setCardViewCtrl(tagList);
+    void setCheckbox(boolean checkBox) {
+        this.checkBox.setSelected(checkBox);
     }
-
 
 
     /**
      * Initialize the controller and the scene
-     * @param server server parameter
+     *
+     * @param server   server parameter
      * @param mainCtrl mainController parameter to access scenes and methods
      */
     @Inject
@@ -154,17 +188,54 @@ public class TagTemplateCtrl implements Initializable {
         this.tagId = tagID;
         //this.titlee.setText(server.getTagById(tagID).getTitle());
     }
+
+
+//    public void setPane(Pane pane) {
+//        this.pane = pane;
+//    }
     @FXML
     private void deleteTag() throws IOException {
-        System.out.println(tagId);
+        List<Card> cardsToUpdate = new ArrayList<>();
+        for (Column column : server.getBoardById(boardId).getColumns()) {
+            for (Card c : column.getCards()) {
+                for (Tag t : c.getTags()) {
+                    if (Objects.equals(t.getTagID(), tagId)) {
+                        cardsToUpdate.add(c);
+                    }
+                }
+            }
+        }
+
+        for (Card c : cardsToUpdate) {
+            c = server.deleteTagFromCard(tagId, c.getId());
+        }
+
         Node tagNode = deleteButton.getParent();
         AnchorPane parent = (AnchorPane) tagNode.getParent();
+
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("TagTemplate.fxml"));
+//        Parent child = loader.load();
+//        TagTemplateCtrl tagTemplateCtrl = loader.getController();
+//        for (Node node : parent.getChildren()) {
+//            if (node instanceof AnchorPane) {
+//                AnchorPane childPane = (AnchorPane) node;
+//                CheckBox checkBox = (CheckBox) childPane.lookup("#checkbox");
+//                checkBox.setSelected(true);
+//
+//                tagTemplateCtrl.setPane(childPane);
+//                Long tagId = tagTemplateCtrl.getTagId();
+//                System.out.println("Tag id of child: " + tagId);
+//            }
+//        }
+
+
+
         int index = parent.getChildren().indexOf(tagNode);
         parent.getChildren().remove(index);    //remove the tag from the scene
         server.deleteTagFromBoard(tagId, boardId);  //remove tag from server
         //first delete tag from board, then from tags(convention)
         server.deleteTag(tagId);
-        mainCtrl.getTagViewCtrl().refreshtaglist();
+        mainCtrl.getTagViewCtrl().refreshtaglistDelete(this);
         //when deleting a tag, refresh the list of tags from tagviewctrl
         //so that it sets them in the right position
     }
@@ -180,7 +251,7 @@ public class TagTemplateCtrl implements Initializable {
      * @param boardId id of the board
      */
     public void setBoardId(Long boardId) {
-        this.boardId=boardId;
+        this.boardId = boardId;
     }
 
     /**
@@ -206,13 +277,14 @@ public class TagTemplateCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         //this.titlee.setText("New Tag");
+        this.checkBox.setSelected(false);
     }
 
     /**
      * @param card the card of the tag
      */
     public void setCard(Card card) {
-        this.card=card;
+        this.card = card;
     }
 
     /**
@@ -226,30 +298,54 @@ public class TagTemplateCtrl implements Initializable {
      * @return if the tag is done or not in the tagoverview
      */
     public boolean getCheckBox() {
-        return checkbox.isSelected();
+        return this.checkBox.isSelected();
     }
+
+    /**
+     * set the state of the checkbox
+     * @param selected
+     */
+    public void setCheckBox(boolean selected) {
+        checkBox.setSelected(selected);
+    }
+
 
     /**
      * event listener for any modification to the title
      */
     public void addTitle() {
         this.titlee.setOnKeyTyped(event -> {
-            Tag tag=server.getTagById(tagId);
+            Tag tag = server.getTagById(tagId);
             tag.setTitle(this.titlee.getText());
-            server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
+
+            List<Card> cardsToUpdate = new ArrayList<>();
+            for (Column column : server.getBoardById(boardId).getColumns()) {
+                for (Card c : column.getCards()) {
+                    for (Tag t : c.getTags()) {
+                        if (Objects.equals(t.getTagID(), tagId)) {
+                            cardsToUpdate.add(c);
+                        }
+                    }
+                }
+            }
+
+            for (Card c : cardsToUpdate) {
+                c = server.updateTagInCard(tagId, c.getId(), c, tag);
+            }
+            //server.updateTagInBoard(Math.toIntExact(tagId), tag, boardId);
             server.updateTagTitle(Math.toIntExact(tagId),this.titlee.getText());
+
         });
     }
 
     /**
-     * @param fontRed value in rgb of the font
-     * @param fontBlue   value in rgb of the font
-     * @param fontGreen  value in rgb of the font
+     * @param fontRed   value in rgb of the font
+     * @param fontBlue  value in rgb of the font
+     * @param fontGreen value in rgb of the font
      */
-    public void setFont(Double fontRed, Double fontBlue, Double fontGreen){
-        this.fontGreen=fontGreen;
-        this.fontBlue=fontBlue;
-        this.fontRed=fontRed;
+    public void setFont(Double fontRed, Double fontBlue, Double fontGreen) {
+        this.fontGreen = fontGreen;
+        this.fontBlue = fontBlue;
+        this.fontRed = fontRed;
     }
-
 }

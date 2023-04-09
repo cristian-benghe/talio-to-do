@@ -23,6 +23,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import server.service.BoardService;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -200,5 +201,30 @@ public class BoardController {
     @SendTo("/topic/update-labels-in-board")
     public Board addMessageUpdateLabelsInBoard(Board board) {
         return board;
+    }
+
+
+    /**
+     * Handles the GET request by returning a progression HashMap that maps
+     * the identifier of a Card in the given Board to its respective current
+     * progression triplet, which includes (from left to right) the number of
+     * completed associated Tasks, the total number of associated Tasks, and
+     * whether the card has a long description
+     * @param id the identifier of the board
+     * @return the HashMap of the progression triplets.
+     */
+    @GetMapping("/api/boards/getCardProgression")
+    public ResponseEntity<HashMap<Long, Double>>
+        getCardProgression(@RequestParam("id") long id){
+
+        Optional<Board> optBoard = boardservice.getById(id);
+
+        if(optBoard.isEmpty()){
+            return ResponseEntity.badRequest().build();
+        }
+
+        var temp = boardservice.progressionMap(optBoard.get());
+
+        return ResponseEntity.ok(temp);
     }
 }

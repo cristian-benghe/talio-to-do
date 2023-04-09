@@ -13,9 +13,9 @@ public class BoardCustomizationCtrl implements Initializable {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
-    private Double blue= Double.valueOf(-1);
-    private Double green= Double.valueOf(-1);
-    private Double red= Double.valueOf(-1);
+    private Double blue = (double) -1;
+    private Double green = (double) -1;
+    private Double red = (double) -1;
     private String text;
     @FXML
     private ColorPicker colorPicker;
@@ -24,17 +24,20 @@ public class BoardCustomizationCtrl implements Initializable {
     /**
      * Constructs a new instance of the ClientConnectCtrl class with the specified
      * ServerUtils and MainCtrl objects injected as dependencies.
-     * @param server the ServerUtils object to use for interacting with the server
+     *
+     * @param server   the ServerUtils object to use for interacting with the server
      * @param mainCtrl the MainCtrl object to use for coordinating the application's
-     * main control flow
+     *                 main control flow
      */
     @Inject
     public BoardCustomizationCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
+
     /**
      * creates the connection and sets the URL
+     *
      * @param address the URL that provides where the connection needs to be established
      */
     public void setConnection(String address) {
@@ -55,18 +58,18 @@ public class BoardCustomizationCtrl implements Initializable {
     /**
      * gets the color from the color picker
      */
-    public void getColor(){
-        this.blue= colorPicker.getValue().getBlue();
-        this.green=  colorPicker.getValue().getGreen();
-        this.red=colorPicker.getValue().getRed();
+    public void getColor() {
+        this.blue = colorPicker.getValue().getBlue();
+        this.green = colorPicker.getValue().getGreen();
+        this.red = colorPicker.getValue().getRed();
 
     }
 
     /**
      * save the changes of board customziation
      */
-    public void save(){
-        if(blue!=-1 && green!=-1 && red!=-1) {
+    public void save() {
+        if (blue != -1 && green != -1 && red != -1) {
             server.updateBoardColor(blue, green, red, mainCtrl.getBoardId());
         }
         server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));

@@ -1,9 +1,13 @@
 package server.service;
 
 import commons.Board;
+import commons.Card;
+import commons.Column;
+import commons.Task;
 import server.database.BoardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,6 +71,8 @@ public class BoardService {
             updated.setTags(board.getTags());
             updated.setColumns(board.getColumns());
             updated.setColor(board.getRed(), board.getGreen(), board.getBlue());
+            updated.setColorColumn(board.getColumnRed(),
+                    board.getColumnGreen(), board.getColumnBlue());
             return repo.save(updated);
         } else {
             throw new IllegalArgumentException("Board with ID " + id + " not found.");
@@ -87,5 +93,37 @@ public class BoardService {
 
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
+    }
+
+    /**
+     * Returns a Hashmap that maps a Card instance's identifier to its
+     * corresponding progression percentage for its task list.
+     * @param board the Board object to retrieve Card progression from.
+     * @return a HashMap containing the progression percentage for each Card in the Board.
+     */
+    public HashMap<Long, Double> progressionMap(Board board){
+
+        HashMap<Long, Double> temp = new HashMap<>();
+
+        for(Column col : board.getColumns()){
+            for(Card card : col.getCards()){
+
+                if(card.getTaskList().isEmpty()){
+                    temp.put(card.getId(), -1.0);
+                    continue;
+                }
+                int count = 0;
+                for(Task t: card.getTaskList()){
+                    if(t.getStatus()){
+                        count++;
+                    }
+                }
+
+                double d = (double) count/card.getTaskList().size();
+                temp.put(card.getId(), d);
+            }
+        }
+
+        return temp;
     }
 }

@@ -89,7 +89,6 @@ public class TaskService {
             throw new IllegalArgumentException("No card with such id exists");
         }
 
-        task.setCard(optCard.get());
         optCard.get().getTaskList().add(task);
 
         cardRepo.save(optCard.get());
@@ -134,6 +133,15 @@ public class TaskService {
         repo.save(task);
 
         return task;
+    }
+
+    /**
+     * Returns the Card instance corresponding to the given identifier
+     * @param cardId the identifier of the Card
+     * @return the corresponding Card instance
+     */
+    public Card getCardById(long cardId){
+        return cardRepo.getById(cardId);
     }
 
 

@@ -18,9 +18,17 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+//import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
+
 
 import commons.*;
 import jakarta.ws.rs.core.MediaType;
@@ -269,6 +277,31 @@ public class ServerUtils {
     }
 
     /**
+     * Deletes a tag with the specified ID from the card with the specified ID.
+     *
+     * @param tagId the ID of the tag to be deleted
+     * @param cardId the ID of the card from which the tag should be deleted
+     * @return the updated card object after the tag has been deleted
+     */
+
+    public Card deleteTagFromCard(Long tagId, Long cardId) {
+        Card card = getCardById(cardId);
+        Set<Tag> tagSet = card.getTags();
+        for (Tag t : tagSet) {
+            if (Objects.equals(t.getTagID(), tagId)) {
+                tagSet.remove(t);
+                break;
+            }
+        }
+
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+    }
+
+    /**
      * Retrieves using an HTTP GET request a board with a certain id
      *
      * @param boardId the id of the board we are looking for
@@ -283,6 +316,23 @@ public class ServerUtils {
                 .accept(MediaType.APPLICATION_JSON)
                 .get(Board.class);
     }
+
+    /**
+     * Retrieves using an HTTP GET request a board with a certain id
+     *
+     * @param cardId the id of the board we are looking for
+     * @return The deserialized Board object
+     */
+    public Card getCardById(long cardId) {
+        System.out.println(cardId);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Card.class);
+    }
+
 
     /**
      * @param tagId the id of the tag
@@ -446,7 +496,7 @@ public class ServerUtils {
     }
 
     /**
-     * A ,ethod to delete the column from api/columns
+     * A method to delete the column from api/columns
      *
      * @param columnId Id of the column that will be deleted
      * @return Response of the server/request
@@ -508,20 +558,46 @@ public class ServerUtils {
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
 
+//    /**
+//     * @param id the id of the card
+//     * @param newCard the new card
+//     * @return the updated card in the database
+//     */
+//    public Tag addCardToTag(Long id, Card newCard) {
+//        Tag tag = getTagById(id);
+//        tag.addCard(newCard);
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/tags/" + id)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+//    }
+
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/tags/" + id)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+//    }
+
+
     /**
      * @param id the id of the card
-     * @param newCard the new card
+     * @param newTag the new tag
      * @return the updated card in the database
      */
-    public Tag addCardToTag(Long id, Card newCard) {
-        Tag tag = getTagById(id);
-        tag.addCard(newCard);
+    public Card addTagtoCard(Long id, Tag newTag) {
+        Card card = getCardById(id);
 
+        card.addTag(newTag);
+        System.out.println("\n"+newTag+"\n");
+        System.out.println("\n"+card+"\n");
         return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/tags/" + id)
+                .target(server).path("api/cards/" + id)
                 .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tag, MediaType.APPLICATION_JSON), Tag.class);
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
     }
+
+
 
 
     /**
@@ -571,6 +647,41 @@ public class ServerUtils {
                 .request(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
     }
+    /**
+     * Deletes all tags from a card with the specified card ID.
+     *
+     * @param cardId the ID of the card to delete tags from
+     * @return the updated card object returned by the server
+     */
+    public Card deleteTagsFromCard(Long cardId) {
+        Card card = getCardById(cardId);
+        card.setTags(null);
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+    }
+
+
+
+
+
+//    public Card deleteTagFromCard(Long tagInd, Long cardId) {
+//        Card card = getCardById(cardId);
+//        Tag tagToRemove = card.getTags().stream()
+//                .filter(tag -> Objects.equals(tag.getTagID(), tagInd))
+//                .findFirst()
+//                .orElse(null);
+//        if (tagToRemove != null) {
+//            card.getTags().remove(tagToRemove);
+//        }
+//
+//        return ClientBuilder.newClient(new ClientConfig())
+//                .target(server).path("api/cards/" + cardId)
+//                .request(MediaType.APPLICATION_JSON)
+//                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+//    }
 //    /**
 //     * Adds a new column to a board.
 //     * This method sends a POST request to the server to add a new column to a board.
@@ -689,6 +800,42 @@ public class ServerUtils {
     }
 
     /**
+     * Updates a tag within a card with the specified tag and card IDs.
+     * The tag is updated with the new title,
+     * font color, and highlight color from the provided tag object.
+     * The updated tag is then added to the
+     * card's tag set and the old tag with the same ID is removed.
+     *
+     * @param tagId the ID of the tag to update
+     * @param cardId the ID of the card containing the tag to update
+     * @param card the card object containing the tag to update
+     * @param tag the updated tag object containing the new tag information
+     * @return the updated card object returned by the server
+     */
+
+    public Card updateTagInCard(Long tagId, Long cardId, Card card, Tag tag) {
+        Tag updated=getTagById(tagId);
+        updated.setTitle(tag.getTitle());
+        updated.setFontColor(tag.getFontRed(), tag.getFontGreen(), tag.getFontBlue());
+        updated.setHighlightColor(tag.getHighlightBlue(), tag.getHighlightGreen(),
+                tag.getHighlightRed());
+
+
+        Set<Tag> tagSet = card.getTags();
+        for (Tag t : tagSet) {
+            if (Objects.equals(t.getTagID(), tagId)) {
+                tagSet.remove(t);
+                tagSet.add(updated);
+                break;
+            }
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(APPLICATION_JSON)
+                .put(Entity.entity(card, APPLICATION_JSON), Card.class);
+    }
+
+    /**
      * @param tagId the id of the tag
      * @param tag the updated tag
      * @return the updated tag in the database
@@ -702,13 +849,15 @@ public class ServerUtils {
     /**
      * Persists the changes given by the Task instance
      * in the server.
+     * @param cardID the identifier of the parent Card instance.
      * @param task the updated Task instance.
      */
-    public void updateTask(Task task){
+    public void updateTask(long cardID, Task task){
 
         ClientBuilder.newClient(new ClientConfig())
                 .target(server)
                 .path("api/tasks/update")
+                .queryParam("id",cardID)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(task, APPLICATION_JSON), Task.class);
@@ -732,6 +881,238 @@ public class ServerUtils {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<List<Task>>(){});
     }
+    /**
+     * to get column by id
+     *
+     * @param columnId to get column
+     * @return Column object
+     */
+    public Column getColumnById(long columnId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Column.class);
+    }
 
-    
+
+
+    /**
+     * @param cardId id of the card
+     * @param cardd the updated card
+     * @param columnId the id of the column
+     * @param boardId the id of the board
+     * @return the updated card
+     */
+    public Column updateCardInColumnColor(Long cardId, Card cardd, Long columnId, Long boardId) {
+        Column column=getColumnById(columnId);
+        for(int i=0;i<column.getCards().size();i++){
+            if(column.getCards().get(i).getId()==cardId){
+                column.updateColorInCard(i, cardd.getRed(), cardd.getBlue(), cardd.getGreen());
+            }
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
+    private Future cardFuture;
+
+    /**
+     * This method is used to register for the Card instance updates through
+     * long polling.
+     * @param cardId the id of the card instance, which will be listened
+     *               to.
+     * @param consumer the Consumer method that will handle the
+     *                 returned Card instance.
+     */
+    public void registerForCardUpdates(long cardId, Consumer<Card> consumer){
+
+        cardFuture = executor.submit(()->{
+            while(!Thread.interrupted()){
+                var response = ClientBuilder.newClient(new ClientConfig())
+                        .target(server)
+                        .path("api/cards/getUpdates")
+                        .queryParam("id", cardId)
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get(Response.class);
+
+                if(response.getStatus() == 204) {
+                    continue;
+                }
+
+                consumer.accept(response.readEntity(Card.class));
+            }
+
+        });
+    }
+
+    private Future taskFuture;
+
+    /**
+     * This method is used to register for the Task instance updates through
+     * long polling.
+     * @param cardId the id of the card instance, whose related Task
+     *               instances will be listened to.
+     * @param consumer the Consumer method that will handle the
+     *                 returned Task list.
+     */
+    public void registerForTaskUpdates(long cardId, Consumer<List<Task>> consumer){
+
+        taskFuture = executor.submit(()->{
+            while(!Thread.interrupted()){
+
+                var response = ClientBuilder.newClient(new ClientConfig())
+                        .target(server)
+                        .path("api/tasks/getTask/updates")
+                        .queryParam("id", cardId)
+                        .request(APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
+                        .get(Response.class);
+
+
+                if(response.getStatus() == 204) {
+                    continue;
+                }
+
+                consumer.accept(response.readEntity(new GenericType<List<Task>>(){}));
+            }
+
+        });
+
+    }
+
+
+    /**
+     * This method halts all currently running
+     * tasks in_ the executor instance.
+     */
+    public void clearExecutor(){
+        if(cardFuture != null){
+            cardFuture.cancel(true);
+        }
+        if(taskFuture != null){
+            taskFuture.cancel(true);
+        }
+    }
+
+    /**
+     * This method completely shutdowns the long polling executor instance.
+     */
+    public void stopCardUpdates(){
+        executor.shutdownNow();
+    }
+
+    /**
+     * This method sends a PUT request to the server in order
+     * to update a particular card.
+     * @param card the updated card instance.
+     */
+    public void updateCard(Card card){
+        try {
+            ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("api/cards/" + card.getId())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .put(Entity.entity(card, APPLICATION_JSON));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * This method pings the server if a particular card was deleted.
+     * @param id the id of the deleted card.
+     */
+    public void pingCardDeletion(long id){
+        try {
+            ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("/api/cards/pingCardDeletion" )
+                    .queryParam("id",id)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method pings the server in case a particular card has been updated.
+     * @param id the id of the updated card.
+     */
+    public void pingCardUpdate(long id){
+        try {
+            ClientBuilder.newClient(new ClientConfig())
+                    .target(server)
+                    .path("/api/cards/pingCardUpdate")
+                    .queryParam("id",id)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Returns the progression HashMap for the Card instances of a
+     * given board.
+     * @param id the identifier of the board.
+     * @return the progression HashMap
+     */
+    public HashMap<Long, Double> getProgressionHashMap(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("/api/boards/getCardProgression")
+                .queryParam("id", id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<HashMap<Long, Double>>() {});
+    }
+
+    /**
+     * @param red rgb value of red
+     * @param green rgb value of green
+     * @param blue  rgb value of blue
+     * @param boardId id of the board
+     * @return updated board
+     */
+    public Board updateAllColumnsInBoard(double red, double green, double blue, Long boardId) {
+        Board board=getBoardById(boardId);
+        for(int i=0;i<board.getColumns().size();i++) {
+            Column column = board.getColumns().get(i);
+            column.updateColors(red, green, blue);
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
+
+    /**
+     * @param red rgb value of red
+     * @param green rgb value of green
+     * @param blue rgb value of blue
+     * @param boardId id of the board
+     * @return updated board
+     */
+    public Board updateColumnColorBoard(double red, double green, double blue, Long boardId) {
+        Board board=getBoardById(boardId);
+        board.setColorColumn(red, green, blue);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/boards/" + boardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
+    }
 }
