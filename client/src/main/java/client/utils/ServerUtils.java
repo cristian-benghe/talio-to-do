@@ -916,7 +916,6 @@ public class ServerUtils {
                 .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
     }
 
-}
 
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);

@@ -957,19 +957,20 @@ public class CardViewCtrl implements Initializable {
 
     }
 
-    private void updateTaskListCounter(){
-        if(card.getTaskList() == null || card.getTaskList().isEmpty()){
+    private void updateTaskListCounter() {
+        if (card.getTaskList() == null || card.getTaskList().isEmpty()) {
 
             taskListCounter.setText("No tasks are available.");
 
-        }else if (card.getTaskList().size() == 1){
+        } else if (card.getTaskList().size() == 1) {
 
             taskListCounter.setText("1 task is available.");
-        }else{
-            taskListCounter.setText(card.getTaskList().size()+ " tasks are available.");
+        } else {
+            taskListCounter.setText(card.getTaskList().size() + " tasks are available.");
         }
+    }
     
-    /*
+    /**
      * Getter for the long description TextArea.
      *
      * @return the long description TextArea
