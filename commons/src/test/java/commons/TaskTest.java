@@ -116,7 +116,7 @@ class TaskTest {
         card.setTaskList(new ArrayList<Task>());
         card.getTaskList().add(t);
 
-        assertEquals(t.getCard(), c);
+        assertEquals(c, t.getCard());
     }
 
     @Test
@@ -167,6 +167,6 @@ class TaskTest {
     void setPosition() {
         Task t1 = new Task(t);
         t1.setPosition(3);
-        assertNotEquals(t.getPosition(),3);
+        assertNotEquals(3,t.getPosition());
     }
 }
