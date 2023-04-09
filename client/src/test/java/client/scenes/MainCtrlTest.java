@@ -20,7 +20,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import java.util.Optional;
 
@@ -92,6 +91,9 @@ public class MainCtrlTest {
         mainCtrl.setPrimaryStage(primaryStage);
     }
 
+
+
+
     @Test
     public void testCreateConnection() {
         mainCtrl.createConnection("");
@@ -106,6 +108,16 @@ public class MainCtrlTest {
 
     @Test
     public void testShowDeleteBoardPopUp() {
+
+//        Stage mockStage = mock(Stage.class);
+//        doNothing().when(mockStage).setScene(any(Scene.class));
+//
+//        mainCtrl.setPopupStage(mockStage.getScene());
+//        //doNothing().when(mainCtrl.getPrimaryStage());
+//        //Mockito.verify(mainCtrl.getPrimaryStage(), times(1)).setTitle("Delete_Pop_Up");
+//
+//        mainCtrl.showDeleteBoardPopUp("", -1L);
+
 
     }
 
@@ -220,4 +232,81 @@ public class MainCtrlTest {
         boolean shownMainOverviewOneTime = ctrl.isShownMainOverviewOneTime();
         assertFalse(shownMainOverviewOneTime);
     }
+    @Test
+    public void testGetClientConnectWithNull() {
+        MainCtrl instance = new MainCtrl();
+        Scene result = instance.getClientConnect();
+        assertNull(result);
+    }
+    @Test
+    public void testGetMainOverviewWithNull() {
+        MainCtrl instance = new MainCtrl();
+        Scene result = instance.getMainOverview();
+        assertNull(result);
+    }
+    @Test
+    public void testGetBoardOverviewWithNull() {
+        MainCtrl instance = new MainCtrl();
+        Scene result = instance.getBoardOverview();
+        assertNull(result);
+    }
+    @Test
+    public void testGetCardViewCtrlWithNull() {
+        MainCtrl instance = new MainCtrl();
+        CardViewCtrl result = instance.getcardViewCtrl();
+        assertNull(result);
+    }
+    @Test
+    public void testGetAdminPasswordWithNull() {
+        MainCtrl instance = new MainCtrl();
+        String result = instance.getAdminPassword();
+        assertNull(result);
+    }
+    @Test
+    public void testSetAdminPasswordWithNull() {
+        MainCtrl instance = new MainCtrl();
+        instance.setAdminPassword(null);
+        String result = instance.getAdminPassword();
+        assertNull(result);
+    }
+    @Test
+    public void testIsHasAdminRoleWithNull() {
+        MainCtrl instance = new MainCtrl();
+        boolean result = instance.isHasAdminRole();
+        assertFalse(result);
+    }
+    @Test
+    public void testSetHasAdminRoleWithNull() {
+        MainCtrl instance = new MainCtrl();
+        instance.setHasAdminRole(false);
+        boolean result = instance.isHasAdminRole();
+        assertFalse(result);
+    }
+    @Test
+    public void testGetPrimaryStageWithNull() {
+        MainCtrl instance = new MainCtrl();
+        Stage result = instance.getPrimaryStage();
+        assertNull(result);
+    }
+    @Test
+    public void testSetPopupStageWithNull() {
+        MainCtrl instance = new MainCtrl();
+        instance.setPopupStage(null);
+        Scene result = instance.getPopupStage();
+        assertNull(result);
+    }
+    @Test
+    public void testGetClientConnect() {
+        mainCtrl.setClientConnectCtrl(null);
+        assertEquals(null, mainCtrl.getClientConnect());
+    }
+    @Test
+    public void testGetPrimaryStage() {
+        mainCtrl.setPrimaryStage(null);
+        assertEquals(null, mainCtrl.getPrimaryStage());
+    }
+
+
+
+
 }

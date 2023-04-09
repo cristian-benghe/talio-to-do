@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.testng.Assert;
 
 import java.io.IOException;
 
@@ -199,7 +200,8 @@ public class MainCtrl {
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
-     * @param id - the ID of the board to be deleted.
+     * @param id    - the ID of the board to be deleted.
+     * @return
      */
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
@@ -496,5 +498,9 @@ public class MainCtrl {
      */
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public void setPopupStage(Scene popupStage) {
+        this.popupStage = popupStage;
     }
 }
