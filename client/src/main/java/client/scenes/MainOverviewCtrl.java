@@ -332,6 +332,7 @@ public class MainOverviewCtrl implements Initializable {
      * the list of available boards.
      */
     public void createBoard() {
+        mainCtrl.setColorManagementDefault();
 
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);

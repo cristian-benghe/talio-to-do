@@ -34,10 +34,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CardViewCtrl implements Initializable {
-
-    private Double blue;
-    private Double green;
-    private Double red;
+    private Double blue=1.0;
+    private Double green=1.0;
+    private Double red=1.0;
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
@@ -45,6 +44,7 @@ public class CardViewCtrl implements Initializable {
     private String text;
     @FXML
     private Label longDescConstraint;
+    @FXML
     private ColorPicker cardColor;
     @FXML
     private Label titleLabel;

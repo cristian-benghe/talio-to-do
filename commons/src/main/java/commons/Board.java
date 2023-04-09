@@ -13,9 +13,9 @@ public class Board implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private Double red;
-    private Double green;
-    private Double blue;
+    private Double red=1.0;
+    private Double green=1.0;
+    private Double blue=1.0;
 
     @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();
@@ -23,6 +23,9 @@ public class Board implements Serializable {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE,
         CascadeType.REFRESH, CascadeType.DETACH})
     private List<Tag> tags = new ArrayList<>();
+    private double columnRed=1.0;
+    private double columnGreen=1.0;
+    private double columnBlue=1.0;
 
     /**
      * Constructs a new Board object with the specified title, columns, and tags.
@@ -300,5 +303,37 @@ public class Board implements Serializable {
      */
     public void updateTag(int ind, Tag tag) {
         tags.set(ind, tag);
+    }
+
+    /**
+     * @param red rgb value of red
+     * @param green  rgb value of green
+     * @param blue rgb value of blue
+     */
+    public void setColorColumn(double red, double green, double blue) {
+        this.columnRed=red;
+        this.columnGreen=green;
+        this.columnBlue=blue;
+    }
+
+    /**
+     * @return rgb value of red
+     */
+    public double getColumnRed() {
+        return columnRed;
+    }
+
+    /**
+     * @return rgb value of green
+     */
+    public double getColumnGreen() {
+        return columnGreen;
+    }
+
+    /**
+     * @return rgb value of blue
+     */
+    public double getColumnBlue() {
+        return columnBlue;
     }
 }

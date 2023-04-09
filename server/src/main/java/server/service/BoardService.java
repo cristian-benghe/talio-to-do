@@ -71,6 +71,8 @@ public class BoardService {
             updated.setTags(board.getTags());
             updated.setColumns(board.getColumns());
             updated.setColor(board.getRed(), board.getGreen(), board.getBlue());
+            updated.setColorColumn(board.getColumnRed(),
+                    board.getColumnGreen(), board.getColumnBlue());
             return repo.save(updated);
         } else {
             throw new IllegalArgumentException("Board with ID " + id + " not found.");
