@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import org.testng.Assert;
 
 import java.io.IOException;
 
@@ -500,6 +499,10 @@ public class MainCtrl {
         return primaryStage;
     }
 
+    /**
+     * getter for popupstage
+     * @param popupStage the stage
+     */
     public void setPopupStage(Scene popupStage) {
         this.popupStage = popupStage;
     }
