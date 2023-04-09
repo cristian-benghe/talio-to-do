@@ -52,8 +52,6 @@ public class MainOverviewCtrl implements Initializable {
     private Label emptyBoardListMsg;
     @FXML
     private Label labelMessage;
-    @FXML
-    private Button deleteBoard;
 
     @FXML
     private AnchorPane anchorPane;
@@ -147,7 +145,7 @@ public class MainOverviewCtrl implements Initializable {
         //Set the items of the list element as the ObservableList.
         boardsListElement.setItems(content);
 
-        /**
+        /*
          * Lambda expression that adds delete board button
          * for each line in the Main Overview list view
          */
@@ -496,7 +494,7 @@ public class MainOverviewCtrl implements Initializable {
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
 
-            Platform.runLater(() -> refreshOverview());
+            Platform.runLater(this::refreshOverview);
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
             availableBoards.add(board);
@@ -504,7 +502,7 @@ public class MainOverviewCtrl implements Initializable {
 //                if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
 //                availableUserBoards.add(board);
 //            }
-            Platform.runLater(() -> refreshOverview());
+            Platform.runLater(this::refreshOverview);
         });
 
         server.registerForMessages("/topic/update-board", Board.class, board -> {
@@ -516,8 +514,8 @@ public class MainOverviewCtrl implements Initializable {
                     b.setTitle(board.getTitle());
                 }
             }
-            Platform.runLater(() -> refreshWorkspaceFile());
-            Platform.runLater(() -> refreshOverview());
+            Platform.runLater(this::refreshWorkspaceFile);
+            Platform.runLater(this::refreshOverview);
         });
 
     }

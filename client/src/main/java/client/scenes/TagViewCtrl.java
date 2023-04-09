@@ -130,22 +130,25 @@ public class TagViewCtrl implements Initializable {
         }
     }
 
+    /**
+     * get to card from tagview
+     */
     @FXML
-    private void gettoCard()
+    public void gettoCard()
     {
         HBox hBox=new HBox();
         for(TagTemplateCtrl tagTemplateCtrl:tags){
-            if(tagTemplateCtrl.getCheckBox()==true) {
+            if(tagTemplateCtrl.getCheckBox()) {
                 AnchorPane anchorPane=new AnchorPane();
                 TextField textField = new TextField(tagTemplateCtrl.getText());
                 textField.setEditable(false);
-                textField.setMaxWidth(Double.MAX_VALUE);
+                //textField.setMaxWidth(Double.MAX_VALUE);
+                textField.setPrefWidth(100);
                 // set the maximum width of the text field
                 textField.setMaxHeight(Double.MAX_VALUE);
                 // set the maximum height of the text field
                 anchorPane.getChildren().add(textField);
                 hBox.getChildren().add(anchorPane);
-
                 card = server.addTagtoCard(card.getId(),
                         server.getTagById(tagTemplateCtrl.getTagId()) );
 
@@ -184,7 +187,7 @@ public class TagViewCtrl implements Initializable {
         int index = tagList.getChildren().indexOf(node);
         AnchorPane.setTopAnchor(node, index * 50.0);
         AnchorPane.setLeftAnchor(node, 0.0);
-        Tag tag = new Tag("New tag");
+        Tag tag = new Tag();
         server.addTagToBoard(mainCtrl.getBoardId(), tag);
         //add tag to database
         Board board=server.getBoardById(mainCtrl.getBoardId());
@@ -232,9 +235,57 @@ public class TagViewCtrl implements Initializable {
             if(card.hasTagWithId(c.getTagID())){
                 controller.setCheckBox(true);
             }
+            server.deleteTagsFromCard(card.getId());
+        }
+    }
+    /**
+     * @param tagTemplateCtrl the tagtemplatectrl deleted
+     * @throws IOException geenrated by failed io operations
+     */
+    public void refreshtaglistDelete(TagTemplateCtrl tagTemplateCtrl) throws IOException {
+        List<TagTemplateCtrl> tagsupdate=new ArrayList<>();
+        for(int i=0;i<tags.size();i++){
+            if(tags.get(i).equals(tagTemplateCtrl)){
+                tags.remove(i);
+                break;
+            }
+        }
+        for(int i=0;i<tags.size();i++)  {
+            tagsupdate.add(tags.get(i));
+        }
+        tagList.getChildren().clear();
+        tags.clear();
+        int ind=0;
+        for (Tag c : server.getBoardById(mainCtrl.getBoardId()).getTags()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/client/scenes/TagTemplate.fxml"));
+            TagTemplateCtrl controller = new TagTemplateCtrl(server, mainCtrl);
+            controller.setCard(mainCtrl.getCard());
+            loader.setController(controller);
+            controller.setTagId(c.getTagID());
+            ind++;
+            Node node = loader.load();
+            if(tagsupdate.get(ind-1).getCheckBox()) {
+                controller.setCheckbox(true);
+            }
+            controller.setTitleOfTag(c.getTitle()); //set title of the tag from the database
+            controller.setConnection(server.getServer());
+            controller.setBoardId(mainCtrl.getBoardId());
+            controller.setFontColors(c.getFontRed(), c.getFontBlue(), c.getFontGreen());
+            controller.setHighlightColor(c.getHighlightRed(),
+                    c.getHighlightBlue(), c.getHighlightGreen());
+            controller.addTitle();
+
+            tagList.getChildren().add(node);
+            tags.add(controller);
+            AnchorPane.setTopAnchor(node, (ind-1) * 50.0);
+            AnchorPane.setLeftAnchor(node, 0.0);
+            controller.setTagId(c.getTagID());
+
         }
         server.deleteTagsFromCard(card.getId());
     }
+
 
     /**
      * @param address of the server

@@ -277,6 +277,31 @@ public class ServerUtils {
     }
 
     /**
+     * Deletes a tag with the specified ID from the card with the specified ID.
+     *
+     * @param tagId the ID of the tag to be deleted
+     * @param cardId the ID of the card from which the tag should be deleted
+     * @return the updated card object after the tag has been deleted
+     */
+
+    public Card deleteTagFromCard(Long tagId, Long cardId) {
+        Card card = getCardById(cardId);
+        Set<Tag> tagSet = card.getTags();
+        for (Tag t : tagSet) {
+            if (Objects.equals(t.getTagID(), tagId)) {
+                tagSet.remove(t);
+                break;
+            }
+        }
+
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/cards/" + cardId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(card, MediaType.APPLICATION_JSON), Card.class);
+    }
+
+    /**
      * Retrieves using an HTTP GET request a board with a certain id
      *
      * @param boardId the id of the board we are looking for
@@ -854,6 +879,44 @@ public class ServerUtils {
                     .accept(APPLICATION_JSON)
                     .get(new GenericType<List<Task>>(){});
     }
+    /**
+     * to get column by id
+     *
+     * @param columnId to get column
+     * @return Column object
+     */
+    public Column getColumnById(long columnId) {
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server)
+                .path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .get(Column.class);
+    }
+
+
+
+    /**
+     * @param cardId id of the card
+     * @param cardd the updated card
+     * @param columnId the id of the column
+     * @param boardId the id of the board
+     * @return the updated card
+     */
+    public Column updateCardInColumnColor(Long cardId, Card cardd, Long columnId, Long boardId) {
+        Column column=getColumnById(columnId);
+        for(int i=0;i<column.getCards().size();i++){
+            if(column.getCards().get(i).getId()==cardId){
+                column.updateColorInCard(i, cardd.getRed(), cardd.getBlue(), cardd.getGreen());
+            }
+        }
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("api/columns/" + columnId)
+                .request(MediaType.APPLICATION_JSON)
+                .put(Entity.entity(column, MediaType.APPLICATION_JSON), Column.class);
+    }
+
+}
 
 
     private static final ExecutorService executor = Executors.newFixedThreadPool(2);

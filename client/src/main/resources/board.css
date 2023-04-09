@@ -1,5 +1,5 @@
 #anchorPane {
-    background-color: #f2f2f2;
+
 }
 
 #boardTitle {
@@ -45,7 +45,6 @@
 
 .text-field {
     -fx-background-color: #ffffff;
-    -fx-border-color: #cccccc;
     -fx-border-radius: 5px;
     -fx-font-size: 17px;
 }

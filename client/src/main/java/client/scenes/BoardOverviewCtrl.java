@@ -5,12 +5,14 @@ import com.google.inject.Inject;
 import commons.Board;
 import commons.Card;
 import commons.Column;
+import commons.Tag;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
@@ -38,8 +40,10 @@ import javafx.scene.input.TransferMode;
 import java.net.URL;
 import java.util.*;
 
+import static java.lang.Long.parseLong;
+
 public class BoardOverviewCtrl implements Initializable {
-    private Long nrCol = Long.valueOf(0);
+    private Long nrCol = 0L;
     private String title;
 
     private final ServerUtils server;
@@ -101,13 +105,6 @@ public class BoardOverviewCtrl implements Initializable {
         this.mainCtrl = mainCtrl;
     }
 
-    /**
-     * This changes the scene to the Board Overview
-     */
-    public void showOverview() {
-        mainCtrl.showBoardOverview("", (double) 255, (double) 255, (double) 255);
-    }
-
 
     /**
      * @param idd   the id of the board
@@ -118,7 +115,7 @@ public class BoardOverviewCtrl implements Initializable {
     public void setBoardTitle(String idd, Double blue, Double green, Double red) {
         boardTitleLabel.setVisible(false);
         this.title = idd;
-        Long nr = Long.parseLong(idd.split("--")[1].trim());
+        long nr = parseLong(idd.split("--")[1].trim());
         keyID.setText("keyID: " + nr);
         this.id = nr;
         columnsRefresh();
@@ -224,7 +221,7 @@ public class BoardOverviewCtrl implements Initializable {
         TextField textField = new TextField(title);
         textField.setAlignment(Pos.CENTER);
         Label columnLabel = new Label("...");
-        vBox.setMargin(textField, new Insets(2));
+        VBox.setMargin(textField, new Insets(2));
 
         anchorPaneVBox.getChildren().add(vBox);
         //to set the functionality of the drag and drop of the new column.
@@ -287,6 +284,7 @@ public class BoardOverviewCtrl implements Initializable {
         return anchorPane1;
     }
 
+
     /**
      * A method to create a new card
      *
@@ -304,25 +302,43 @@ public class BoardOverviewCtrl implements Initializable {
         hbox1.setAlignment(Pos.CENTER);
         hbox1.setPrefSize(150, 80);
         TextField textField = new TextField("Card");
-        textField.setStyle("-fx-background-color: #C0C0C0");
+        textField.setStyle("-fx-background-color: #ffffff");
+        textField.setStyle("-fx-border-color: #ffffff;");
         textField.setAlignment(Pos.BASELINE_CENTER);
         hbox1.getChildren().add(textField);
         vbox.getChildren().addAll(myLabel, hbox1);
         vbox.setAlignment(Pos.CENTER);
         anchorPane1.getChildren().add(vbox);
+
+
         textField.setFont(new Font("System", 18));
 
-        anchorPane1.setStyle("-fx-background-color:  #C0C0C0; -fx-background-radius:  15");
+        anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
+                "-fx-background-radius:  15; -fx-border-color: #cccccc;" );
         anchorPane1.setPrefSize(150, 80);
+        // create a FadeTransition for the anchorPane
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(700), anchorPane1);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.8);
+
+// create a ScaleTransition for the anchorPane
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(700), anchorPane1);
+        scaleTransition.setFromX(1.0);
+        scaleTransition.setFromY(1.0);
+        scaleTransition.setToX(1.02);
+        scaleTransition.setToY(1.08);
 
         anchorPane1.setOnMouseEntered(e -> {
             if (anchorPane1 != selectedAnchorPane) {
-                anchorPane1.setStyle("-fx-background-color:  #C0C0C0; " +
-                        "-fx-background-radius:  15; " +
-                        "-fx-border-color: lightblue; " +
-                        "-fx-border-radius: 15; " +
-                        "-fx-border-width: 4; " +
-                        "-fx-margin: -2;");
+//                anchorPane1.setStyle("-fx-background-color:  #ffffff; " +
+//                        "-fx-background-radius:  15; " +
+//                        "-fx-border-color: #cccccc; " +
+//                        "-fx-border-radius: 15; " +
+//                        "-fx-border-width: 4; " +
+//                        "-fx-margin: -2;");
+                // start the animations
+                fadeTransition.play();
+                scaleTransition.play();
             }
         });
 
@@ -333,6 +349,17 @@ public class BoardOverviewCtrl implements Initializable {
                         "-fx-border-color: transparent; " +
                         "-fx-margin: 0;");
             }
+            scaleTransition.playFrom(scaleTransition.getTotalDuration());
+            scaleTransition.stop();
+            fadeTransition.stop();
+            anchorPane1.setScaleX(1.0);
+            anchorPane1.setScaleY(1.0);
+
+            // create a new FadeTransition to reset the opacity to its original value
+            FadeTransition resetFadeTran = new FadeTransition(Duration.millis(800), anchorPane1);
+            resetFadeTran.setFromValue(0.8);
+            resetFadeTran.setToValue(1.0);
+            resetFadeTran.play();
         });
 
         return anchorPane1;
@@ -426,8 +453,8 @@ public class BoardOverviewCtrl implements Initializable {
      * @param columnid    id of the specific column
      */
     public void setTextField(AnchorPane anchorPane1, Button button, VBox vBox, Long columnid) {
-        ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
-                get(1)).getChildren().get(0)).setOnKeyPressed(event1 -> {
+        ((HBox) ((VBox) anchorPane1.getChildren().get(0)).getChildren().
+                get(1)).getChildren().get(0).setOnKeyPressed(event1 -> {
                     ((Label) (((VBox) anchorPane1.getChildren().get(0))
                     .getChildren().get(0))).setText("Press enter to save!!");
                     if (event1.getCode() == KeyCode.ENTER) {
@@ -546,9 +573,9 @@ public class BoardOverviewCtrl implements Initializable {
                     !(((AnchorPane) event.getGestureSource()).getParent().equals(myVBox))) {
                 myVBox.getChildren().remove(button);
                 setCardDragDrop((AnchorPane) event.getGestureSource(), myVBox);
-                server.cardDragDropUpdate(Long.valueOf(((AnchorPane) event.getGestureSource()).
+                server.cardDragDropUpdate((long) ((AnchorPane) event.getGestureSource()).
                         getParent().getChildrenUnmodifiable().indexOf((AnchorPane) event.
-                                getGestureSource())), (long) hbox.getChildren()
+                                getGestureSource()), (long) hbox.getChildren()
                         .indexOf(((AnchorPane) event.
                                 getGestureSource()).getParent().
                                 getParent()), (long) hbox.getChildren().
@@ -874,8 +901,6 @@ public class BoardOverviewCtrl implements Initializable {
         columnTmp = column.copyCards(column, columnTmp);
         Card sourceCard = column.getCards()
                 .get(vBox.getChildren().indexOf(event.getGestureSource()) - 2);
-        Card targetCard = column.getCards().get(vBox.getChildren().indexOf(card) - 2);
-        int indexSource = vBox.getChildren().indexOf(event.getGestureSource()) - 2;
         int indexTarget = vBox.getChildren().indexOf(card) - 2;
         column.getCards().clear();
         columnTmp.getCards()
@@ -1014,8 +1039,10 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.setPrefHeight(380);
             vBox.setPrefWidth(150);
 
+
             TextField textField = new TextField(c.getTitle());
             textField.setAlignment(Pos.CENTER);
+            textField.setStyle("-fx-border-color: #cccccc;");
             Label columnLabel = new Label("...");
             vBox.setMargin(textField, new Insets(2));
 
@@ -1034,11 +1061,52 @@ public class BoardOverviewCtrl implements Initializable {
             Button button =
                     createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
             setVBoxDragDrop(button, vBox);
+
             button.setAlignment(Pos.BOTTOM_CENTER);
             vBox.getChildren().addAll(columnLabel, textField);
+
             for (Card kard : c.getCards()) {
 
                 AnchorPane anchorPane1 = addCard(vBox);
+                HBox tagColors=new HBox();
+                tagColors.setAlignment(Pos.BOTTOM_CENTER);
+                tagColors.setPrefSize(150, 10);
+                List<Tag> tags = new ArrayList<>(kard.getTags());
+                //int a =0;
+                for (int i = 0; i < kard.getTags().size(); i++) {
+                    Tag tag = tags.get(i);
+                    if (tag.getHighlightRed() != 1.0 || tag.getHighlightGreen() != 1.0
+                            || tag.getHighlightBlue() != 1.0) {
+                        AnchorPane colorPane = new AnchorPane();
+                        Color color = Color.color(tag.getHighlightRed(), tag.getHighlightGreen(),
+                                tag.getHighlightBlue());
+                        String rgbCode = toRgbCode(color);
+                        colorPane.setStyle("-fx-background-color: " + rgbCode + ";");
+                        colorPane.setPrefSize(20, 10);
+                        tagColors.getChildren().add(colorPane);
+                        if (tagColors.getChildren().size() == 5) {
+                            break;
+                        }
+                    }
+                }
+
+
+                AnchorPane.setBottomAnchor(tagColors, 10.0);
+                anchorPane1.getChildren().addAll(tagColors);
+
+                Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
+                anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                anchorPane1.getChildren().get(0).
+                        setStyle("-fx-background-color: " + toRgbCode(color) +
+                                "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                VBox child1= (VBox) anchorPane1.getChildren().get(0);
+                HBox child2= (HBox) child1.getChildren().get(1);
+                TextField child3=(TextField) child2.getChildren().get(0);
+                child3.setStyle("-fx-background-color: " + toRgbCode(color) +
+                        "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
+                
+
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,
@@ -1187,11 +1255,9 @@ public class BoardOverviewCtrl implements Initializable {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
-
         helpDialog.setHeaderText("Help zone");
 
         Stage dialogStage2 = (Stage) helpDialog.getDialogPane().getScene().getWindow();
-
 // Create a TabPane to hold the keyboard shortcuts list and other tabs
         TabPane tabPane = new TabPane();
         tabPane.setTabMinWidth(Double.MAX_VALUE);
@@ -1214,8 +1280,6 @@ public class BoardOverviewCtrl implements Initializable {
         Tab dragTab = new Tab("Drag and Drop Information", dragAndDropList);
         tabPane.getTabs().add(dragTab);
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
-
-
 // Center and fill the TabPane
         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         tabPane.setTabMinWidth(100);
@@ -1245,14 +1309,15 @@ public class BoardOverviewCtrl implements Initializable {
                     helpDialog.showAndWait();
                 }
             }
-            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null
-                && !(event.getTarget() instanceof TextField)) {
+            if (event.getCode() == KeyCode.ENTER && selectedAnchorPane != null &&
+                    !(event.getTarget() instanceof TextField)) {
                 labelActionGeneral((Label) (((VBox) selectedAnchorPane.
                         getChildren().get(0)).getChildren().get(0)));
             }
             if (selectedAnchorPane != null && event.getCode() == KeyCode.E &&
                     !(event.getTarget() instanceof TextField)) {
                 keyECard(event);
+
             }
             else if(event.isShiftDown()&&event.getCode()==KeyCode.UP && selectedAnchorPane != null)
             {
@@ -1263,6 +1328,7 @@ public class BoardOverviewCtrl implements Initializable {
                     selectAnchorPane((AnchorPane) ((VBox) ((AnchorPane)hbox.getChildren().
                         get(shiftColumnIndex)).getChildren().get(0)).getChildren().get(index-1));
                 }
+                server.send("/app/update-in-board", server.getBoardById(id));
                 event.consume();
 
             }
@@ -1276,9 +1342,11 @@ public class BoardOverviewCtrl implements Initializable {
                             get(shiftColumnIndex)).getChildren().
                             get(0)).getChildren().get(index+1));
                 }
+                server.send("/app/update-in-board", server.getBoardById(id));
                 event.consume();
             }
             else if (event.getCode() == KeyCode.C && selectedAnchorPane != null){
+
                 cardCustomization.showAndWait();
             }
         });
@@ -1302,17 +1370,52 @@ public class BoardOverviewCtrl implements Initializable {
         content.getChildren().add(newColourBox);
 
         ButtonType saveQuitButtonType = new ButtonType("Save & Quit", ButtonBar.ButtonData.OK_DONE);
-        cardCustomization.getDialogPane().getButtonTypes().
-                addAll(saveQuitButtonType, ButtonType.CANCEL);
+        cardCustomization.getDialogPane().
+                getButtonTypes().addAll(saveQuitButtonType, ButtonType.CANCEL);
+        Node saveQuitButton = cardCustomization.getDialogPane().lookupButton(saveQuitButtonType);
+        saveQuitButton.setDisable(true);
+        colorPicker.setOnAction(event -> {
+            saveQuitButton.setDisable(false);
+        });
 
+        ((Button)saveQuitButton).setOnAction(event -> {
+            // Code to be executed when the button is clicked
+            Color newColor = colorPicker.getValue();
+            System.out.println("New color selected: " + newColor);
+            // Add more code here to perform specific actions when the button is clicked
+            cardCustomization.close(); // Close the dialog
+            int indexColumnCurrent = hbox.getChildren().
+                    indexOf(selectedAnchorPane.getParent().getParent());
+            int cardIndex = ((VBox) selectedAnchorPane.getParent()).
+                    getChildren().indexOf(selectedAnchorPane);
+            Board board = server.getBoardById(id);
+            Column column = board.getColumns().get(indexColumnCurrent);
+            Card card = column.getCards().get(cardIndex-2);
+            saveColor(card, newColor);
+            saveQuitButton.setDisable(true);
+        });
         cardCustomization.getDialogPane().setContent(content);
+    }
 
-//        cardCustomization.setResultConverter(buttonType -> {
-//            if (buttonType == saveQuitButtonType) {
-//                return colorPicker.getValue();
-//            }
-//            return null;
-//        });
+    /**
+     * Zort
+     * @param card
+     * @param color
+     */
+    public void saveColor(Card card, Color color) {
+        card.setColor(color.getBlue(), color.getGreen(), color.getRed());
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        Long colId= Long.valueOf(-1);
+        for(Column c:board.getColumns()){
+            for(Card cardCheck:c.getCards()){
+                if(cardCheck.getId()==card.getId()){
+                    colId=c.getId();
+                    break;
+                }
+            }
+        }
+        server.updateCardInColumnColor(card.getId(), card, colId, mainCtrl.getBoardId());
+        server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
     }
 
 
@@ -1350,6 +1453,7 @@ public class BoardOverviewCtrl implements Initializable {
                                         indexOf(((AnchorPane) selectedAnchorPane).
                                                 getParent().getParent()) + 1, id);
                         columnsRefresh();
+                        server.send("/app/update-in-board", server.getBoardById(id));
                         event.consume();
                     }
                     else if(event.getCode() == KeyCode.LEFT && selectedAnchorPane != null)
@@ -1546,7 +1650,6 @@ public class BoardOverviewCtrl implements Initializable {
         if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
 
             //server.deleteBoard(id);
-
             server.send("/app/delete-board", id);
             mainCtrl.showMainOverview();
 
@@ -1573,6 +1676,7 @@ public class BoardOverviewCtrl implements Initializable {
         server.setServerAddress(address);
     }
 
+
     /**
      * method which copies the id of the accessed board to the clipboard
      */
@@ -1586,6 +1690,7 @@ public class BoardOverviewCtrl implements Initializable {
         // Start confirmation animation
         copyIDLabelInOut();
     }
+
 
     /**
      * Animation that starts when the user wants to copy the id of the current board
@@ -1658,14 +1763,14 @@ public class BoardOverviewCtrl implements Initializable {
     public void socketsCall() {
         server.registerForMessages("/topic/update-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id))
-                Platform.runLater(() -> columnsRefresh());
+                Platform.runLater(this::columnsRefresh);
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
             Platform.runLater(() -> setColors(board.getBlue(), board.getGreen(), board.getRed()));
         });
         server.registerForMessages("/topic/update-title-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)) {
-                Platform.runLater(() -> refreshTitle());
+                Platform.runLater(this::refreshTitle);
             }
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));
@@ -1674,7 +1779,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         server.registerForMessages("/topic/update-labels-in-board", Board.class, board -> {
             if (Objects.equals(board.getId(), id)) {
-                Platform.runLater(() -> columnsRefresh());
+                Platform.runLater(this::columnsRefresh);
             }
 //            Platform.runLater(() ->
 //                 setBoardTitle(boardTitle.getText() + " -- " + board.getId().toString()));

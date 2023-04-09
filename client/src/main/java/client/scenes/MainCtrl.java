@@ -178,6 +178,7 @@ public class MainCtrl {
         cardViewCtrl.setText(boardOverviewCtrl.getTitle());
         primaryStage.setTitle("Talio - CardView");
         cardViewCtrl.setCard(card);
+        this.card = card;
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
         cardViewCtrl.resetLongPolling();
@@ -188,6 +189,8 @@ public class MainCtrl {
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
+        String css = getClass().getResource("/tagview.css").toExternalForm();
+        tagView.getStylesheets().add(css);
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);

@@ -77,6 +77,7 @@ public class Tag implements Serializable {
      * Default constructor for creating an empty Tag object
      */
     public Tag() {
+        this.setTitle("New Tag");
         this.setFontColor(0.0, 0.0, 0.0);
         this.setHighlightColor(1.0, 1.0, 1.0);
     }

@@ -63,10 +63,7 @@ public class ColumnService {
      */
     public Column update(Column existing, Column updated) {
         existing.setTitle(updated.getTitle());
-        List<Card> existingCards = existing.getCards();
-        List<Card> updatedCards = updated.getCards();
-        existingCards.clear();
-        existingCards.addAll(updatedCards);
+        existing.setCards(updated.getCards());
         return repo.save(existing);
     }
     /**

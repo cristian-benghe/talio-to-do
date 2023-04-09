@@ -74,6 +74,8 @@ public class CardService {
             updated.setTitle(card.getTitle());
             updated.setDescription(card.getDescription());
             updated.setTags(card.getTags());
+            updated.setColor(card.getBlue(), card.getGreen(), card.getRed());
+            updated.setTaskList(card.getTaskList());
             return repo.save(updated);
         } else {
             throw new IllegalArgumentException("Card with ID " + id + " not found.");
