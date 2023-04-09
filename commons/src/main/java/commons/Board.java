@@ -13,9 +13,9 @@ public class Board implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private Double red;
-    private Double green;
-    private Double blue;
+    private Double red=1.0;
+    private Double green=1.0;
+    private Double blue=1.0;
 
     @OneToMany( cascade = CascadeType.ALL)
     private List<Column> columns = new ArrayList<>();

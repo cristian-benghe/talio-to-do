@@ -44,6 +44,7 @@ public class CardViewCtrl implements Initializable {
     private String text;
     @FXML
     private Label longDescConstraint;
+    @FXML
     private ColorPicker cardColor;
     @FXML
     private Label titleLabel;
