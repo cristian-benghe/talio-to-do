@@ -951,7 +951,14 @@ public class BoardOverviewCtrl implements Initializable {
             //gesture source to pass dragged item
             int colInd = hbox.getChildren().indexOf(event.getGestureSource());
             //server.deleteColumn(colInd, id);
+            var tempBoard = server.getBoardById(id);
+            List<Card> cardList = tempBoard.getColumns().get(colInd).getCards();
             server.deleteColumnFromApi(Math.toIntExact(server.deleteColumn(colInd, id)));
+
+            //Ping server for the deleted cards.
+            for(Card c : cardList){
+                server.pingCardDeletion(c.getId());
+            }
             hbox.getChildren().remove(event.getGestureSource());
             event.setDropCompleted(true);
             event.consume();
