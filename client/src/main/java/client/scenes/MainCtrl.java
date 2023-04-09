@@ -122,6 +122,10 @@ public class MainCtrl {
         boardOverview.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Board View");
 
+        //Set the long-polling
+        boardOverviewCtrl.resetLongPolling();
+        boardOverviewCtrl.setUpLongPolling();
+
         primaryStage.setScene(boardOverview);
 
         primaryStage.centerOnScreen();
@@ -156,6 +160,7 @@ public class MainCtrl {
         String css = getClass().getResource("/client.css").toExternalForm();
         clientConnect.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Connect to a Server");
+        boardOverviewCtrl.resetLongPolling();
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();

@@ -388,7 +388,7 @@ public class BoardOverviewCtrl implements Initializable {
 
         button.setOnAction(event -> {
             AnchorPane anchorPane1 = addCard(vBox);
-            Card mycard = new Card("Card", null, null, null);
+            Card mycard = new Card("Card", null, null, null );
             var column = server.addCardToColumn(id, columnid, mycard,
                     (long) vBox.getChildren().indexOf(button) - 2);
             ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
@@ -1003,6 +1003,8 @@ public class BoardOverviewCtrl implements Initializable {
      */
     public void columnsRefresh() {
         hbox.getChildren().clear();
+
+        var progressionHash = server.getProgressionHashMap(id);
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
@@ -1035,20 +1037,60 @@ public class BoardOverviewCtrl implements Initializable {
             button.setAlignment(Pos.BOTTOM_CENTER);
             vBox.getChildren().addAll(columnLabel, textField);
             for (Card kard : c.getCards()) {
-                vBox.getChildren().add(button);
+
                 AnchorPane anchorPane1 = addCard(vBox);
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,
                         (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
+                ((VBox) anchorPane1.getChildren().get(0))
+                        .getChildren()
+                        .add(cardProgressionVisual(progressionHash.get(kard.getId()),kard));
                 vBox.getChildren().add(anchorPane1);
 
-                vBox.getChildren().remove(button);
 
             }
             vBox.getChildren().add(button);
         }
         setHBoxDrop(hbox);
+    }
+
+    /**
+     * This method creates a new container pane that displays the progression in
+     * the Tasks of the given Card instance, and whether the Card contains
+     * further description
+     * @param progression the percentage of progression in the completion of
+     *                    Tasks. Input -1 if there are no tasks at all.
+     * @param card the current Card instance.
+     * @return the container pane HBox.
+     */
+    private HBox cardProgressionVisual(double progression, Card card){
+
+        //Create a main pane
+        HBox mainPane = new HBox();
+        mainPane.setAlignment(Pos.CENTER);
+        mainPane.setPadding(new Insets(2,0,2,0));
+
+        //Create a description images
+        ImageView descriptionIcon = new ImageView();
+        descriptionIcon.setImage(new Image("DescriptionIcon.png"));
+        descriptionIcon.setVisible(card.getDescription()!=null
+                && !card.getDescription().isBlank());
+        descriptionIcon.setFitHeight(15);
+        descriptionIcon.setFitWidth(15);
+        mainPane.getChildren().add(descriptionIcon);
+        VBox.setMargin(descriptionIcon, new Insets(5,10,5,10));
+
+        //Create a progress bar
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setPrefHeight(15);
+        progressBar.setVisible(progression != -1.0);
+        progressBar.setProgress(progression);
+        mainPane.getChildren().add(progressBar);
+        VBox.setMargin(progressBar, new Insets(5,10,5,10));
+
+        return mainPane;
+
     }
 
     /**
@@ -1644,5 +1686,41 @@ public class BoardOverviewCtrl implements Initializable {
         Board board1 = server.getBoardById(id);
         boardTitle.setText(board1.getTitle());
     }
+
+    /**
+     * This method set-ups the long polling tasks necessary
+     * for auto-synchronization.
+     */
+    public void setUpLongPolling(){
+
+        server.registerForCardUpdates(-1,card1 -> {
+            Platform.runLater(()->{
+                columnsRefresh();
+
+            });
+        });
+        server.registerForTaskUpdates(-1, list -> {
+            Platform.runLater(()->{
+                columnsRefresh();
+            });
+        });
+    }
+
+    /**
+     * This method halts all currently running tasks in
+     * the executor instance.
+     */
+    public void resetLongPolling(){
+        server.clearExecutor();
+    }
+
+    /**
+     * This method shutdowns the executor instance that
+     * handles long polling.
+     */
+    public void stopLongPolling(){
+        server.stopCardUpdates();
+    }
+
 
 }

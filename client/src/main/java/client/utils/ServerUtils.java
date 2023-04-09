@@ -18,6 +18,7 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 //import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -821,13 +822,15 @@ public class ServerUtils {
     /**
      * Persists the changes given by the Task instance
      * in the server.
+     * @param cardID the identifier of the parent Card instance.
      * @param task the updated Task instance.
      */
-    public void updateTask(Task task){
+    public void updateTask(long cardID, Task task){
 
         ClientBuilder.newClient(new ClientConfig())
                 .target(server)
                 .path("api/tasks/update")
+                .queryParam("id",cardID)
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .put(Entity.entity(task, APPLICATION_JSON), Task.class);
@@ -997,5 +1000,20 @@ public class ServerUtils {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Returns the progression HashMap for the Card instances of a
+     * given board.
+     * @param id the identifier of the board.
+     * @return the progression HashMap
+     */
+    public HashMap<Long, Double> getProgressionHashMap(long id){
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(server).path("/api/boards/getCardProgression")
+                .queryParam("id", id)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<HashMap<Long, Double>>() {});
     }
 }

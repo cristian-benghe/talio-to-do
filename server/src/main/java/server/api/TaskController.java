@@ -89,16 +89,17 @@ public class TaskController {
     /**
      * A PUT request for updating a particular Task instance in the repository,
      * specified by the given id.
-     * @param task The updated Task Instance
+     * @param cardId the identifier of the parent Card
+     * @param task The updated Task Instance.
      * @return if the Task object is found and updated,
      * it will return a response with HTTP status code 204 or
      * if the Task object is not found, it will return
      * a response with HTTP status code 404.
      */
     @PutMapping(path={"update","update/"})
-    public ResponseEntity<Task> updateTask(@RequestBody Task task){
+    public ResponseEntity<Task> updateTask(@RequestParam("id") long cardId, @RequestBody Task task){
         var updatedTask = taskService.updateTask(task);
-        taskListners.forEach((k,l) -> l.accept(updatedTask.getCard()));
+        taskListners.forEach((k,l) -> l.accept(taskService.getCardById(cardId)));
         return ResponseEntity.noContent().build();
     }
 
@@ -116,7 +117,7 @@ public class TaskController {
         try{
             var addedTask =  taskService.addTaskToCard(task,cardId);
             var res = ResponseEntity.ok(task);
-            taskListners.forEach((k,l) -> l.accept(addedTask.getCard()));
+            taskListners.forEach((k,l) -> l.accept(taskService.getCardById(cardId)));
             return res;
         }catch(IllegalArgumentException e){
             return ResponseEntity.badRequest().build();

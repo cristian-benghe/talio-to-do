@@ -1,8 +1,6 @@
 package commons;
 
-//import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -25,8 +23,7 @@ public class Card implements Serializable {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JsonIgnore
+            fetch = FetchType.EAGER)
     private List<Task> taskList;
 
     @ManyToMany(cascade = CascadeType.ALL,

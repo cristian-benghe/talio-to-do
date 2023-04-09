@@ -488,7 +488,7 @@ public class CardViewCtrl implements Initializable {
 
                 if(!field.getText().equals(card.getTaskList().get(taskIndex).getTitle())) {
                     card.getTaskList().get(taskIndex).setTitle(field.getText());
-                    server.updateTask(card.getTaskList().get(taskIndex));
+                    server.updateTask(card.getId(),card.getTaskList().get(taskIndex));
                     event.consume();
                 }
 
@@ -511,7 +511,7 @@ public class CardViewCtrl implements Initializable {
 
             //Record the change in the status of the task, and ensure it persists in the server
             card.getTaskList().get(taskIndex).setStatus(checkBox.isSelected());
-            server.updateTask(card.getTaskList().get(taskIndex));
+            server.updateTask(card.getId(), card.getTaskList().get(taskIndex));
 
         });
 
