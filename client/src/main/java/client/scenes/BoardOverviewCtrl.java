@@ -1410,11 +1410,10 @@ public class BoardOverviewCtrl implements Initializable {
                             Board board = server.getBoardById(id);
                             Column column = board.getColumns().get(hbox.getChildren().
                                     indexOf(((AnchorPane) selectedAnchorPane).
-                                            getParent().getParent()) + 1);
-                            Card card = column.getCards().get(Math.toIntExact(selectedCardID - 3));
-
+                                            getParent().getParent()));
+                            Card card = column.getCards().get(Math.toIntExact(selectedCardID - 2));
                             mainCtrl.getTagViewCtrl().setCard(card);
-                            mainCtrl.showTagView();
+                            mainCtrl.showTagViewShortcut(card);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }

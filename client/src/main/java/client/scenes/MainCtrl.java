@@ -189,6 +189,24 @@ public class MainCtrl {
 
     }
 
+    /**
+     * A method that shows the tagView from shortcut 'C'
+     * @param card a card to be showed
+     * @throws IOException exception to be thrown
+     */
+    public void showTagViewShortcut(Card card) throws IOException {
+        String css = getClass().getResource("/tagview.css").toExternalForm();
+        tagView.getStylesheets().add(css);
+        tagViewCtrl.setCard(card);
+        primaryStage.setTitle("Talio - TagView");
+        primaryStage.setScene(tagView);
+        System.out.println(card.getTags().size()+"fg ");
+        tagViewCtrl.refreshtaglist();
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+
+    }
+
 
     /**
      * A method to switch the scene to the TagView
