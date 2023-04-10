@@ -349,13 +349,28 @@ public class MainOverviewCtrl implements Initializable {
         refreshOverview();
 
         server.send("/app/boards", board);
-        Platform.runLater(() ->
+        if (server.getBoards().isEmpty())
+            Platform.runLater(() ->
+            {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Board board1 = server.getBoards().get(server.getBoards().size() - 1);
+                availableUserBoards.add(board1);
+
+                refreshOverview();
+                if (!mainCtrl.isHasAdminRole())
+                    refreshWorkspaceFile();
+                refreshOverview();
+                //server.send("/app/refresh", 10);
+
+                if (!mainCtrl.isHasAdminRole())
+                    refreshWorkspaceFile();
+            });
+        else
         {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Board board1 = server.getBoards().get(server.getBoards().size() - 1);
             availableUserBoards.add(board1);
 
@@ -367,7 +382,7 @@ public class MainOverviewCtrl implements Initializable {
 
             if (!mainCtrl.isHasAdminRole())
                 refreshWorkspaceFile();
-        });
+        }
 
 
 //        //TODO Retrieve the new board from the server to determine the board's ID.
@@ -422,7 +437,7 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * Set up the dialog for the help button
      */
-    public void helpPopUp(){
+    public void helpPopUp() {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
@@ -469,10 +484,10 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * This method shows the help dialog when the "?" button is clicked
      */
-    public void showHelp(){
+    public void showHelp() {
         Optional<ButtonType> result = helpDialog.showAndWait();
 
-        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
             mainCtrl.showMainOverview();
         }
     }
@@ -509,8 +524,8 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
-            for(Board b : availableUserBoards) {
-                if(Objects.equals(b.getId(),board.getId())) {
+            for (Board b : availableUserBoards) {
+                if (Objects.equals(b.getId(), board.getId())) {
                     b.setTitle(board.getTitle());
                 }
             }
@@ -547,7 +562,7 @@ public class MainOverviewCtrl implements Initializable {
         if (availableUserBoards.size() == 1) {
             try {
                 server.getBoardById(availableUserBoards.get(0).getId());
-            } catch (NotFoundException e){
+            } catch (NotFoundException e) {
                 availableUserBoards = new ArrayList<>();
             }
 
