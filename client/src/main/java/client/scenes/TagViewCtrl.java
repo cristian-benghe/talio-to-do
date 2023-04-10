@@ -137,6 +137,7 @@ public class TagViewCtrl implements Initializable {
     public void gettoCard()
     {
         HBox hBox=new HBox();
+        card=server.deleteTagsFromCard(card.getId());
         for(TagTemplateCtrl tagTemplateCtrl : tags){
             if(tagTemplateCtrl.getCheckBox()) {
 

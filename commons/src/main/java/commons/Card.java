@@ -243,6 +243,7 @@ public class Card implements Serializable {
      * @return true if the card has the specific tag
      */
     public boolean hasTagWithId(Long tagId) {
+        if(tags==null)return false;
         for (Tag tag : tags) {
             if (Objects.equals(tag.getTagID(), tagId)) {
                 return true;
