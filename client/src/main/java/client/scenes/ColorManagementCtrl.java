@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Board;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
@@ -49,7 +50,6 @@ public class ColorManagementCtrl implements Initializable {
                 boardColor.getValue().getGreen(), boardColor.getValue().getRed()
                 , mainCtrl.getBoardId());
         server.send("/app/update-in-board", server.getBoardById(mainCtrl.getBoardId()));
-        System.out.println(columnColor.getValue().getBlue());
         server.updateAllColumnsInBoard(columnColor.getValue().getRed(),
                 columnColor.getValue().getGreen(),
                 columnColor.getValue().getBlue(), mainCtrl.getBoardId());
@@ -147,5 +147,20 @@ public class ColorManagementCtrl implements Initializable {
     public void setColorPick() {
         boardColor.setValue(Color.color(1, 1, 1));
         columnColor.setValue(Color.color(1, 1, 1));
+    }
+
+    /**
+     * set color of color picker before entering the scene
+     */
+    public void setColorPickColumn() {
+        reset.setSelected(false);
+        checkBoxColumn.setSelected(false);
+        checkBoxBoard.setSelected(false);
+        Board board=server.getBoardById(mainCtrl.getBoardId());
+        boardColor.setValue(Color.color(board.getRed(),
+                board.getGreen(), board.getBlue()));
+        columnColor.setValue(Color.color(board.getColumnRed(),
+                board.getColumnGreen(), board.getColumnBlue()));
+
     }
 }

@@ -139,7 +139,6 @@ public class ClientConnectCtrl implements Initializable {
 
         //Set up the websocket
         if (serverAddress.contains("http://")) {
-            System.out.println("SALUTTT");
             server.setSession(
                     server.connect("ws://" + serverAddress.substring(7) + "websocket"));
 
