@@ -514,7 +514,8 @@ public class BoardOverviewCtrl implements Initializable {
                 .getParent()
                 .getChildrenUnmodifiable()
                 .indexOf(label.getParent().getParent());
-        int columnIndex = hbox.getChildren().indexOf((AnchorPane)(label).getParent().getParent().getParent().getParent());;
+        int columnIndex = hbox.getChildren().
+                indexOf((AnchorPane)(label).getParent().getParent().getParent().getParent());;
 
         Board board = server.getBoardById(id);
         Column column = board.getColumns().get(columnIndex);
@@ -1036,7 +1037,6 @@ public class BoardOverviewCtrl implements Initializable {
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
-
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.TOP_CENTER);
             scrollPane.setContent(vBox);
@@ -1048,7 +1048,8 @@ public class BoardOverviewCtrl implements Initializable {
                     " -fx-border-color: #000000;");
             TextField textField = new TextField(c.getTitle());
             textField.setAlignment(Pos.CENTER);
-            textField.setStyle("-fx-border-color: #cccccc; -fx-background-radius:  15; -fx-border-radius: 15px;");
+            textField.setStyle("-fx-border-color: #cccccc;" +
+                    " -fx-background-radius:  15; -fx-border-radius: 15px;");
             Label columnLabel = new Label("...");
             vBox.setMargin(textField, new Insets(2));
             anchorPaneVBox.getChildren().add(vBox);
@@ -1060,8 +1061,7 @@ public class BoardOverviewCtrl implements Initializable {
                 if (e.getCode() == KeyCode.ENTER) {
                     updateColTitle(hbox.getChildren().indexOf(anchorPaneVBox) + 1,
                             textField.getText());
-                    columnLabel.setText("...");
-                }
+                    columnLabel.setText("...");}
             });
             Button button =
                     createButton(vBox, (long) hbox.getChildren().indexOf(anchorPaneVBox) + 1);
@@ -1096,7 +1096,6 @@ public class BoardOverviewCtrl implements Initializable {
 
                 AnchorPane.setBottomAnchor(tagColors, 25.0);
                 anchorPane1.getChildren().addAll(tagColors);
-
                 Color color = Color.color(kard.getRed(), kard.getGreen(), kard.getBlue());
                 anchorPane1.setStyle("-fx-background-color: " + toRgbCode(color) +
                         "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
@@ -1108,8 +1107,6 @@ public class BoardOverviewCtrl implements Initializable {
                 TextField child3 = (TextField) child2.getChildren().get(0);
                 child3.setStyle("-fx-background-color: " + toRgbCode(color) +
                         "; -fx-background-radius: 15px; -fx-border-radius: 15px;");
-
-
                 ((TextField) ((HBox) ((VBox) anchorPane1.getChildren().get(0)).
                         getChildren().get(1)).getChildren().get(0)).setText(kard.getTitle());
                 setTextField(anchorPane1, button, vBox,
@@ -1118,8 +1115,6 @@ public class BoardOverviewCtrl implements Initializable {
                         .getChildren()
                         .add(cardProgressionVisual(progressionHash.get(kard.getId()), kard));
                 vBox.getChildren().add(anchorPane1);
-
-
             }
             vBox.getChildren().add(button);
         }
