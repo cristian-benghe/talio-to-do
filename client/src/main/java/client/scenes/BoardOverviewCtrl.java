@@ -80,6 +80,8 @@ public class BoardOverviewCtrl implements Initializable {
     private HBox hbox;
 
     @FXML
+    private ScrollPane scrollPaneBoard;
+    @FXML
     private Text keyID;
     @FXML
     private ImageView binImage;
@@ -267,6 +269,12 @@ public class BoardOverviewCtrl implements Initializable {
         vBox.setMargin(anchorPane1, new Insets(2, 2, 2, 2));
 
         anchorPane1.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2)
+            {
+                labelActionGeneral(((Label) (((VBox) anchorPane1.getChildren().get(0))
+                        .getChildren().get(0))));
+            }
+
             if (event.getButton() == MouseButton.PRIMARY) {
                 if (selectedAnchorPane != null && selectedAnchorPane != anchorPane1) {
                     // reset the previously selected anchor pane
@@ -295,7 +303,7 @@ public class BoardOverviewCtrl implements Initializable {
     public AnchorPane createCard(VBox vBox) {
         AnchorPane anchorPane1 = new AnchorPane();
         Label myLabel = new Label();
-        myLabel.setText("=====");
+        myLabel.setText("...");
         setLabelAction(myLabel);
         VBox vbox = new VBox();
         anchorPane1.getChildren().add(myLabel);
@@ -468,7 +476,7 @@ public class BoardOverviewCtrl implements Initializable {
                                 .getChildren().get(0)).getChildren().get(1)).
                                 getChildren().get(0)).getText(), id);
                         ((Label) (((VBox) anchorPane1.getChildren().get(0))
-                        .getChildren().get(0))).setText("=====");
+                        .getChildren().get(0))).setText("...");
 
                         Board tempBoard = server.getBoardById(id);
                         server.send("/app/update-in-board", tempBoard);
@@ -506,24 +514,12 @@ public class BoardOverviewCtrl implements Initializable {
                 .getParent()
                 .getChildrenUnmodifiable()
                 .indexOf(label.getParent().getParent());
-        int columnIndex = 1 + label.getParent() //VBox
-                .getParent() //Anchor
-                .getParent() //VBox
-                .getParent() //Scroll
-                .getParent() //Anchor
-                .getChildrenUnmodifiable()
-                .indexOf(
-                        label.getParent() //VBox
-                                .getParent() //Anchor
-                                .getParent() //VBox
-                                .getParent() //Scroll
-                );
+        int columnIndex = hbox.getChildren().indexOf((AnchorPane)(label).getParent().getParent().getParent().getParent());;
 
         Board board = server.getBoardById(id);
-        Column column = board.getColumns().stream()
-                .filter(column1 -> column1.getIDinBoard() == columnIndex)
-                .findFirst().get();
+        Column column = board.getColumns().get(columnIndex);
         Card card = column.getCards().get(cardIndex);
+
 
 
         mainCtrl.showCardView(card);
@@ -1034,10 +1030,13 @@ public class BoardOverviewCtrl implements Initializable {
                 ";");
         board.setStyle("-fx-background-color: " + toRgbCode(colorBoard) +
                 ";");
+        scrollPaneBoard.setStyle("-fx-border-color: " + toRgbCode(colorBoard) +
+                ";");
         var progressionHash = server.getProgressionHashMap(id);
         for (Column c : server.getBoardById(id).getColumns()) {
             AnchorPane anchorPaneVBox = new AnchorPane();
             ScrollPane scrollPane = new ScrollPane();
+
             VBox vBox = new VBox();
             vBox.setAlignment(Pos.TOP_CENTER);
             scrollPane.setContent(vBox);
@@ -1045,11 +1044,11 @@ public class BoardOverviewCtrl implements Initializable {
             vBox.setPrefWidth(150);
             Color colorColumn = Color.color(c.getRed(), c.getGreen(), c.getBlue());
             vBox.setStyle("-fx-background-color: " + toRgbCode(colorColumn) +
-                    "; -fx-background-radius: 15px; -fx-border-radius: 10px;" +
+                    "; -fx-background-radius: 15px; -fx-border-radius: 15px;" +
                     " -fx-border-color: #000000;");
             TextField textField = new TextField(c.getTitle());
             textField.setAlignment(Pos.CENTER);
-            textField.setStyle("-fx-border-color: #cccccc; -fx-background-radius:  15;");
+            textField.setStyle("-fx-border-color: #cccccc; -fx-background-radius:  15; -fx-border-radius: 15px;");
             Label columnLabel = new Label("...");
             vBox.setMargin(textField, new Insets(2));
             anchorPaneVBox.getChildren().add(vBox);
@@ -1250,7 +1249,7 @@ public class BoardOverviewCtrl implements Initializable {
         labels.add(new Label("Note, it's a template!!"));
         labels.add(new Label("To delete the card you can drag and drop it to the BIN"));
         labels.add(new Label("To rearrange cards you can drag and drop"));
-        labels.add(new Label("To enter the card views you can press to the ===== sign"));
+        labels.add(new Label("To enter the card views you can press to the ... sign"));
         return labels;
     }
 

@@ -21,9 +21,9 @@ public class Card implements Serializable {
     private Long id;
     private String title;
     private String description;
-    private Double red=1.0;
-    private Double green=1.0;
-    private Double blue=1.0;
+    private Double red= 192/255.0;
+    private Double green=192/255.0;
+    private Double blue=192/255.0;
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.EAGER)
     private List<Task> taskList;
