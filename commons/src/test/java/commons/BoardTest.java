@@ -341,9 +341,6 @@ class BoardTest {
         columns.add(new Column("Column 3", new ArrayList<>()));
         board4.setColumns(columns);
         board4.updateColIndex(0);
-//        System.out.println(board4.getColumns().get(0).getIDinBoard());
-//        System.out.println(board4.getColumns().get(1).getTitle());
-//        System.out.println(board4.getColumns().get(2).getTitle());
         assertEquals(-2, board4.getColumns().get(0).getIDinBoard());
         assertEquals(-2, board4.getColumns().get(1).getIDinBoard());
         assertEquals(-2, board4.getColumns().get(2).getIDinBoard());

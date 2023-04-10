@@ -73,8 +73,8 @@ class ColumnTest {
 
     @Test
     void testEquals2() {
-        Column column2 = new Column("Todo", null );
-        assertEquals(column, column2);
+        Column column2 = new Column("Todo", null);
+        assertEquals(new Column("Todo", null), column2);
     }
 
     @Test
@@ -86,6 +86,62 @@ class ColumnTest {
     @Test
     void testToString() {
         Column column1 = new Column("Todo", cards );
-        assertEquals(column1.toString(), "The Column Todo has the ID: null and contains the following cards: with position: -1");
+        assertEquals(column1.toString(), "The Column Todo has the ID: null and contains the following cards: 1.0,-1,OOPP,1.0,<null>,1.0,<null>,<null>,Project_11.0,-1,OOPP,1.0,<null>,1.0,<null>,<null>,Project_11.0,-1,OOPP,1.0,<null>,1.0,<null>,<null>,Project_11.0,-1,OOPP,1.0,<null>,1.0,<null>,<null>,Project_1with position: -1");
+    }
+
+    @Test
+    public void testGetIDinBoard(){
+        Column column1 = new Column("Todo", cards );
+        column1.setIDinBoard(2);
+        assertEquals(2, column1.getIDinBoard());
+    }
+
+    @Test
+    public void testGetID(){
+        Column column1 = new Column();
+        column1.setId(2L);
+        assertEquals(2, column1.getId());
+    }
+
+    @Test
+    public void testCopyCards(){
+        Card kard = new Card("Project_1", "OOPP", null, null);
+        Card kard1 = new Card("Project_1", "OOPP", null, null);
+        Card kard2 = new Card("Project_1", "OOPP", null, null);
+        Card kard3 = new Card("Project_1", "OOPP", null, null);
+        List cards2 = new ArrayList<Card>();
+        cards2.add(kard);
+        cards2.add(kard1);
+        cards2.add(kard2);
+        cards2.add(kard3);
+        Column column3 = new Column("Todo", cards2);
+        Column column1 = new Column();
+        column1.setCards(cards2);
+        column1.copyCards(column1, column3);
+        assertEquals(column3.getCards().get(0), column1.getCards().get(0));
+        assertEquals(column3.getCards().get(1), column1.getCards().get(1));
+        assertEquals(column3.getCards().get(2), column1.getCards().get(2));
+    }
+
+    @Test
+    public void testUpdateColorInCard(){
+        Card kard = new Card("Project_1", "OOPP", null, null);
+//        kard.setColor(100.0, 150.0, 31.0);
+        Card kard1 = new Card("Project_1", "OOPP", null, null);
+        Card kard2 = new Card("Project_1", "OOPP", null, null);
+        Card kard3 = new Card("Project_1", "OOPP", null, null);
+        List cards2 = new ArrayList<Card>();
+        cards2.add(kard);
+        cards2.add(kard1);
+        cards2.add(kard2);
+        cards2.add(kard3);
+        Column column3 = new Column("Todo", cards2);
+        column3.updateColorInCard(0, 200.0, 105.0, 54.0);
+        assertNotEquals(100.0, column3.getCards().get(0).getBlue());
+        assertEquals(105.0, column3.getCards().get(0).getBlue());
+        assertNotEquals(150.0, column3.getCards().get(0).getGreen());
+        assertEquals(54.0, column3.getCards().get(0).getGreen());
+        assertNotEquals(31.0, column3.getCards().get(0).getRed());
+        assertEquals(200.0, column3.getCards().get(0).getRed());
     }
 }

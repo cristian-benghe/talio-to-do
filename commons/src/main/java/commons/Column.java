@@ -48,7 +48,7 @@ public class Column implements Serializable {
      */
     public Column(String title, List<Card> cards) {
         this.title = title;
-        this.cards = new ArrayList<>();
+        this.cards = cards;
     }
 
     //setters and getters
@@ -135,10 +135,8 @@ public class Column implements Serializable {
         if (idInBoard != column.idInBoard) return false;
         if (getId() != null ? !getId().equals(column.getId())
                 : column.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(column.getTitle()) :
-                column.getTitle() != null) return false;
-        return getCards() != null ? getCards().equals(column.getCards()) :
-                column.getCards() == null;
+        if (getTitle()!=null?!getTitle().equals(column.getTitle()):column.getTitle()!=null)return false;
+        return getCards()!=null?getCards().equals(column.getCards()):column.getCards()==null;
     }
 
     /**
@@ -149,9 +147,7 @@ public class Column implements Serializable {
     @Override
     public String toString(){
         String cards1 = "";
-        for( int i = 0; i<cards.size(); i++) {
-            cards1 += cards.get(i).toString();
-        }
+        for( int i = 0; i<cards.size(); i++) { cards1 += cards.get(i).toString();}
         return "The Column "
                 + this.title
                 + " has the ID: "
