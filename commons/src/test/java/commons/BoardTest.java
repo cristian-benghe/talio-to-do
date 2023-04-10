@@ -266,12 +266,6 @@ class BoardTest {
         assertEquals(2, tags.size());
     }
 
-
-    @Test
-    void testCopyBoard_createsDeepCopy() {
-
-    }
-
     @Test
     void getId() {
         Board board3 = new Board("board");
@@ -320,6 +314,39 @@ class BoardTest {
         String newTitle = "New Title";
         board.setTitle(newTitle);
         assertEquals(newTitle, board.getTitle());
+    }
+
+    @Test
+    public void testCopyBoard(){
+        Board boardSource = new Board();
+        boardSource.addColumn(new Column("Column 1", new ArrayList<>()));
+        boardSource.addColumn(new Column("Column 2", new ArrayList<>()));
+        Board boardTmp = new Board();
+        boardTmp = boardTmp.copyBoard(boardSource, boardTmp);
+        List<Column> columnsSource = boardSource.getColumns();
+        List<Column> columnsTmp = boardTmp.getColumns();
+        assertEquals(columnsSource.size(), columnsTmp.size());
+        for (int i = 0; i < columnsSource.size(); i++) {
+            assertEquals(columnsSource.get(i).getTitle(), columnsTmp.get(i).getTitle());
+        }
+    }
+
+    @Test
+    public void testUpdateColIndex(){
+        Board board4 = new Board();
+        List<Column> columns;
+        columns = new ArrayList<>();
+        columns.add(new Column("Column 1", new ArrayList<>()));
+        columns.add(new Column("Column 2", new ArrayList<>()));
+        columns.add(new Column("Column 3", new ArrayList<>()));
+        board4.setColumns(columns);
+        board4.updateColIndex(0);
+//        System.out.println(board4.getColumns().get(0).getIDinBoard());
+//        System.out.println(board4.getColumns().get(1).getTitle());
+//        System.out.println(board4.getColumns().get(2).getTitle());
+        assertEquals(-2, board4.getColumns().get(0).getIDinBoard());
+        assertEquals(-2, board4.getColumns().get(1).getIDinBoard());
+        assertEquals(-2, board4.getColumns().get(2).getIDinBoard());
     }
 
 }
