@@ -152,6 +152,9 @@ public class TagViewCtrl implements Initializable {
                 card = server.addTagtoCard(card.getId(),
                         server.getTagById(tagTemplateCtrl.getTagId()) );
 
+                var tagInstance = server.getTagById(tagTemplateCtrl.getTagId());
+                card = server.addTagtoCard(card.getId(), tagInstance);
+
             }
         }
 

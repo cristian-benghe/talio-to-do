@@ -37,6 +37,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
@@ -1399,6 +1400,24 @@ public class BoardOverviewCtrl implements Initializable {
                     else if(event.getCode() == KeyCode.RIGHT && selectedAnchorPane != null)
                     {
                         rightKeyCheck(event);
+                    }
+                    else if (event.getCode() == KeyCode.T && !(event.getTarget() instanceof TextArea)
+                            && selectedAnchorPane != null) {
+                        try {
+                            Long selectedCardID = Long.valueOf(((AnchorPane) selectedAnchorPane).getParent().
+                                    getChildrenUnmodifiable().
+                                    indexOf((AnchorPane) selectedAnchorPane));
+                            Board board = server.getBoardById(id);
+                            Column column = board.getColumns().get(hbox.getChildren().
+                                    indexOf(((AnchorPane) selectedAnchorPane).
+                                            getParent().getParent()) + 1);
+                            Card card = column.getCards().get(Math.toIntExact(selectedCardID - 3));
+
+                            mainCtrl.getTagViewCtrl().setCard(card);
+                            mainCtrl.showTagView();
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
         );
