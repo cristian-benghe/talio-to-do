@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class TagServiceTests {
@@ -84,5 +84,41 @@ public class TagServiceTests {
             tagService.add(tag);
         });
     }
+
+    @Test
+    void testDeleteTag() {
+        long id = 1L;
+        tagService.delete(id);
+
+        verify(tagRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testUpdateTag() {
+        long id = 1L;
+        Tag existingTag = new Tag("Existing Tag");
+        existingTag.setTagID(id);
+        existingTag.setFontColor(255.0, 0.0, 0.0);
+        existingTag.setHighlightColor(0.0, 0.0, 255.0);
+
+        Tag updatedTag = new Tag("Updated Tag");
+        updatedTag.setTagID(id);
+        updatedTag.setFontColor(0.0, 255.0, 0.0);
+        updatedTag.setHighlightColor(255.0, 255.0, 0.0);
+
+        when(tagRepository.findById(id)).thenReturn(Optional.of(existingTag));
+        when(tagRepository.save(existingTag)).thenReturn(existingTag);
+
+        Tag result = tagService.update(existingTag, updatedTag);
+
+        assertEquals(result.getTitle(), updatedTag.getTitle());
+        assertEquals(result.getFontRed(), updatedTag.getFontRed());
+        assertEquals(result.getFontGreen(), updatedTag.getFontGreen());
+        assertEquals(result.getFontBlue(), updatedTag.getFontBlue());
+        assertEquals(result.getHighlightRed(), updatedTag.getHighlightRed());
+        assertEquals(result.getHighlightGreen(), updatedTag.getHighlightGreen());
+        assertEquals(result.getHighlightBlue(), updatedTag.getHighlightBlue());
+    }
+
 
 }
