@@ -203,9 +203,9 @@ public class Board implements Serializable {
 
         if (getId() != null ? !getId().equals(board.getId()) :
                 board.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(board.getTitle()) : board.getTitle() != null) return false;
-        if (getColumns() != null ? !getColumns().equals(board.getColumns()) : board.getColumns() != null) return false;
-        return getTags() != null ? getTags().equals(board.getTags()) : board.getTags() == null;
+        if(getTitle()!=null?!getTitle().equals(board.getTitle()):board.getTitle() != null)return false;
+        if(getColumns()!=null?!getColumns().equals(board.getColumns()):board.getColumns()!=null)return false;
+        return getTags()!= null?getTags().equals(board.getTags()):board.getTags() == null;
     }
 
     /**
