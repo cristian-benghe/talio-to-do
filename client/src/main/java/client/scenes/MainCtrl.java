@@ -121,22 +121,15 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
         boardCustomizationCtrl.setBoardText(text);
-       // System.out.println(text);
-
         boardOverviewCtrl.socketsCall();
-        
         String css = getClass().getResource("/board.css").toExternalForm();
-
         //add stylsheet
         boardOverview.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Board View");
-
         //Set the long-polling
         boardOverviewCtrl.resetLongPolling();
         boardOverviewCtrl.setUpLongPolling();
-
         primaryStage.setScene(boardOverview);
-
         boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
@@ -201,7 +194,6 @@ public class MainCtrl {
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
-        System.out.println(card.getTags().size()+"fg ");
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
     }
@@ -327,7 +319,8 @@ public class MainCtrl {
      * show color management
      */
     public void showColorManagment(){
-        colorManagementCtrl.setColorPick();
+        //colorManagementCtrl.setColorPick();
+        colorManagementCtrl.setColorPickColumn();
         String css = getClass().getResource("/colorMcss.css").toExternalForm();
         colorManagement.getStylesheets().add(css);
         primaryStage.setTitle("Color management");

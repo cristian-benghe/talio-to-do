@@ -915,9 +915,6 @@ public class CardViewCtrl implements Initializable {
         });
         longDescription.setOnKeyPressed(event -> {
             if(event.getCode() == KeyCode.ENTER){
-
-
-                //System.getProperty("line.separator") doesn't work here
                 var temp = longDescription.getText()
                         .replace("\n", "");
                 longDescription.setText(
