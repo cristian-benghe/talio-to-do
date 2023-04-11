@@ -29,6 +29,9 @@ public class MainCtrl {
     private Scene cardView;
     private BoardCustomizationCtrl boardCustomizationCtrl;
 
+    private ColorManagementCtrl colorManagementCtrl;
+    private Scene colorManagement;
+
     private boolean isAdmin=false;
 
     private Scene boardCustomization;
@@ -53,6 +56,7 @@ public class MainCtrl {
      * @param cardView an injection of the CardView scene and controller
      * @param boardCustomization on injection of the boardCustomization scene and controller
      * @param tagView an injection of the CardView scene and controller
+     * @param colorManagement an injection of the colormanagement scene and controller
      * @throws Exception an exception that may be thrown
      */
 
@@ -63,7 +67,8 @@ public class MainCtrl {
                            Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView,
                            Pair<BoardCustomizationCtrl, Parent> boardCustomization,
-                           Pair<TagViewCtrl, Parent> tagView) throws Exception {
+                           Pair<TagViewCtrl, Parent> tagView,
+                           Pair<ColorManagementCtrl, Parent>colorManagement) throws Exception {
 
 
         this.isAdmin = false;
@@ -82,12 +87,21 @@ public class MainCtrl {
         this.cardView = new Scene(cardView.getValue());
         this.boardCustomizationCtrl=boardCustomization.getKey();
         this.boardCustomization=new Scene(boardCustomization.getValue());
+
         this.tagViewCtrl = tagView.getKey();
         this.tagView = new Scene(tagView.getValue());
+
+        this.colorManagementCtrl = colorManagement.getKey();
+        this.colorManagement = new Scene(colorManagement.getValue());
 
 
         //Set the primary stage to be not resizable
         primaryStage.setResizable(false);
+
+        primaryStage.setOnCloseRequest(event -> {
+            cardViewCtrl.stopLongPolling();
+        });
+
 
         //Set the stage icon
         //TODO Replace the temporary icon
@@ -107,19 +121,15 @@ public class MainCtrl {
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
         boardCustomizationCtrl.setBoardText(text);
-       // System.out.println(text);
-
         boardOverviewCtrl.socketsCall();
-        
         String css = getClass().getResource("/board.css").toExternalForm();
-
         //add stylsheet
         boardOverview.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Board View");
-
+        //Set the long-polling
+        boardOverviewCtrl.resetLongPolling();
+        boardOverviewCtrl.setUpLongPolling();
         primaryStage.setScene(boardOverview);
-
-        primaryStage.centerOnScreen();
         boardOverviewCtrl.setBoardTitle(text, blue, green, red);
     }
 
@@ -137,7 +147,6 @@ public class MainCtrl {
 
         primaryStage.setTitle("Talio - Home");
         primaryStage.setScene(mainOverview);
-        primaryStage.centerOnScreen();
         //Refresh the Scene
         mainOverviewCtrl.refreshOverview();
         shownMainOverviewOneTime = true;
@@ -151,6 +160,7 @@ public class MainCtrl {
         String css = getClass().getResource("/client.css").toExternalForm();
         clientConnect.getStylesheets().add(css);
         primaryStage.setTitle("Talio - Connect to a Server");
+        boardOverviewCtrl.resetLongPolling();
 
         primaryStage.setScene(clientConnect);
         clientConnectCtrl.refresh();
@@ -171,22 +181,21 @@ public class MainCtrl {
         this.card = card;
         primaryStage.setScene(cardView);
         cardViewCtrl.refresh();
-        primaryStage.centerOnScreen();
+        cardViewCtrl.resetLongPolling();
+        cardViewCtrl.setUpLongPolling();
     }
     /**
      * A method to switch the scene to the TagView
      */
     public void showTagView() throws IOException {
         String css = getClass().getResource("/tagview.css").toExternalForm();
+        cardViewCtrl.resetLongPolling();
         tagView.getStylesheets().add(css);
         tagViewCtrl.setCard(card);
         primaryStage.setTitle("Talio - TagView");
         primaryStage.setScene(tagView);
-        System.out.println(card.getTags().size()+"fg ");
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
-        primaryStage.centerOnScreen();
-
     }
 
     /**
@@ -208,10 +217,6 @@ public class MainCtrl {
     }
 
 
-    /**
-     * A method to switch the scene to the TagView
-     */
-
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
@@ -223,7 +228,6 @@ public class MainCtrl {
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
         primaryStage.setScene(popupStage);
-        primaryStage.centerOnScreen();
         deleteBoardPopUpCtrl.setText(title);
         deleteBoardPopUpCtrl.setID(id);
     }
@@ -523,5 +527,38 @@ public class MainCtrl {
      */
     public void setPopupStage(Scene popupStage) {
         this.popupStage = popupStage;
+    }
+
+    /**
+     * @return boardcontroller
+     */
+    public BoardOverviewCtrl getBoardCtrl() {
+        return boardOverviewCtrl;
+    }
+
+    /**
+     * show color management
+     */
+    public void showColorManagment(){
+        //colorManagementCtrl.setColorPick();
+        colorManagementCtrl.setColorPickColumn();
+        String css = getClass().getResource("/colorMcss.css").toExternalForm();
+        colorManagement.getStylesheets().add(css);
+        primaryStage.setTitle("Color management");
+        primaryStage.setScene(colorManagement);
+    }
+
+    /**
+     * @return colormanagementctrl
+     */
+    public ColorManagementCtrl getColorManagement() {
+        return colorManagementCtrl;
+    }
+
+    /**
+     * default color set
+     */
+    public void setColorManagementDefault() {
+        colorManagementCtrl.setColorPick();
     }
 }

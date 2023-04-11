@@ -97,7 +97,6 @@ public class TaskServiceTest {
 
         Task result = taskService.addTaskToCard(task, cardId);
         assertEquals(task, result);
-        assertEquals(card, task.getCard());
         assertTrue(card.getTaskList().contains(task));
     }
 

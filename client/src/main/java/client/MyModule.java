@@ -37,5 +37,6 @@ public class MyModule implements Module {
         binder.bind(DeleteBoardPopUpCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardCustomizationCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
     }
 }

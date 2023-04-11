@@ -334,17 +334,10 @@ public class MainOverviewCtrl implements Initializable {
      * the list of available boards.
      */
     public void createBoard() {
-
+        mainCtrl.setColorManagementDefault();
         //Create a new board with a generic title.
         Board board = new Board("New Board", null, null);
-        //System.out.println("\n\n\n" + board.getId() + "\n\n\n");
-
-
         //Post the new board to the server
-        //TODO Fix the POST method for board!
-
-
-        //server.addBoard(board);
         refreshOverview();
         if (!mainCtrl.isHasAdminRole())
             refreshWorkspaceFile();
@@ -384,20 +377,9 @@ public class MainOverviewCtrl implements Initializable {
 
             if (!mainCtrl.isHasAdminRole())
                 refreshWorkspaceFile();
+
         }
 
-
-//        //TODO Retrieve the new board from the server to determine the board's ID.
-//        //board = server.();
-//        //As a temporary measure, set ID as 0
-//        //board.setId(0L);
-//        System.out.println("\n\n\n" + board.getId() + "\n\n\n");
-//        //Add the new board to the availableBoards list
-//        availableBoards.add(board);
-//
-//
-//
-//        updateBoardsList(availableBoards);
     }
 
     /**

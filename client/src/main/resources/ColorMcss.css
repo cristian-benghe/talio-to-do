@@ -1,0 +1,37 @@
+/* TitledPane */
+.titled-pane > .title {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #008080;
+}
+.titled-pane > .content {
+    -fx-background-color: #f5f5f5;
+    -fx-padding: 10;
+}
+
+/* ColorPicker */
+.color-picker {
+    -fx-color-label-visible: false;
+}
+
+/* CheckBox */
+.check-box {
+    -fx-text-fill: #333333;
+    -fx-font-size: 12px;
+}
+
+/* Button */
+.button {
+    -fx-background-color: #008080;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 5px 10px;
+}
+.button:hover {
+    -fx-background-color: #006666;
+}
+
+/* AnchorPane */
+.anchor-pane {
+    -fx-background-color: #f5f5f5;
+}
+\ No newline at end of file

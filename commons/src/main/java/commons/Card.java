@@ -1,8 +1,6 @@
 package commons;
 
-//import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
@@ -17,19 +15,19 @@ import static org.apache.commons.lang3.builder.ToStringStyle.SIMPLE_STYLE;
 @Entity
 @Table(name = "card")
 public class Card implements Serializable {
-    private Long columnid = (long)-1;
+    private Long columnid = (long) -1;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private String description;
-    private Double red;
-    private Double green;
-    private Double blue;
+    private Double red = 192 / 255.0;
+    private Double green = 192 / 255.0;
+    private Double blue = 192 / 255.0;
     @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY)
-    @JsonIgnore
+            fetch = FetchType.EAGER)
     private List<Task> taskList;
+
 
     @ManyToMany()
     private Set<Tag> tags;
@@ -44,11 +42,10 @@ public class Card implements Serializable {
     }
 
     /**
-     *
-     * @param title = title of the card
+     * @param title       = title of the card
      * @param description = description of a card for advanced feat
-     * @param taskList = a list of tasks for a card, also advanced feat
-     * @param tags = list of tags for a card
+     * @param taskList    = a list of tasks for a card, also advanced feat
+     * @param tags        = list of tags for a card
      */
 
     public Card(String title, String description,
@@ -62,6 +59,7 @@ public class Card implements Serializable {
 
     /**
      * add a new tag to the card
+     *
      * @param newTag
      */
 
@@ -74,6 +72,7 @@ public class Card implements Serializable {
 
     /**
      * id of the card for the database
+     *
      * @return the id of the card
      */
 
@@ -83,6 +82,7 @@ public class Card implements Serializable {
 
     /**
      * to get column id
+     *
      * @return columnid
      */
     public Long getColumnId() {
@@ -91,6 +91,7 @@ public class Card implements Serializable {
 
     /**
      * set column id
+     *
      * @param id a value to set columnid
      */
     public void setColumnId(Long id) {
@@ -99,6 +100,7 @@ public class Card implements Serializable {
 
     /**
      * set the id of a card
+     *
      * @param id = id of the card for the db
      */
     public void setId(Long id) {
@@ -107,6 +109,7 @@ public class Card implements Serializable {
 
     /**
      * gets the title of the card
+     *
      * @return the title of the card
      */
     public String getTitle() {
@@ -115,6 +118,7 @@ public class Card implements Serializable {
 
     /**
      * sets the title of the board to a new title
+     *
      * @param title = new title
      */
     public void setTitle(String title) {
@@ -123,13 +127,16 @@ public class Card implements Serializable {
 
     /**
      * gets the description of the card
+     *
      * @return description of the card
      */
     public String getDescription() {
         return description;
     }
+
     /**
      * sets the description of the card to a new title
+     *
      * @param description = new description
      */
     public void setDescription(String description) {
@@ -137,7 +144,6 @@ public class Card implements Serializable {
     }
 
     /**
-     *
      * @return the list of tasks
      */
     public List<Task> getTaskList() {
@@ -185,9 +191,9 @@ public class Card implements Serializable {
     }
 
 
-
     /**
      * hashing function
+     *
      * @return a hash code value for the card
      */
     @Override
@@ -197,6 +203,7 @@ public class Card implements Serializable {
 
     /**
      * human-friendly toString method, useful for debugging
+     *
      * @return a string representation of the card in a human-friendly format
      */
     @Override
@@ -205,14 +212,14 @@ public class Card implements Serializable {
     }
 
     /**
-     * @param blue value in the rgb
+     * @param blue  value in the rgb
      * @param green value in the rgb
-     * @param red value in the rgb
+     * @param red   value in the rgb
      */
     public void setColor(Double blue, Double green, Double red) {
-        this.blue=blue;
-        this.red=red;
-        this.green=green;
+        this.blue = blue;
+        this.red = red;
+        this.green = green;
     }
 
     /**
@@ -241,10 +248,12 @@ public class Card implements Serializable {
 
     /**
      * Verify if the tag has a tag with a certain id
+     *
      * @param tagId id of the card
      * @return true if the card has the specific tag
      */
     public boolean hasTagWithId(Long tagId) {
+        if (tags == null) return false;
         for (Tag tag : tags) {
             if (Objects.equals(tag.getTagID(), tagId)) {
                 return true;
@@ -252,5 +261,5 @@ public class Card implements Serializable {
         }
         return false;
     }
-    
+
 }

@@ -123,7 +123,7 @@ class TaskTest {
     void setCard() {
         Card card = new Card();
         t.setCard(card);
-        assertEquals(card,t.getCard());
+        assertEquals(card, t.getCard());
     }
 
     @Test

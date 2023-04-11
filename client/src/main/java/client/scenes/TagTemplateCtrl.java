@@ -212,24 +212,6 @@ public class TagTemplateCtrl implements Initializable {
 
         Node tagNode = deleteButton.getParent();
         AnchorPane parent = (AnchorPane) tagNode.getParent();
-
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("TagTemplate.fxml"));
-//        Parent child = loader.load();
-//        TagTemplateCtrl tagTemplateCtrl = loader.getController();
-//        for (Node node : parent.getChildren()) {
-//            if (node instanceof AnchorPane) {
-//                AnchorPane childPane = (AnchorPane) node;
-//                CheckBox checkBox = (CheckBox) childPane.lookup("#checkbox");
-//                checkBox.setSelected(true);
-//
-//                tagTemplateCtrl.setPane(childPane);
-//                Long tagId = tagTemplateCtrl.getTagId();
-//                System.out.println("Tag id of child: " + tagId);
-//            }
-//        }
-
-
-
         int index = parent.getChildren().indexOf(tagNode);
         parent.getChildren().remove(index);    //remove the tag from the scene
         server.deleteTagFromBoard(tagId, boardId);  //remove tag from server
