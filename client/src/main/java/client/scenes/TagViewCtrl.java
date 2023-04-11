@@ -100,7 +100,8 @@ public class TagViewCtrl implements Initializable {
         Label colorPresetSelection = new Label("C -> open popup for color preset selection");
 
         // Add the keyboard shortcuts to the VBox
-        shortcutsList.getChildren().addAll(helpPopUpMessage, upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
+        shortcutsList.getChildren().addAll(helpPopUpMessage, upDownLeftRight,
+                shiftUpDown, editCardTitle, deleteCard,
                 openCardDetails, closeCardDetails, addTags, colorPresetSelection);
 
         // Add the VBox to the dialog's content

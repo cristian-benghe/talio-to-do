@@ -1247,10 +1247,14 @@ public class BoardOverviewCtrl implements Initializable {
         labels.add(new Label("\n"));
         labels.add(new Label("Locate the item you wish to move within your to-do list."));
         labels.add(new Label("Click and hold on the item with your mouse or trackpad."));
-        labels.add(new Label("While holding down the mouse button, drag the item to its new location within the list."));
-        labels.add(new Label("Release the mouse button to drop the item into its new location."));
-        labels.add(new Label("----------------------------------------------------------------------------------------\n"));
-        labels.add(new Label("* Our application supports several combinations of drag and drop actions, including:"));
+        labels.add(new Label("While holding down the mouse button, drag the " +
+                "item to its new location within the list."));
+        labels.add(new Label("Release the mouse button to drop the " +
+                "item into its new location."));
+        labels.add(new Label("-----------------------------------------------------" +
+                "-----------------------------------\n"));
+        labels.add(new Label("* Our application supports several combinations " +
+                "of drag and drop actions, including:"));
         labels.add(new Label("\n"));
         labels.add(new Label("Moving a card to a different column or position within the same column."));
         labels.add(new Label("Rearranging columns by dragging and dropping them into different positions."));
