@@ -44,7 +44,6 @@ public class MainCtrlTest {
     private ClientConnectCtrl clientConnectCtrl;
     private Scene clientConnect;
 
-    private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
     private Scene popupStage;
 
     private CardViewCtrl cardViewCtrl;
@@ -72,7 +71,6 @@ public class MainCtrlTest {
         mainOverview = mock(Scene.class);
         clientConnectCtrl = mock(ClientConnectCtrl.class);
         clientConnect = mock(Scene.class);
-        deleteBoardPopUpCtrl = mock(DeleteBoardPopUpCtrl.class);
         popupStage = mock(Scene.class);
         cardViewCtrl = mock(CardViewCtrl.class);
         cardView = mock(Scene.class);
@@ -87,10 +85,8 @@ public class MainCtrlTest {
         mainCtrl.setBoardOverviewCtrl(boardOverviewCtrl);
         mainCtrl.setMainOverviewCtrl(mainOverviewCtrl);
         mainCtrl.setCardViewCtrl(cardViewCtrl);
-        mainCtrl.setBoardCustomizationCtrl(boardCustomizationCtrl);
         mainCtrl.setClientConnectCtrl(clientConnectCtrl);
         mainCtrl.setTagViewCtrl(tagViewCtrl);
-        mainCtrl.setDeleteBoardPopUpCtrl(deleteBoardPopUpCtrl);
         mainCtrl.setPrimaryStage(primaryStage);
     }
 
@@ -103,7 +99,6 @@ public class MainCtrlTest {
         Mockito.verify(mainCtrl.getClientConnectCtrl(), times(1)).setConnection("");
         Mockito.verify(mainCtrl.getMainOverviewCtrl(), times(1)).setConnection("");
         Mockito.verify(mainCtrl.getBoardOverviewCtrl(), times(1)).setConnection("");
-        Mockito.verify(mainCtrl.getBoardCustomizationCtrl(), times(1)).setConnection("");
         Mockito.verify(mainCtrl.getCardViewCtrl(), times(1)).setConnection("");
         Mockito.verify(mainCtrl.getTagViewCtrl(), times(1)).setConnection("");
 
@@ -181,20 +176,6 @@ public class MainCtrlTest {
     }
 
     @Test
-    public void testGetDeleteBoardPopUpCtrl() {
-        MainCtrl ctrl = new MainCtrl();
-        DeleteBoardPopUpCtrl deleteBoardPopUpCtrl = ctrl.getDeleteBoardPopUpCtrl();
-        assertNull(deleteBoardPopUpCtrl);
-    }
-
-    @Test
-    public void testGetPopupStage() {
-        MainCtrl ctrl = new MainCtrl();
-        Scene popupStage = ctrl.getPopupStage();
-        assertNull(popupStage);
-    }
-
-    @Test
     public void testGetCardView() {
         MainCtrl ctrl = new MainCtrl();
         Scene cardView = ctrl.getCardView();
@@ -202,24 +183,10 @@ public class MainCtrlTest {
     }
 
     @Test
-    public void testGetBoardCustomizationCtrl() {
-        MainCtrl ctrl = new MainCtrl();
-        BoardCustomizationCtrl boardCustomizationCtrl = ctrl.getBoardCustomizationCtrl();
-        assertNull(boardCustomizationCtrl);
-    }
-
-    @Test
     public void testIsAdmin() {
         MainCtrl ctrl = new MainCtrl();
         boolean isAdmin = ctrl.isAdmin();
         assertFalse(isAdmin);
-    }
-
-    @Test
-    public void testGetBoardCustomization() {
-        MainCtrl ctrl = new MainCtrl();
-        Scene boardCustomization = ctrl.getBoardCustomization();
-        assertNull(boardCustomization);
     }
 
     @Test
@@ -289,13 +256,6 @@ public class MainCtrlTest {
     public void testGetPrimaryStageWithNull() {
         MainCtrl instance = new MainCtrl();
         Stage result = instance.getPrimaryStage();
-        assertNull(result);
-    }
-    @Test
-    public void testSetPopupStageWithNull() {
-        MainCtrl instance = new MainCtrl();
-        instance.setPopupStage(null);
-        Scene result = instance.getPopupStage();
         assertNull(result);
     }
     @Test
