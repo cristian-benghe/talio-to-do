@@ -47,7 +47,7 @@ public class TagService {
      * @return the saved tag object or null if the title is null or empty
      */
     public Tag add(Tag tag) {
-        if (isNullOrEmpty(tag.getTitle())) {
+        if (tag.getTitle() == null || tag.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
         return repo.save(tag);
@@ -77,14 +77,7 @@ public class TagService {
     public void delete(long id) {
         repo.deleteById(id);
     }
-    /**
-     * This method verifies if the given string is null or not
-     * @param s - a string
-     * @return true/false if the string is empty or not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
+
 }
 
 
