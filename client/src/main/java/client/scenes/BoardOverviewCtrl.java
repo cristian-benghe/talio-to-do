@@ -1223,6 +1223,7 @@ public class BoardOverviewCtrl implements Initializable {
     public ArrayList<Label> helpLabel() {
         ArrayList<Label> labels = new ArrayList<>();
         // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Shift+/ -> open help pop-up"));
         labels.add(new Label("Up/Down/Left/Right -> select tasks"));
         labels.add(new Label("Shift+Up/Down -> change order of cards in the column"));
         labels.add(new Label("E -> edit the card title"));
@@ -1242,10 +1243,22 @@ public class BoardOverviewCtrl implements Initializable {
     public ArrayList<Label> helpDragDrop() {
         ArrayList<Label> labels = new ArrayList<>();
         // Add each keyboard shortcut to the VBox
-        labels.add(new Label("Note, it's a template!!"));
-        labels.add(new Label("To delete the card you can drag and drop it to the BIN"));
-        labels.add(new Label("To rearrange cards you can drag and drop"));
-        labels.add(new Label("To enter the card views you can press to the ... sign"));
+        labels.add(new Label("* To use the drag and drop feature, please follow these steps:"));
+        labels.add(new Label("\n"));
+        labels.add(new Label("Locate the item you wish to move within your to-do list."));
+        labels.add(new Label("Click and hold on the item with your mouse or trackpad."));
+        labels.add(new Label("While holding down the mouse button, drag the " +
+                "item to its new location within the list."));
+        labels.add(new Label("Release the mouse button to drop the " +
+                "item into its new location."));
+        labels.add(new Label("-----------------------------------------------------" +
+                "-----------------------------------\n"));
+        labels.add(new Label("* Our application supports several combinations " +
+                "of drag and drop actions, including:"));
+        labels.add(new Label("\n"));
+        labels.add(new Label("Moving a card to a different column or position within the same column."));
+        labels.add(new Label("Rearranging columns by dragging and dropping them into different positions."));
+        labels.add(new Label("Deleting items by dragging them to the BIN and dropping them."));
         return labels;
     }
 
