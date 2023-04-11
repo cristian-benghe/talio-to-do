@@ -643,26 +643,7 @@ public class ServerUtils {
                 .put(Entity.entity(taskList, APPLICATION_JSON), Card.class);
     }
 
-    /**
-     * @param tagId the id of the tag
-     * @param tag the new tag
-     * @param boardId the id of the board
-     * @return the updated board after addition
-     */
-    public Board updateTagInBoard(int tagId, Tag tag, Long boardId) {
-        Board board=getBoardById(boardId);
-        int ind=-1;
-        for(int i=0;i<board.getTags().size();i++){
-            if(board.getTags().get(i).getTagID()==tagId){
-                ind=i;
-            }
-        }
-        board.updateTag(ind, tag);
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(server).path("api/boards/" + boardId)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(board, MediaType.APPLICATION_JSON), Board.class);
-    }
+
 
     /**
      * @param tagId the id of the tag

@@ -25,7 +25,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
 
-    public static final int SEARCH_MAX_LENGTH = 60;
+    private final int searchMaxLength = 60;
 
     //Fields for the dependency injection
     private final ServerUtils server;
@@ -226,15 +226,15 @@ public class MainOverviewCtrl implements Initializable {
         int length = searchTextField.getText().length();
 
         //Update the SearchConstraintText label
-        if (length < SEARCH_MAX_LENGTH) {
-            searchConstraintText.setText((SEARCH_MAX_LENGTH - length) + " Characters Remaining.");
+        if (length < searchMaxLength) {
+            searchConstraintText.setText((searchMaxLength - length) + " Characters Remaining.");
             searchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
-        } else if (length == SEARCH_MAX_LENGTH) {
+        } else if (length == searchMaxLength) {
             searchConstraintText.setText("Reached Maximum Length.");
             searchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
         } else {
             searchConstraintText.setText("Exceeded Maximum Length By "
-                    + (length - SEARCH_MAX_LENGTH) + ".");
+                    + (length - searchMaxLength) + ".");
             searchConstraintText.setStyle("-fx-text-fill: red;");
 
         }
@@ -276,7 +276,7 @@ public class MainOverviewCtrl implements Initializable {
         labelMessage.setVisible(true);
 
         //Make sure that the
-        if (input.length() > SEARCH_MAX_LENGTH) {
+        if (input.length() > searchMaxLength) {
             labelMessage.setText("The input is too long");
             //TODO Add an error message through a ??? pop-up (to improve usability)
             return;
@@ -285,21 +285,27 @@ public class MainOverviewCtrl implements Initializable {
             labelMessage.setText("The input is not a valid ID");
             return;
         }
-        int nr = Integer.parseInt(input);
-        if (existsBoard(nr) == null) {
+        try {
+            int nr = Integer.parseInt(input);
+
+            if (existsBoard(nr) == null) {
+                labelMessage.setText("The board with the given ID doesn't exist");
+                return;
+            }
+            String text = existsBoard(nr);
+            if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
+
+            if (!mainCtrl.isHasAdminRole()) {
+                Board toBeAdded = server.getBoardById(nr);
+                availableUserBoards.add(toBeAdded);
+                removeDuplicates(toBeAdded);
+                refreshWorkspaceFile();
+                server.send("/app/refresh", 10);
+            }
+            mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
+        } catch (NumberFormatException e) {
             labelMessage.setText("The board with the given ID doesn't exist");
-            return;
         }
-        String text = existsBoard(nr);
-        if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
-
-        if (!mainCtrl.isHasAdminRole()) {
-            availableUserBoards.add(server.getBoardById(nr));
-            refreshWorkspaceFile();
-            server.send("/app/refresh", 10);
-        }
-        mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
-
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
     }
@@ -342,13 +348,28 @@ public class MainOverviewCtrl implements Initializable {
         refreshOverview();
 
         server.send("/app/boards", board);
-        Platform.runLater(() ->
+        if (server.getBoards().isEmpty())
+            Platform.runLater(() ->
+            {
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Board board1 = server.getBoards().get(server.getBoards().size() - 1);
+                availableUserBoards.add(board1);
+
+                refreshOverview();
+                if (!mainCtrl.isHasAdminRole())
+                    refreshWorkspaceFile();
+                refreshOverview();
+                //server.send("/app/refresh", 10);
+
+                if (!mainCtrl.isHasAdminRole())
+                    refreshWorkspaceFile();
+            });
+        else
         {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             Board board1 = server.getBoards().get(server.getBoards().size() - 1);
             availableUserBoards.add(board1);
 
@@ -360,7 +381,9 @@ public class MainOverviewCtrl implements Initializable {
 
             if (!mainCtrl.isHasAdminRole())
                 refreshWorkspaceFile();
-        });
+
+        }
+
     }
 
     /**
@@ -402,7 +425,7 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * Set up the dialog for the help button
      */
-    public void helpPopUp(){
+    public void helpPopUp() {
         helpDialog = new Dialog<String>();
         helpDialog.initModality(Modality.APPLICATION_MODAL);
         helpDialog.setTitle("Help");
@@ -449,10 +472,10 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * This method shows the help dialog when the "?" button is clicked
      */
-    public void showHelp(){
+    public void showHelp() {
         Optional<ButtonType> result = helpDialog.showAndWait();
 
-        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY){
+        if (result.get().getButtonData() == ButtonBar.ButtonData.APPLY) {
             mainCtrl.showMainOverview();
         }
     }
@@ -471,6 +494,7 @@ public class MainOverviewCtrl implements Initializable {
                 // System.out.println(availableBoards+" "+availableUserBoards);
                 availableBoards.remove(toBeDeleted);
                 availableUserBoards.remove(toBeDeleted);
+                refreshOverview();
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
 
@@ -489,8 +513,8 @@ public class MainOverviewCtrl implements Initializable {
             for (Board b : availableBoards)
                 if (Objects.equals(b.getId(), board.getId()))
                     b.setTitle(board.getTitle());
-            for(Board b : availableUserBoards) {
-                if(Objects.equals(b.getId(),board.getId())) {
+            for (Board b : availableUserBoards) {
+                if (Objects.equals(b.getId(), board.getId())) {
                     b.setTitle(board.getTitle());
                 }
             }
@@ -527,7 +551,7 @@ public class MainOverviewCtrl implements Initializable {
         if (availableUserBoards.size() == 1) {
             try {
                 server.getBoardById(availableUserBoards.get(0).getId());
-            } catch (NotFoundException e){
+            } catch (NotFoundException e) {
                 availableUserBoards = new ArrayList<>();
             }
 
@@ -546,6 +570,23 @@ public class MainOverviewCtrl implements Initializable {
         refreshWorkspaceFile();
     }
 
+    /**
+     * Method that removes all the duplicates of an Object that appear
+     * after the first occurrence of it
+     * @param board to have duplicates removed
+     */
+    public void removeDuplicates(Board board) {
+        boolean first = true;
+        Iterator<Board> iterator = availableUserBoards.iterator();
+        while (iterator.hasNext()) {
+            Board item = iterator.next();
+            if (item.equals(board) && !first) {
+                iterator.remove();
+            } else if (item.equals(board) && first) {
+                first = false;
+            }
+        }
+    }
 
     /**
      * method used for to refresh the file from the availableUserBoards

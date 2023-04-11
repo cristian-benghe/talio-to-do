@@ -110,4 +110,25 @@ public class BoardServiceTest {
             boardService.update(1L, updatedBoard);
         });
     }
+
+    @Test
+    public void delete_WhenBoardExists_ShouldDelete() {
+        when(boardRepository.existsById(15L)).thenReturn(true);
+
+        boardService.delete(15L);
+
+        verify(boardRepository).deleteById(15L);
+    }
+
+    @Test
+    public void delete_WhenBoardDoesNotExist_ShouldThrowException() {
+        // Arrange
+        long boardId = 416L;
+        when(boardRepository.existsById(boardId)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            boardService.delete(boardId);
+        });
+    }
 }

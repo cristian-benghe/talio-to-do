@@ -198,13 +198,32 @@ public class MainCtrl {
         clientConnectCtrl.refresh();
     }
 
+    /**
+     * A method that shows the tagView from shortcut 'C'
+     * @param card a card to be showed
+     * @throws IOException exception to be thrown
+     */
+    public void showTagViewShortcut(Card card) throws IOException {
+        String css = getClass().getResource("/tagview.css").toExternalForm();
+        tagView.getStylesheets().add(css);
+        tagViewCtrl.setCard(card);
+        primaryStage.setTitle("Talio - TagView");
+        primaryStage.setScene(tagView);
+        System.out.println(card.getTags().size()+"fg ");
+        tagViewCtrl.refreshtaglist();
+        clientConnectCtrl.refresh();
+        primaryStage.centerOnScreen();
+
+    }
+
 
 
     /**
      * Displays a popup window to confirm the deletion of a board with the given title and ID.
      *
      * @param title - the title of the board to be deleted.
-     * @param id - the ID of the board to be deleted.
+     * @param id    - the ID of the board to be deleted.
+     * @return
      */
     public void showDeleteBoardPopUp(String title, Long id){
         primaryStage.setTitle("Delete_Pop_Up");
@@ -306,6 +325,208 @@ public class MainCtrl {
      */
     public CardViewCtrl getcardViewCtrl() {
         return cardViewCtrl;
+    }
+
+    /**
+
+     Returns the controller for the board overview.
+     @return the board overview controller
+     */
+    public BoardOverviewCtrl getBoardOverviewCtrl() {
+        return boardOverviewCtrl;
+    }
+    /**
+
+     Returns the scene for the board overview.
+     @return the board overview scene
+     */
+    public Scene getBoardOverview() {
+        return boardOverview;
+    }
+    /**
+
+     Returns the controller for the main overview.
+     @return the main overview controller
+     */
+    public MainOverviewCtrl getMainOverviewCtrl() {
+        return mainOverviewCtrl;
+    }
+    /**
+
+     Returns the scene for the main overview.
+     @return the main overview scene
+     */
+    public Scene getMainOverview() {
+        return mainOverview;
+    }
+    /**
+
+     Returns the controller for the client connect.
+     @return the client connect controller
+     */
+    public ClientConnectCtrl getClientConnectCtrl() {
+        return clientConnectCtrl;
+    }
+    /**
+
+     Returns the scene for the client connect.
+     @return the client connect scene
+     */
+    public Scene getClientConnect() {
+        return clientConnect;
+    }
+    /**
+
+     Returns the controller for the delete board popup.
+     @return the deleted board popup controller
+     */
+    public DeleteBoardPopUpCtrl getDeleteBoardPopUpCtrl() {
+        return deleteBoardPopUpCtrl;
+    }
+    /**
+
+     Returns the scene for the popup stage.
+     @return the popup stage scene
+     */
+    public Scene getPopupStage() {
+        return popupStage;
+    }
+    /**
+
+     Returns the controller for the card view.
+     @return the card view controller
+     */
+    public CardViewCtrl getCardViewCtrl() {
+        return cardViewCtrl;
+    }
+    /**
+
+     Returns the scene for the card view.
+     @return the card view scene
+     */
+    public Scene getCardView() {
+        return cardView;
+    }
+    /**
+
+     Returns the controller for the board customization.
+     @return the board customization controller
+     */
+    public BoardCustomizationCtrl getBoardCustomizationCtrl() {
+        return boardCustomizationCtrl;
+    }
+    /**
+
+     Returns whether the user is an admin or not.
+     @return true if the user is an admin, false otherwise
+     */
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+    /**
+
+     Returns the scene for the board customization.
+     @return the board customization scene
+     */
+    public Scene getBoardCustomization() {
+        return boardCustomization;
+    }
+    /**
+
+     Returns the scene for the tag view.
+     @return the tag view scene
+     */
+    public Scene getTagView() {
+        return tagView;
+    }
+    /**
+
+     Returns whether the main overview has been shown once or not.
+     @return true if the main overview has been shown once, false otherwise
+     */
+    public boolean isShownMainOverviewOneTime() {
+        return shownMainOverviewOneTime;
+    }
+    /**
+
+     Sets the primary stage of the application.
+     @param primaryStage the new primary stage
+     */
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    /**
+     * setter for boardOverview ctrl
+     * @param boardOverviewCtrl the ctrl to be set
+     */
+    public void setBoardOverviewCtrl(BoardOverviewCtrl boardOverviewCtrl) {
+        this.boardOverviewCtrl = boardOverviewCtrl;
+    }
+
+    /**
+
+     Sets the MainOverviewCtrl.
+     @param mainOverviewCtrl The new MainOverviewCtrl to set.
+     */
+    public void setMainOverviewCtrl(MainOverviewCtrl mainOverviewCtrl) {
+        this.mainOverviewCtrl = mainOverviewCtrl;
+    }
+    /**
+
+     Sets the ClientConnectCtrl.
+     @param clientConnectCtrl The new ClientConnectCtrl to set.
+     */
+    public void setClientConnectCtrl(ClientConnectCtrl clientConnectCtrl) {
+        this.clientConnectCtrl = clientConnectCtrl;
+    }
+    /**
+
+     Sets the DeleteBoardPopUpCtrl.
+     @param deleteBoardPopUpCtrl The new DeleteBoardPopUpCtrl to set.
+     */
+    public void setDeleteBoardPopUpCtrl(DeleteBoardPopUpCtrl deleteBoardPopUpCtrl) {
+        this.deleteBoardPopUpCtrl = deleteBoardPopUpCtrl;
+    }
+    /**
+
+     Sets the CardViewCtrl.
+     @param cardViewCtrl The new CardViewCtrl to set.
+     */
+    public void setCardViewCtrl(CardViewCtrl cardViewCtrl) {
+        this.cardViewCtrl = cardViewCtrl;
+    }
+    /**
+
+     Sets the BoardCustomizationCtrl.
+     @param boardCustomizationCtrl The new BoardCustomizationCtrl to set.
+     */
+    public void setBoardCustomizationCtrl(BoardCustomizationCtrl boardCustomizationCtrl) {
+        this.boardCustomizationCtrl = boardCustomizationCtrl;
+    }
+    /**
+
+     Sets the TagViewCtrl.
+     @param tagViewCtrl The new TagViewCtrl to set.
+     */
+    public void setTagViewCtrl(TagViewCtrl tagViewCtrl) {
+        this.tagViewCtrl = tagViewCtrl;
+    }
+
+    /**
+     * getter for the primary stage
+     * @return the primary stage
+     */
+    public Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    /**
+     * getter for popupstage
+     * @param popupStage the stage
+     */
+    public void setPopupStage(Scene popupStage) {
+        this.popupStage = popupStage;
     }
 
     /**

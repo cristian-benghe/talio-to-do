@@ -206,12 +206,9 @@ public class Board implements Serializable {
 
         if (getId() != null ? !getId().equals(board.getId()) :
                 board.getId() != null) return false;
-        if (getTitle() != null ? !getTitle().equals(board.getTitle()) :
-                board.getTitle() != null) return false;
-        if (getColumns() != null ? !getColumns().equals(board.getColumns()) :
-                board.getColumns() != null) return false;
-        return getTags() != null ? getTags().equals(board.getTags()) :
-                board.getTags() == null;
+        if(getTitle()!=null?!getTitle().equals(board.getTitle()):board.getTitle() != null)return false;
+        if(getColumns()!=null?!getColumns().equals(board.getColumns()):board.getColumns()!=null)return false;
+        return getTags()!= null?getTags().equals(board.getTags()):board.getTags() == null;
     }
 
     /**
@@ -243,7 +240,6 @@ public class Board implements Serializable {
     }
 
     /**
-<<<<<<< HEAD
      * @param red from rgb
      * @param green from rgb
      * @param blue from rgb
@@ -279,15 +275,6 @@ public class Board implements Serializable {
      */
     public void deleteTag(int tagInd) {
         tags.remove(tagInd);
-    }
-
-    /**
-     * @param tagInd the updated id of the tag that shift to the left
-     */
-    public void updateTagIndex(int tagInd) {
-        for(int i=tagInd;i<tags.size();i++){
-            tags.get(i).setIDinBoard(tags.get(i).getIDinBoard()-1);
-        }
     }
 
     /**

@@ -79,15 +79,6 @@ public class BoardController {
     }
 
     /**
-     * Checks if the provided string is null or empty
-     * @param s - the string to be checked
-     * @return - true if the string is null or empty or false if not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
-
-    /**
      * PUT request for updating a board with that specific id
      * @param id - the id of the board to be updated
      * @param board - the new board which will replace the already existing board
