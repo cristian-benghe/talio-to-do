@@ -294,7 +294,9 @@ public class MainOverviewCtrl implements Initializable {
         if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
 
         if (!mainCtrl.isHasAdminRole()) {
-            availableUserBoards.add(server.getBoardById(nr));
+            Board toBeAdded = server.getBoardById(nr);
+            availableUserBoards.add(toBeAdded);
+            removeDuplicates(availableUserBoards, toBeAdded);
             refreshWorkspaceFile();
             server.send("/app/refresh", 10);
         }
@@ -582,6 +584,19 @@ public class MainOverviewCtrl implements Initializable {
         refreshWorkspaceFile();
     }
 
+
+    public static <T> void removeDuplicates(List<T> list, T object) {
+        boolean first = true;
+        Iterator<T> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            T item = iterator.next();
+            if (item.equals(object) && !first) {
+                iterator.remove();
+            } else if (item.equals(object) && first) {
+                first = false;
+            }
+        }
+    }
 
     /**
      * method used for to refresh the file from the availableUserBoards
