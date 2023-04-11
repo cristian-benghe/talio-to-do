@@ -25,7 +25,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
 
-    public static final int SEARCH_MAX_LENGTH = 60;
+    public final int SEARCH_MAX_LENGTH = 60;
 
     //Fields for the dependency injection
     private final ServerUtils server;
