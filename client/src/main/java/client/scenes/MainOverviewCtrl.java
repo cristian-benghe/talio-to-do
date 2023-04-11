@@ -285,23 +285,27 @@ public class MainOverviewCtrl implements Initializable {
             labelMessage.setText("The input is not a valid ID");
             return;
         }
-        int nr = Integer.parseInt(input);
-        if (existsBoard(nr) == null) {
+        try {
+            int nr = Integer.parseInt(input);
+
+            if (existsBoard(nr) == null) {
+                labelMessage.setText("The board with the given ID doesn't exist");
+                return;
+            }
+            String text = existsBoard(nr);
+            if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
+
+            if (!mainCtrl.isHasAdminRole()) {
+                Board toBeAdded = server.getBoardById(nr);
+                availableUserBoards.add(toBeAdded);
+                removeDuplicates(toBeAdded);
+                refreshWorkspaceFile();
+                server.send("/app/refresh", 10);
+            }
+            mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
+        } catch (NumberFormatException e) {
             labelMessage.setText("The board with the given ID doesn't exist");
-            return;
         }
-        String text = existsBoard(nr);
-        if (availableUserBoards == null) availableUserBoards = new ArrayList<>();
-
-        if (!mainCtrl.isHasAdminRole()) {
-            Board toBeAdded = server.getBoardById(nr);
-            availableUserBoards.add(toBeAdded);
-            removeDuplicates(toBeAdded);
-            refreshWorkspaceFile();
-            server.send("/app/refresh", 10);
-        }
-        mainCtrl.showBoardOverview((text + " -- " + nr), (double) 1, (double) 1, (double) 1);
-
         //TODO Retrieve boards through key input or name input
         //TODO ??? Add a pop-up window to display all of the retrieved boards?
     }
