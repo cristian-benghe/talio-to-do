@@ -439,6 +439,7 @@ public class MainOverviewCtrl implements Initializable {
         shortcutsList.setSpacing(5);
 
         // Add each keyboard shortcut to the VBox
+        Label helpPopUpMessage = new Label("Shift+/ -> open help pop-up");
         Label upDownLeftRight = new Label("Up/Down/Left/Right -> select tasks");
         Label shiftUpDown = new Label("Shift+Up/Down -> change order of cards in the column");
         Label editCardTitle = new Label("E -> edit the card title");
@@ -449,7 +450,7 @@ public class MainOverviewCtrl implements Initializable {
         Label colorPresetSelection = new Label("C -> open popup for color preset selection");
 
         // Add the keyboard shortcuts to the VBox
-        shortcutsList.getChildren().addAll(upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
+        shortcutsList.getChildren().addAll(helpPopUpMessage, upDownLeftRight, shiftUpDown, editCardTitle, deleteCard,
                 openCardDetails, closeCardDetails, addTags, colorPresetSelection);
 
         // Add the VBox to the dialog's content
