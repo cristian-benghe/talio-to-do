@@ -52,7 +52,7 @@ public class CardService {
      */
 
     public Card add(Card card) {
-        if (isNullOrEmpty(card.getTitle())) {
+        if (card.getTitle() == null || card.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
         return repo.save(card);
@@ -89,15 +89,6 @@ public class CardService {
     public void delete(long id) {
         repo.deleteById(id);
     }
-    /**
-     * This method verifies if the given string is null or not
-     * @param s - a string
-     * @return true/false if the string is empty or not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
-
 
     /**
      * Adds a new Task to the Task List attribute of the

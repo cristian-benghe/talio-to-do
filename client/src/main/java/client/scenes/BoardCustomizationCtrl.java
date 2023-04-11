@@ -89,4 +89,6 @@ public class BoardCustomizationCtrl implements Initializable {
     private void getBackBoardCustomization() {
         mainCtrl.showBoardOverview(text, (double) 1, (double) 1, (double) 1);
     }
+
+
 }

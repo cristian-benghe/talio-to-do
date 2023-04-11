@@ -101,15 +101,6 @@ public class TagController {
         }
     }
 
-    /**
-     * This method verifies if the given string is null or not
-     * @param s - a string
-     * @return true/false if the string is empty or not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
-
     // TODO: configure the PUT request
     // TODO: configure the DELETE request
 }

@@ -47,7 +47,7 @@ public class TaskService {
      * @return the saved Task object or null if the title is null or empty
      */
     public Task add(Task task) {
-        if (isNullOrEmpty(task.getTitle())) {
+        if (task.getTitle() == null || task.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
         return repo.save(task);
@@ -96,15 +96,6 @@ public class TaskService {
 
     }
 
-
-    /**
-     * This method verifies if the given string is null or not
-     * @param s - a string
-     * @return true/false if the string is empty or not
-     */
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
 
     /**
      *  Updates the task instance corresponding to the given ID

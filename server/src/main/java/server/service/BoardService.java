@@ -49,7 +49,7 @@ public class BoardService {
      * @throws IllegalArgumentException if the title of the Board entity is null or empty
      */
     public Board add(Board board) {
-        if (isNullOrEmpty(board.getTitle())) {
+        if (board.getTitle() == null || board.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Board title cannot be null or empty.");
         }
         return repo.save(board);

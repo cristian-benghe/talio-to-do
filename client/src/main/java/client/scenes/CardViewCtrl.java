@@ -171,6 +171,7 @@ public class CardViewCtrl implements Initializable {
     public ArrayList<Label> helpLabel() {
         ArrayList<Label> labels = new ArrayList<>();
         // Add each keyboard shortcut to the VBox
+        labels.add(new Label("Shift+/ -> open help pop-up"));
         labels.add(new Label("Up/Down/Left/Right -> select tasks"));
         labels.add(new Label("Shift+Up/Down -> change order of cards in the column"));
         labels.add(new Label("E -> edit the card title"));
@@ -190,7 +191,6 @@ public class CardViewCtrl implements Initializable {
     public ArrayList<Label> helpDragDrop() {
         ArrayList<Label> labels = new ArrayList<>();
         // Add each keyboard shortcut to the VBox
-        labels.add(new Label("Note, it's a template!!"));
         labels.add(new Label("To delete a subtask you can drag and drop it to the BIN"));
         labels.add(new Label("To rearrange subtasks you can drag and drop"));
         return labels;
@@ -794,7 +794,7 @@ public class CardViewCtrl implements Initializable {
      * @param color conversion from rfb
      * @return the rgb code
      */
-    private String toRgbCode(Color color) {
+    public String toRgbCode(Color color) {
         int r = (int) Math.round(color.getRed() * 255);
         int g = (int) Math.round(color.getGreen() * 255);
         int b = (int) Math.round(color.getBlue() * 255);

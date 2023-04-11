@@ -3,6 +3,8 @@ package commons;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {
@@ -106,5 +108,50 @@ class TaskTest {
     @Test void sameAttributesEqualityPositiveTest(){
         Task t1 = new Task(1L,1,"Test Task",false);
         assertEquals(t,t1);
+    }
+
+
+    @Test
+    public void testDefaultConstructor() {
+        // Create a task object using the default constructor
+        Task task = new Task();
+
+        // Check that the properties of the object have their default values
+        assertEquals(0, task.getID());
+        assertEquals(0, task.getPosition());
+        assertEquals(null, task.getTitle());
+        assertEquals(false, task.getStatus());
+    }
+
+    @Test
+    public void testToString() {
+        // Create a task object with some property values
+        Task task = new Task(1, 1, "title1", true);
+
+        // Check that the toString() method returns the expected string
+        assertEquals("Task{task_id=1, position=1, title='title1', isComplete=true}", task.toString());
+    }
+    @Test
+    public void testHashCode() {
+        // Create two objects with identical property values
+        Object obj1 = new Task(1, 1, "title1", true);
+        Object obj2 = new Task(1, 1, "title1", true);
+
+        // Check that their hash codes are equal
+        assertEquals(obj1.hashCode(), obj2.hashCode());
+
+        // Create two objects with different property values
+        Object obj3 = new Task(2, 2, "title2", true);
+        Object obj4 = new Task(3, 3, "title3", false);
+
+        // Check that their hash codes are not equal
+        assertNotEquals(obj3.hashCode(), obj4.hashCode());
+    }
+
+    @Test
+    void setPosition() {
+        Task t1 = new Task(t);
+        t1.setPosition(3);
+        assertNotEquals(3,t.getPosition());
     }
 }

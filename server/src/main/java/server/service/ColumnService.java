@@ -50,7 +50,7 @@ public class ColumnService {
      * @return the saved Column object or null if the title is null or empty
      */
     public Column add(Column column) {
-        if (isNullOrEmpty(column.getTitle())) {
+        if (column.getTitle() == null || column.getTitle().isEmpty()) {
             throw new IllegalArgumentException("Title cannot be null or empty");
         }
         return repo.save(column);
@@ -86,8 +86,5 @@ public class ColumnService {
         }
     }
 
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
 }
 

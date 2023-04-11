@@ -1,108 +1,138 @@
 package server.service;
 
-import commons.Task;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import server.database.TaskRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-class TaskServiceTest {
+import commons.Card;
+import commons.Task;
+import server.database.CardRepository;
+import server.database.TaskRepository;
+
+public class TaskServiceTest {
+
+    private TaskService taskService;
 
     @Mock
-    TaskRepository taskRepository;
+    private TaskRepository taskRepository;
 
-    @InjectMocks
-    TaskService taskService;
+    @Mock
+    private CardRepository cardRepository;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        taskService = new TaskService(taskRepository, cardRepository);
     }
-    /*
-    @Test
-    void getAll() {
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task(null, "Task 1", false));
-        tasks.add(new Task(null, "Task 2", false));
 
+    @Test
+    void testGetAll() {
+        List<Task> tasks = List.of(new Task(0, "task title", false),
+                new Task(0, "task title1", false));
         when(taskRepository.findAll()).thenReturn(tasks);
 
-        List<Task> allTasks = taskService.getAll();
-
-        Assertions.assertEquals(2, allTasks.size());
-        Assertions.assertEquals("Task 1", allTasks.get(0).getTitle());
-        Assertions.assertEquals("Task 2", allTasks.get(1).getTitle());
-
-        verify(taskRepository, times(1)).findAll();
+        List<Task> result = taskService.getAll();
+        assertEquals(2, result.size());
+        assertEquals(tasks.get(0), result.get(0));
+        assertEquals(tasks.get(1), result.get(1));
     }
 
     @Test
-    void getByID() {
-        Task task = new Task(null, "Task 1", false);
-        task.setID(1L);
+    void testGetByID() {
+        long id = 1L;
+        Task task = new Task(0, "task title", false);
+        when(taskRepository.findById(id)).thenReturn(Optional.of(task));
 
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
-
-        Optional<Task> foundTask = taskService.getByID(1L);
-
-        Assertions.assertTrue(foundTask.isPresent());
-        Assertions.assertEquals("Task 1", foundTask.get().getTitle());
-        Assertions.assertEquals(1L, foundTask.get().getID());
-
-        verify(taskRepository, times(1)).findById(1L);
+        Optional<Task> result = taskService.getByID(id);
+        assertTrue(result.isPresent());
+        assertEquals(task, result.get());
     }
 
     @Test
-    void add() {
-        Task task = new Task(null, "Task 1", false);
-
+    void testAdd() {
+        Task task = new Task(0, "task title", false);
         when(taskRepository.save(task)).thenReturn(task);
 
-        Task savedTask = taskService.add(task);
-
-        Assertions.assertEquals(task.getTitle(), savedTask.getTitle());
-
-        verify(taskRepository, times(1)).save(task);
+        Task result = taskService.add(task);
+        assertEquals(task, result);
     }
 
     @Test
-    void addWithNullTitle() {
-        Task task = new Task(null, null, false);
+    void testAddWithNullTitle() {
+        Task task = new Task(0, "", false);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> taskService.add(task));
-
-        verify(taskRepository, never()).save(task);
+        assertThrows(IllegalArgumentException.class, () -> {
+            taskService.add(task);
+        });
     }
 
     @Test
-    void addWithEmptyTitle() {
-        Task task = new Task(null, "", false);
+    void testDelete() {
+        long id = 1L;
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> taskService.add(task));
-
-        verify(taskRepository, never()).save(task);
+        assertTrue(taskService.delete(id));
+        verify(taskRepository).deleteById(id);
     }
 
     @Test
-    void delete() {
-        long taskId = 1L;
+    void testAddTaskToCard() {
+        Task task = new Task(0, "task title", false);
+        long cardId = 1L;
+        Card card = new Card("", "desc1", new ArrayList<>(), new HashSet<>());
+        card.setId(cardId);
 
-        doNothing().when(taskRepository).deleteById(taskId);
+        when(cardRepository.findById(cardId)).thenReturn(Optional.of(card));
+        when(taskRepository.save(task)).thenReturn(task);
+        when(cardRepository.save(card)).thenReturn(card);
 
-        taskService.delete(taskId);
-
-        verify(taskRepository, times(1)).deleteById(taskId);
+        Task result = taskService.addTaskToCard(task, cardId);
+        assertEquals(task, result);
+        assertTrue(card.getTaskList().contains(task));
     }
 
-     */
+    @Test
+    void testAddTaskToCardWithNullTask() {
+        long cardId = 1L;
 
+        assertThrows(IllegalArgumentException.class, () -> {
+            taskService.addTaskToCard(null, cardId);
+        });
+    }
+
+    @Test
+    void testAddTaskToCardWithNonExistentCard() {
+        Task task = new Task(0, "task title", false);
+        long cardId = 1L;
+
+        when(cardRepository.findById(cardId)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            taskService.addTaskToCard(task, cardId);
+        });
+    }
+
+    @Test
+    void testUpdateTask() {
+        Task task = new Task(0, "task title", false);
+        task.setID(1L);
+        when(taskRepository.findById(task.getID())).thenReturn(Optional.of(task));
+        when(taskRepository.save(task)).thenReturn(task);
+
+        Task updatedTask = new Task(0, "task title", false);
+        updatedTask.setID(1L);
+        updatedTask.setStatus(true);
+
+        Task result = taskService.updateTask(updatedTask);
+        assertEquals(updatedTask,result);
+    }
 }
