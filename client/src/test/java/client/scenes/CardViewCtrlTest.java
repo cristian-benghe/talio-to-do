@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import javax.swing.text.html.ImageView;
 import java.awt.*;
@@ -34,6 +35,8 @@ class CardViewCtrlTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
+
         mainCtrl = mock(MainCtrl.class);
         server = mock(ServerUtils.class);
         card = new Card("card", "desc", null, null);

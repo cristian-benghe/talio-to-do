@@ -32,6 +32,8 @@ class CardServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        MockitoAnnotations.openMocks(this);
+
         MockitoAnnotations.initMocks(this);
         cardService = new CardService(cardRepository);
     }

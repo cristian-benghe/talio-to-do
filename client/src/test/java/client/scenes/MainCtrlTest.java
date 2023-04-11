@@ -27,6 +27,7 @@ import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 public class MainCtrlTest {
 
@@ -59,6 +60,8 @@ public class MainCtrlTest {
 
     @BeforeEach
     public void setup() {
+        MockitoAnnotations.openMocks(this);
+
 
         mainCtrl = new MainCtrl();
 

@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,6 +27,8 @@ public class TagControllerTest {
 
     @BeforeEach
     public void setup() {
+        MockitoAnnotations.openMocks(this);
+
         tagService = mock(TagService.class);
         tagController = new TagController(tagService);
     }

@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import javafx.scene.paint.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -16,6 +17,7 @@ class TagTemplateCtrlTest {
 
     @BeforeEach
     public void setup() {
+        MockitoAnnotations.openMocks(this);
 
 
         mainCtrl = mock(MainCtrl.class);
