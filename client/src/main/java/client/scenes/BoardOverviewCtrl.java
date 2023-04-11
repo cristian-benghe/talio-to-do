@@ -1745,14 +1745,6 @@ public class BoardOverviewCtrl implements Initializable {
         timeline.play();
     }
 
-
-    /**
-     * changes scene to board customization
-     */
-    public void goToSettings() {
-        mainCtrl.showBoardCustomization();
-    }
-
     /**
      * @param blue  the rgb value of blue set from the database
      * @param green the rgb value of green set from the database
