@@ -506,6 +506,7 @@ public class MainOverviewCtrl implements Initializable {
                 // System.out.println(availableBoards+" "+availableUserBoards);
                 availableBoards.remove(toBeDeleted);
                 availableUserBoards.remove(toBeDeleted);
+                refreshOverview();
             }
             //System.out.println("Deleted board " + toBeDeleted.toStringShort());
 
