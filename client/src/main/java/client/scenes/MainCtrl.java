@@ -18,23 +18,17 @@ public class MainCtrl {
     private MainOverviewCtrl mainOverviewCtrl;
     private Scene mainOverview;
 
-
     private ClientConnectCtrl clientConnectCtrl;
     private Scene clientConnect;
 
-    private DeleteBoardPopUpCtrl deleteBoardPopUpCtrl;
-    private Scene popupStage;
-
     private CardViewCtrl cardViewCtrl;
     private Scene cardView;
-    private BoardCustomizationCtrl boardCustomizationCtrl;
 
     private ColorManagementCtrl colorManagementCtrl;
     private Scene colorManagement;
 
     private boolean isAdmin=false;
 
-    private Scene boardCustomization;
     private TagViewCtrl tagViewCtrl;
     private Scene tagView;
 
@@ -52,9 +46,7 @@ public class MainCtrl {
      * @param mainOverview an injection of the MainOverview scene and controller
      * @param boardOverview an injection of the BoardOverview scene and controller
      * @param clientConnect an injection of the ClientConnect scene and controller
-     * @param popupStage an injection of the PopupStage scene and controller
      * @param cardView an injection of the CardView scene and controller
-     * @param boardCustomization on injection of the boardCustomization scene and controller
      * @param tagView an injection of the CardView scene and controller
      * @param colorManagement an injection of the colormanagement scene and controller
      * @throws Exception an exception that may be thrown
@@ -64,9 +56,7 @@ public class MainCtrl {
                            Pair<MainOverviewCtrl, Parent> mainOverview,
                            Pair<BoardOverviewCtrl, Parent> boardOverview,
                            Pair<ClientConnectCtrl, Parent> clientConnect,
-                           Pair<DeleteBoardPopUpCtrl, Parent> popupStage,
                            Pair<CardViewCtrl, Parent> cardView,
-                           Pair<BoardCustomizationCtrl, Parent> boardCustomization,
                            Pair<TagViewCtrl, Parent> tagView,
                            Pair<ColorManagementCtrl, Parent>colorManagement) throws Exception {
 
@@ -85,8 +75,6 @@ public class MainCtrl {
 
         this.cardViewCtrl = cardView.getKey();
         this.cardView = new Scene(cardView.getValue());
-        this.boardCustomizationCtrl=boardCustomization.getKey();
-        this.boardCustomization=new Scene(boardCustomization.getValue());
 
         this.tagViewCtrl = tagView.getKey();
         this.tagView = new Scene(tagView.getValue());
@@ -120,7 +108,6 @@ public class MainCtrl {
      * @param red from rgb
      */
     public void showBoardOverview(String text, Double blue, Double green, Double red) {
-        boardCustomizationCtrl.setBoardText(text);
         boardOverviewCtrl.socketsCall();
         String css = getClass().getResource("/board.css").toExternalForm();
         //add stylsheet
@@ -197,22 +184,6 @@ public class MainCtrl {
         tagViewCtrl.refreshtaglist();
         clientConnectCtrl.refresh();
     }
-
-
-
-    /**
-     * Displays a popup window to confirm the deletion of a board with the given title and ID.
-     *
-     * @param title - the title of the board to be deleted.
-     * @param id - the ID of the board to be deleted.
-     */
-    public void showDeleteBoardPopUp(String title, Long id){
-        primaryStage.setTitle("Delete_Pop_Up");
-        primaryStage.setScene(popupStage);
-        deleteBoardPopUpCtrl.setText(title);
-        deleteBoardPopUpCtrl.setID(id);
-    }
-
     /**
      * A new method to connect to a given address.
      * @param address the address of the server
@@ -222,7 +193,6 @@ public class MainCtrl {
         clientConnectCtrl.setConnection(address);
         mainOverviewCtrl.setConnection(address);
         boardOverviewCtrl.setConnection(address);
-        boardCustomizationCtrl.setConnection(address);
         cardViewCtrl.setConnection(address);
         tagViewCtrl.setConnection(address);
     }
@@ -262,17 +232,6 @@ public class MainCtrl {
     public void setHasAdminRole(boolean hasAdminRole) {
         this.hasAdminRole = hasAdminRole;
     }
-
-    /**
-     * changes the scene to board customization
-     */
-    public void showBoardCustomization() {
-        String css = getClass().getResource("/board_cust.css").toExternalForm();
-        boardCustomization.getStylesheets().add(css);
-        primaryStage.setTitle("Board Customization");
-        primaryStage.setScene(boardCustomization);
-    }
-
     /**
      * @return the id of the board
      */

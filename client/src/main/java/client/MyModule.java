@@ -34,9 +34,6 @@ public class MyModule implements Module {
         binder.bind(ClientConnectCtrl.class).in(Scopes.SINGLETON);
         binder.bind(BoardOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(MainOverviewCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(DeleteBoardPopUpCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(BoardCustomizationCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
     }
 }

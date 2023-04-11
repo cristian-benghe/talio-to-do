@@ -59,11 +59,7 @@ public class Main extends Application {
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
         var clientCtrl = FXML.load(ClientConnectCtrl.class,
                 "client", "scenes", "ClientConnect.fxml");
-        var popUpStage = FXML.load(DeleteBoardPopUpCtrl.class,
-                "client", "scenes", "DeleteBoard.fxml");
         var cardView = FXML.load(CardViewCtrl.class, "client", "scenes", "CardView.fxml");
-        var boardCustomization=FXML.load
-                (BoardCustomizationCtrl.class, "client", "scenes", "BoardCustomization.fxml");
         var tagView = FXML.load(TagViewCtrl.class,
                 "client", "scenes", "TagView.fxml");
 
@@ -71,7 +67,7 @@ public class Main extends Application {
                 "client", "scenes", "ColorManagement.fxml");
 
         mainCtrl.initialize(primaryStage, mainOverview, boardOverview,
-                clientCtrl, popUpStage, cardView, boardCustomization, tagView, colorManagement);
+                clientCtrl, cardView, tagView, colorManagement);
 
     }
 
