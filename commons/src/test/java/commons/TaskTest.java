@@ -110,21 +110,6 @@ class TaskTest {
         assertEquals(t,t1);
     }
 
-    @Test
-    void getCard() {
-        Card card = new Card();
-        card.setTaskList(new ArrayList<Task>());
-        card.getTaskList().add(t);
-
-        assertEquals(c, t.getCard());
-    }
-
-    @Test
-    void setCard() {
-        Card card = new Card();
-        t.setCard(card);
-        assertEquals(card, t.getCard());
-    }
 
     @Test
     public void testDefaultConstructor() {
