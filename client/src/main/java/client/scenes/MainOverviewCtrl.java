@@ -584,7 +584,13 @@ public class MainOverviewCtrl implements Initializable {
         refreshWorkspaceFile();
     }
 
-
+    /**
+     * Method that removes all the duplicates of an Object that appear
+     * after the first occurrence of it
+     * @param list where the removal needs to be done
+     * @param object to have duplicates removed
+     * @param <T> the class of the object
+     */
     public static <T> void removeDuplicates(List<T> list, T object) {
         boolean first = true;
         Iterator<T> iterator = list.iterator();
