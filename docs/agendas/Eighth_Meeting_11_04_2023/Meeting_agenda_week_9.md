@@ -4,7 +4,7 @@
 
 
 Location:       {DW, PC1}\
-Date:           {03/11/2023}\
+Date:           {04/11/2023}\
 Time:           {14:45-15:10}\
 Attendees:      {Cristian Benghe, David Ghergut, Denisa Arsene, Halid Çırak, Teodora Mihaila, Yair Chizi}
 
