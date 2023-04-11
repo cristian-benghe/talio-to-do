@@ -16,9 +16,9 @@ javafx {
 dependencies {
 	testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
 	testImplementation 'org.mockito:mockito-core'
-
+	implementation 'org.hibernate:hibernate-core:5.5.7.Final'
 	implementation project(":commons")
-	
+
 	implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: '3.0.3'
 	implementation group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: '3.0.3'
 	implementation group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '3.0.3'
