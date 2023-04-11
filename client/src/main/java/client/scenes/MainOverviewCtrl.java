@@ -358,7 +358,7 @@ public class MainOverviewCtrl implements Initializable {
             Platform.runLater(() ->
             {
                 try {
-                    Thread.sleep(150);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
