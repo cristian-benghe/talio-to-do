@@ -122,6 +122,12 @@ public class MainOverviewCtrl implements Initializable {
                 boardsListElement.setItems(null);
                 return;
             }
+        }else  {
+            if (availableBoards == null || availableBoards.isEmpty()) {
+                emptyBoardListMsg.setVisible(true);
+                boardsListElement.setItems(null);
+                return;
+            }
         }
         emptyBoardListMsg.setVisible(false);
         //Convert all the boards' title&id into an ObservableList
@@ -352,7 +358,7 @@ public class MainOverviewCtrl implements Initializable {
             Platform.runLater(() ->
             {
                 try {
-                    Thread.sleep(150);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -494,10 +500,7 @@ public class MainOverviewCtrl implements Initializable {
                 // System.out.println(availableBoards+" "+availableUserBoards);
                 availableBoards.remove(toBeDeleted);
                 availableUserBoards.remove(toBeDeleted);
-                refreshOverview();
             }
-            //System.out.println("Deleted board " + toBeDeleted.toStringShort());
-
             Platform.runLater(this::refreshOverview);
         });
         server.registerForMessages("/topic/boards", Board.class, board -> {
