@@ -25,7 +25,7 @@ public class MainOverviewCtrl implements Initializable {
 
     //Useful constants
 
-    public final int SEARCH_MAX_LENGTH = 60;
+    private final int searchMaxLength = 60;
 
     //Fields for the dependency injection
     private final ServerUtils server;
@@ -226,15 +226,15 @@ public class MainOverviewCtrl implements Initializable {
         int length = searchTextField.getText().length();
 
         //Update the SearchConstraintText label
-        if (length < SEARCH_MAX_LENGTH) {
-            searchConstraintText.setText((SEARCH_MAX_LENGTH - length) + " Characters Remaining.");
+        if (length < searchMaxLength) {
+            searchConstraintText.setText((searchMaxLength - length) + " Characters Remaining.");
             searchConstraintText.setStyle("-fx-text-fill: green; -fx-text-weight: bold;");
-        } else if (length == SEARCH_MAX_LENGTH) {
+        } else if (length == searchMaxLength) {
             searchConstraintText.setText("Reached Maximum Length.");
             searchConstraintText.setStyle("-fx-text-fill: orange; -fx-text-weight: bold;");
         } else {
             searchConstraintText.setText("Exceeded Maximum Length By "
-                    + (length - SEARCH_MAX_LENGTH) + ".");
+                    + (length - searchMaxLength) + ".");
             searchConstraintText.setStyle("-fx-text-fill: red;");
 
         }
@@ -276,7 +276,7 @@ public class MainOverviewCtrl implements Initializable {
         labelMessage.setVisible(true);
 
         //Make sure that the
-        if (input.length() > SEARCH_MAX_LENGTH) {
+        if (input.length() > searchMaxLength) {
             labelMessage.setText("The input is too long");
             //TODO Add an error message through a ??? pop-up (to improve usability)
             return;
@@ -296,7 +296,7 @@ public class MainOverviewCtrl implements Initializable {
         if (!mainCtrl.isHasAdminRole()) {
             Board toBeAdded = server.getBoardById(nr);
             availableUserBoards.add(toBeAdded);
-            removeDuplicates(availableUserBoards, toBeAdded);
+            removeDuplicates(toBeAdded);
             refreshWorkspaceFile();
             server.send("/app/refresh", 10);
         }
@@ -587,18 +587,16 @@ public class MainOverviewCtrl implements Initializable {
     /**
      * Method that removes all the duplicates of an Object that appear
      * after the first occurrence of it
-     * @param list where the removal needs to be done
-     * @param object to have duplicates removed
-     * @param <T> the class of the object
+     * @param board to have duplicates removed
      */
-    public static <T> void removeDuplicates(List<T> list, T object) {
+    public void removeDuplicates(Board board) {
         boolean first = true;
-        Iterator<T> iterator = list.iterator();
+        Iterator<Board> iterator = availableUserBoards.iterator();
         while (iterator.hasNext()) {
-            T item = iterator.next();
-            if (item.equals(object) && !first) {
+            Board item = iterator.next();
+            if (item.equals(board) && !first) {
                 iterator.remove();
-            } else if (item.equals(object) && first) {
+            } else if (item.equals(board) && first) {
                 first = false;
             }
         }
